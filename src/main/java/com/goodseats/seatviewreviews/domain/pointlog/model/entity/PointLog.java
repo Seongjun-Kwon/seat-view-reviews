@@ -37,7 +37,7 @@ public class PointLog extends BaseEntity {
 	private int remainingPoint;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "member_id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	public PointLog(int usedAmount, String usedField, int remainingPoint, Member member) {

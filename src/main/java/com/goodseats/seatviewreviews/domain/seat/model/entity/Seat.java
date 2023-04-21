@@ -40,7 +40,7 @@ public class Seat extends BaseEntity {
 	private float averageScore;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "stadium_id")
+	@JoinColumn(name = "stadium_id")
 	private Stadium stadium;
 
 	public Seat(String section, int seatNumber, float averageScore, Stadium stadium) {

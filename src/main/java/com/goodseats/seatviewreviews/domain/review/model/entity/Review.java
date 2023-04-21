@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "seat")
+@Table(name = "review")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Review extends BaseEntity {
@@ -41,11 +41,11 @@ public class Review extends BaseEntity {
 	private int hits;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "member_id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "seat_id")
+	@JoinColumn(name = "seat_id")
 	private Seat seat;
 
 	public Review(String title, String content, int score, int hits, Member member, Seat seat) {

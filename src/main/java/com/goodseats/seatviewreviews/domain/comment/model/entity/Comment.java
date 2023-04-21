@@ -32,11 +32,11 @@ public class Comment extends BaseEntity {
 	private String content;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "member_id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "review_id")
+	@JoinColumn(name = "review_id")
 	private Review review;
 
 	public Comment(String content, Member member, Review review) {
