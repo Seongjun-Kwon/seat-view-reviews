@@ -1,0 +1,18 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0.32
+    ports:
+      - "3306:3306"
+    env_file:
+      - ../env/docker-compose.env
+    container_name: seat-view
+    environment:
+      TZ: Asia/Seoul
+    volumes:
+      - seat-view:/var/lib/seat-view/db
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+
+volumes:
+  seat-view:

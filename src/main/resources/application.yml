@@ -1,1 +1,9 @@
+spring:
+  config:
+    import:
+      - application-db.yml
 
+logging:
+  level:
+    org.springframework: debug
+    org.hibernate: debug
