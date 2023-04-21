@@ -36,11 +36,11 @@ public class ReviewLike extends BaseEntity {
 	private LikeType likeType;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "member_id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "review_id")
+	@JoinColumn(name = "review_id")
 	private Review review;
 
 	public ReviewLike(LikeType likeType, Member member, Review review) {
