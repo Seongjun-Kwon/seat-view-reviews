@@ -12,18 +12,14 @@ public record ErrorResponse(
 		String message,
 		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 		LocalDateTime createdAt,
-		List<FieldError> fieldErrors
+		List<FieldErrorResponse> fieldErrors
 ) {
-
-	public record FieldError(String fieldName, Object rejectedValue, String message) {
-	}
-
 	public static ErrorResponse of(
 			int status,
 			String url,
 			String exceptionName,
 			String message,
-			List<FieldError> fieldErrors
+			List<FieldErrorResponse> fieldErrors
 	) {
 		return new ErrorResponse(status, url, exceptionName, message, LocalDateTime.now(), fieldErrors);
 	}

@@ -25,6 +25,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.goodseats.seatviewreviews.common.error.dto.ErrorResponse;
+import com.goodseats.seatviewreviews.common.error.dto.FieldErrorResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,7 +66,7 @@ public class GlobalExceptionHandler {
 								request.getRequestURI(),
 								e.getClass().getSimpleName(),
 								e.getMessage(),
-								List.of(new FieldError(e.getName(), Objects.requireNonNull(e.getValue()).toString(), e.getMessage()))
+								List.of(new FieldErrorResponse(e.getName(), Objects.requireNonNull(e.getValue()).toString(), e.getMessage()))
 						)
 				);
 	}
@@ -214,11 +215,11 @@ public class GlobalExceptionHandler {
 				);
 	}
 
-	private List<ErrorResponse.FieldError> makeFieldErrorsFromBindingResult(BindingResult bindingResult) {
+	private List<FieldErrorResponse> makeFieldErrorsFromBindingResult(BindingResult bindingResult) {
 
 		return bindingResult.getFieldErrors()
 				.stream()
-				.map(error -> new ErrorResponse.FieldError(
+				.map(error -> new FieldErrorResponse(
 						error.getField(),
 						error.getRejectedValue(),
 						error.getDefaultMessage()
@@ -226,11 +227,11 @@ public class GlobalExceptionHandler {
 				.toList();
 	}
 
-	private List<ErrorResponse.FieldError> makeFieldErrorsFromConstraintViolation(
+	private List<FieldErrorResponse> makeFieldErrorsFromConstraintViolation(
 			Set<ConstraintViolation<?>> constraintViolations
 	) {
 		return constraintViolations.stream()
-				.map(violation -> new ErrorResponse.FieldError(
+				.map(violation -> new FieldErrorResponse(
 						getFieldFromPath(violation.getPropertyPath()),
 						violation.getInvalidValue().toString(),
 						violation.getMessage()
