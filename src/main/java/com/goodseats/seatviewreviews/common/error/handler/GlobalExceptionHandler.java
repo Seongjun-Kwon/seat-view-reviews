@@ -26,12 +26,66 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.goodseats.seatviewreviews.common.error.dto.ErrorResponse;
 import com.goodseats.seatviewreviews.common.error.dto.FieldErrorResponse;
+import com.goodseats.seatviewreviews.common.error.exception.BusinessException;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+	@ExceptionHandler(NullPointerException.class)
+	public ResponseEntity<ErrorResponse> handleNullPointException(HttpServletRequest request, NullPointerException e) {
+		logInfo(e, request.getRequestURI());
+
+		return ResponseEntity
+				.badRequest()
+				.body(
+						of(
+								BAD_REQUEST.value(),
+								request.getRequestURI(),
+								e.getClass().getSimpleName(),
+								e.getMessage(),
+								null
+						)
+				);
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
+			HttpServletRequest request, IllegalArgumentException e) {
+		logInfo(e, request.getRequestURI());
+
+		return ResponseEntity
+				.badRequest()
+				.body(
+						ErrorResponse.of(
+								BAD_REQUEST.value(),
+								request.getRequestURI(),
+								e.getClass().getSimpleName(),
+								e.getMessage(),
+								null
+						)
+				);
+	}
+
+	@ExceptionHandler(InvalidFormatException.class)
+	public ResponseEntity<ErrorResponse> handleInvalidFormatException(
+			HttpServletRequest request, InvalidFormatException e) {
+		logInfo(e, request.getRequestURI());
+
+		return ResponseEntity
+				.badRequest()
+				.body(
+						ErrorResponse.of(
+								BAD_REQUEST.value(),
+								request.getRequestURI(),
+								e.getClass().getSimpleName(),
+								e.getMessage(),
+								null
+						)
+				);
+	}
 
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(
@@ -66,24 +120,11 @@ public class GlobalExceptionHandler {
 								request.getRequestURI(),
 								e.getClass().getSimpleName(),
 								e.getMessage(),
-								List.of(new FieldErrorResponse(e.getName(), Objects.requireNonNull(e.getValue()).toString(), e.getMessage()))
-						)
-				);
-	}
-
-	@ExceptionHandler(NullPointerException.class)
-	public ResponseEntity<ErrorResponse> handleNullPointException(HttpServletRequest request, NullPointerException e) {
-		logInfo(e, request.getRequestURI());
-
-		return ResponseEntity
-				.badRequest()
-				.body(
-						of(
-								BAD_REQUEST.value(),
-								request.getRequestURI(),
-								e.getClass().getSimpleName(),
-								e.getMessage(),
-								null
+								List.of(
+										new FieldErrorResponse(
+												e.getName(), Objects.requireNonNull(e.getValue()).toString(), e.getMessage()
+										)
+								)
 						)
 				);
 	}
@@ -145,34 +186,17 @@ public class GlobalExceptionHandler {
 				);
 	}
 
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
-			HttpServletRequest request, IllegalArgumentException e) {
+	@ExceptionHandler(BusinessException.class)
+	public ResponseEntity<ErrorResponse> handleBusinessException(
+			HttpServletRequest request, BusinessException e
+	) {
 		logInfo(e, request.getRequestURI());
 
 		return ResponseEntity
-				.badRequest()
+				.status(e.getErrorCode().getStatus())
 				.body(
 						ErrorResponse.of(
-								BAD_REQUEST.value(),
-								request.getRequestURI(),
-								e.getClass().getSimpleName(),
-								e.getMessage(),
-								null
-						)
-				);
-	}
-
-	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<ErrorResponse> handleInvalidFormatException(
-			HttpServletRequest request, InvalidFormatException e) {
-		logInfo(e, request.getRequestURI());
-
-		return ResponseEntity
-				.badRequest()
-				.body(
-						ErrorResponse.of(
-								BAD_REQUEST.value(),
+								e.getErrorCode().getStatus(),
 								request.getRequestURI(),
 								e.getClass().getSimpleName(),
 								e.getMessage(),
