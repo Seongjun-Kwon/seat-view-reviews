@@ -1,11 +1,8 @@
 CREATE TABLE `member`
 (
     `id`              BIGINT      NOT NULL,
-    `login_id`        VARCHAR(20) NOT NULL,
-    `password`        VARCHAR(20) NOT NULL,
-    `name`            VARCHAR(6)  NOT NULL,
-    `birth`           TIMESTAMP   NOT NULL,
-    `email`           VARCHAR(50) NOT NULL,
+    `login_email`        VARCHAR(50) NOT NULL,
+    `password`        VARCHAR(64) NOT NULL,
     `nickname`        VARCHAR(10) NOT NULL,
     `point`           INT         NOT NULL,
     `created_at`      TIMESTAMP   NOT NULL,
@@ -100,6 +97,12 @@ CREATE TABLE `image`
 
 ALTER TABLE `member`
     ADD CONSTRAINT `PK_MEMBER` PRIMARY KEY (`id`);
+
+ALTER TABLE 'member'
+    ADD CONSTRAINT `UK1_MEMBER` UNIQUE ('login_email');
+
+ALTER TABLE 'member'
+    ADD CONSTRAINT `UK2_MEMBER` UNIQUE ('nickname');
 
 ALTER TABLE `stadium`
     ADD CONSTRAINT `PK_STADIUM` PRIMARY KEY (`id`);
