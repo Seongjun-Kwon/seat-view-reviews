@@ -25,20 +25,11 @@ public class Member extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "login_id", length = 20, nullable = false)
-	private String loginId;
+	@Column(name = "login_email", length = 50, nullable = false, unique = true)
+	private String loginEmail;
 
-	@Column(name = "password", length = 20, nullable = false)
+	@Column(name = "password", length = 64, nullable = false)
 	private String password;
-
-	@Column(name = "name", length = 6, nullable = false)
-	private String name;
-
-	@Column(name = "birth", nullable = false)
-	private LocalDate birth;
-
-	@Column(name = "email", length = 50, nullable = false, unique = true)
-	private String email;
 
 	@Column(name = "nickname", length = 10, nullable = false, unique = true)
 	private String nickname;
@@ -46,12 +37,9 @@ public class Member extends BaseEntity {
 	@Column(name = "point", nullable = false)
 	private int point;
 
-	public Member(String loginId, String password, String name, LocalDate birth, String email, String nickname) {
-		this.loginId = loginId;
+	public Member(String loginEmail, String password, String nickname) {
+		this.loginEmail = loginEmail;
 		this.password = password;
-		this.name = name;
-		this.birth = birth;
-		this.email = email;
 		this.nickname = nickname;
 		this.point = 0;
 	}
