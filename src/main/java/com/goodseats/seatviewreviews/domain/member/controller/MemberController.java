@@ -24,7 +24,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-	@PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Void> signUp(
 			@Valid @ModelAttribute MemberSignUpRequest memberSignUpRequest,
 			HttpServletRequest request
@@ -32,7 +32,7 @@ public class MemberController {
 		Long savedMemberId = memberService.signUp(memberSignUpRequest);
 
 		return ResponseEntity
-				.created(URI.create(request.getRequestURI() + savedMemberId))
+				.created(URI.create(request.getRequestURI() + "/" + savedMemberId))
 				.build();
 	}
 }
