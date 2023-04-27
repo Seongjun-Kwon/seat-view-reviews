@@ -1,6 +1,5 @@
 package com.goodseats.seatviewreviews.domain.member.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
