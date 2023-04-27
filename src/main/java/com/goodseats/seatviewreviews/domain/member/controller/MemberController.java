@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-	@PostMapping("/sign-up")
+	@PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Void> signUp(
 			@Valid @ModelAttribute MemberSignUpRequest memberSignUpRequest,
 			HttpServletRequest request
