@@ -64,7 +64,7 @@ class MemberServiceTest {
 	}
 
 	@Nested
-	@DisplayName("signUp")
+	@DisplayName("signUpFail")
 	class singUpFail {
 
 		@Test
