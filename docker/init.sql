@@ -2,7 +2,7 @@ CREATE TABLE `member`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `login_email`     VARCHAR(50) NOT NULL UNIQUE,
-    `password`        VARCHAR(64) NOT NULL,
+    `password`        VARCHAR(255) NOT NULL,
     `nickname`        VARCHAR(10) NOT NULL UNIQUE,
     `point`           INT         NOT NULL,
     `created_at`      TIMESTAMP   NOT NULL,
