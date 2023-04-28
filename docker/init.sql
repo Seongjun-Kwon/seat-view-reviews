@@ -1,13 +1,14 @@
 CREATE TABLE `member`
 (
-    `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `login_email`     VARCHAR(50) NOT NULL UNIQUE,
-    `password`        VARCHAR(255) NOT NULL,
-    `nickname`        VARCHAR(10) NOT NULL UNIQUE,
-    `point`           INT         NOT NULL,
-    `created_at`      TIMESTAMP   NOT NULL,
-    `last_updated_at` TIMESTAMP   NOT NULL,
-    `deleted_at`      TIMESTAMP   NULL
+    `id`               BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `login_email`      VARCHAR(50) NOT NULL UNIQUE,
+    `password`         VARCHAR(64) NOT NULL,
+    `nickname`         VARCHAR(10) NOT NULL UNIQUE,
+    `point`            INT         NOT NULL,
+    `member_authority` VARCHAR(10) NOT NULL,
+    `created_at`       TIMESTAMP   NOT NULL,
+    `last_updated_at`  TIMESTAMP   NOT NULL,
+    `deleted_at`       TIMESTAMP   NULL
 );
 
 CREATE TABLE `stadium`
