@@ -1,8 +1,10 @@
 package com.goodseats.seatviewreviews.domain.member.controller;
 
 import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
+import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority.*;
 
 import java.net.URI;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.member.model.dto.MemberLoginRequest;
 import com.goodseats.seatviewreviews.domain.member.model.dto.MemberSignUpRequest;
@@ -50,6 +53,18 @@ public class MemberController {
 
 		HttpSession session = request.getSession(true);
 		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDto);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@Authority(authorities = {USER, ADMIN})
+	@PostMapping(value = "/logout")
+	public ResponseEntity<Void> logout(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+
+		if (Objects.nonNull(session)) {
+			session.invalidate();
+		}
 
 		return ResponseEntity.noContent().build();
 	}
