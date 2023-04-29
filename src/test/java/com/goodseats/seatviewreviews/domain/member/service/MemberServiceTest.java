@@ -151,7 +151,7 @@ class MemberServiceTest {
 			// when & then
 			assertThatThrownBy(() -> memberService.login(loginRequest))
 					.isExactlyInstanceOf(AuthenticationException.class)
-					.hasMessage(UNAUTHORIZED.getMessage());
+					.hasMessage(BAD_LOGIN_REQUEST.getMessage());
 			verify(memberRepository).findByLoginEmail(loginRequest.loginEmail());
 		}
 
@@ -167,7 +167,7 @@ class MemberServiceTest {
 			// when & then
 			assertThatThrownBy(() -> memberService.login(loginRequest))
 					.isExactlyInstanceOf(AuthenticationException.class)
-					.hasMessage(UNAUTHORIZED.getMessage());
+					.hasMessage(BAD_LOGIN_REQUEST.getMessage());
 			verify(memberRepository).findByLoginEmail(loginRequest.loginEmail());
 			verify(savedMember).getPassword();
 			verify(passwordEncoder).isMatch(loginRequest.password(), wrongPassword);

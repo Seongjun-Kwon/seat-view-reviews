@@ -36,7 +36,7 @@ public class MemberService {
 		return memberRepository.findByLoginEmail(memberLoginRequest.loginEmail())
 				.filter(member -> passwordEncoder.isMatch(memberLoginRequest.password(), member.getPassword()))
 				.map(member -> new AuthenticationDTO(member.getId(), member.getMemberAuthority()))
-				.orElseThrow(() -> new AuthenticationException(UNAUTHORIZED));
+				.orElseThrow(() -> new AuthenticationException(BAD_LOGIN_REQUEST));
 	}
 
 	private void validateDuplicateEmail(String loginEmail) {
