@@ -1,5 +1,7 @@
 package com.goodseats.seatviewreviews.domain.member.controller;
 
+import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -13,12 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.member.model.dto.MemberLoginRequest;
 import com.goodseats.seatviewreviews.domain.member.model.dto.MemberSignUpRequest;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
+import com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 
 @Transactional
@@ -180,5 +185,34 @@ class MemberControllerTest {
 					.andExpect(status().isBadRequest())
 					.andDo(print());
 		}
+	}
+
+	@Test
+	@DisplayName("Success - 로그아웃에 성공하고 204 응답을 한다.")
+	void logoutSuccess() throws Exception {
+		// given
+		AuthenticationDTO authenticationDTO = new AuthenticationDTO(1L, MemberAuthority.USER);
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
+
+		// when & then
+		mockMvc.perform(post("/api/v1/members/logout")
+						.session(session))
+				.andExpect(status().isNoContent())
+				.andDo(print());
+		assertThat(session.isInvalid()).isTrue();
+	}
+
+	@Test
+	@DisplayName("Fail - 비로그인 유저가 로그아웃 요청을 하면 401 응답으로 실패한다.")
+	void logoutFailByNoLogin() throws Exception {
+		// given
+		MockHttpSession session = new MockHttpSession();
+
+		// when & then
+		mockMvc.perform(post("/api/v1/members/logout")
+						.session(session))
+				.andExpect(status().isUnauthorized())
+				.andDo(print());
 	}
 }
