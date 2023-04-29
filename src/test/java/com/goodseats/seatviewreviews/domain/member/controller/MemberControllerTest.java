@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goodseats.seatviewreviews.domain.member.model.dto.MemberLoginRequest;
 import com.goodseats.seatviewreviews.domain.member.model.dto.MemberSignUpRequest;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
@@ -30,17 +32,22 @@ class MemberControllerTest {
 	@Autowired
 	private MemberRepository memberRepository;
 
+	private MemberSignUpRequest memberSignUpRequest = new MemberSignUpRequest(
+			"goodseat@google.com",
+			"password",
+			"Jerome"
+	);
+
+	private MemberLoginRequest loginRequest = new MemberLoginRequest(
+			memberSignUpRequest.loginEmail(),
+			memberSignUpRequest.password()
+	);
+
 	@Test
 	@DisplayName("Success - 회원가입에 성공한다")
 	void signUpSuccess() throws Exception {
-		// given
-		MemberSignUpRequest memberSignUpRequest = new MemberSignUpRequest(
-				"goodseat@google.com",
-				"password",
-				"Jerome"
-		);
 
-		// when & then
+		// given & when & then
 		mockMvc.perform(post("/api/v1/members")
 						.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 						.param("loginEmail", memberSignUpRequest.loginEmail())
@@ -105,6 +112,72 @@ class MemberControllerTest {
 							.param("password", duplicateNicknameSignUpRequest.password())
 							.param("nickname", duplicateNicknameSignUpRequest.nickname()))
 					.andExpect(status().isConflict())
+					.andDo(print());
+		}
+	}
+
+	@Test
+	@DisplayName("Success - 로그인에 성공하여 204 응답을 한다.")
+	void loginSuccess() throws Exception {
+		// given
+		String encodedPassword = BCrypt.hashpw(memberSignUpRequest.password(), BCrypt.gensalt());
+		Member member = new Member(memberSignUpRequest.loginEmail(), encodedPassword, memberSignUpRequest.nickname());
+		memberRepository.save(member);
+
+		// when & then
+		mockMvc.perform(post("/api/v1/members/login")
+						.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+						.param("loginEmail", loginRequest.loginEmail())
+						.param("password", loginRequest.password()))
+				.andExpect(status().isNoContent())
+				.andDo(print());
+	}
+
+	@Nested
+	@DisplayName("loginFail")
+	class LoginFail {
+
+		@Test
+		@DisplayName("Fail - 잘못된 아이디로 로그인에 실패하면 400 응답으로 실패한다.")
+		void loginFailByWrongLoginEmail() throws Exception {
+			// given
+			String encodedPassword = BCrypt.hashpw(memberSignUpRequest.password(), BCrypt.gensalt());
+			Member member = new Member(memberSignUpRequest.loginEmail(), encodedPassword, memberSignUpRequest.nickname());
+			memberRepository.save(member);
+
+			MemberLoginRequest wrongLoginEmailRequest = new MemberLoginRequest(
+					"wrongLoginEmail@naver.com",
+					loginRequest.password()
+			);
+
+			// when & then
+			mockMvc.perform(post("/api/v1/members/login")
+							.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+							.param("loginEmail", wrongLoginEmailRequest.loginEmail())
+							.param("password", wrongLoginEmailRequest.password()))
+					.andExpect(status().isBadRequest())
+					.andDo(print());
+		}
+
+		@Test
+		@DisplayName("Fail - 잘못된 비밀번호로 로그인에 실패하면 400 응답으로 실패한다.")
+		void loginFailByWrongPassword() throws Exception {
+			// given
+			String encodedPassword = BCrypt.hashpw(memberSignUpRequest.password(), BCrypt.gensalt());
+			Member member = new Member(memberSignUpRequest.loginEmail(), encodedPassword, memberSignUpRequest.nickname());
+			memberRepository.save(member);
+
+			MemberLoginRequest wrongPasswordRequest = new MemberLoginRequest(
+					loginRequest.loginEmail(),
+					"wrongPassword"
+			);
+
+			// when & then
+			mockMvc.perform(post("/api/v1/members/login")
+							.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+							.param("loginEmail", wrongPasswordRequest.loginEmail())
+							.param("password", wrongPasswordRequest.password()))
+					.andExpect(status().isBadRequest())
 					.andDo(print());
 		}
 	}
