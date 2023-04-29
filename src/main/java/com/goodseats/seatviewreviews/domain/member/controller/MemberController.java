@@ -1,5 +1,7 @@
 package com.goodseats.seatviewreviews.domain.member.controller;
 
+import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
+
 import java.net.URI;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/members")
 public class MemberController {
 
-	private static final String LOGIN_MEMBER_INFO = "loginMemberInfo";
 	private final MemberService memberService;
 
 	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
