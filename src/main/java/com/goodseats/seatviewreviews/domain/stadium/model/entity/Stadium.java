@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.goodseats.seatviewreviews.domain.BaseEntity;
-import com.goodseats.seatviewreviews.domain.stadium.model.vo.Team;
+import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,9 +34,9 @@ public class Stadium extends BaseEntity {
 
 	@Column(name = "home_team", length = 50, nullable = false)
 	@Enumerated(value = EnumType.STRING)
-	private Team homeTeam;
+	private HomeTeam homeTeam;
 
-	public Stadium(String name, String address, Team homeTeam) {
+	public Stadium(String name, String address, HomeTeam homeTeam) {
 		this.name = name;
 		this.address = address;
 		this.homeTeam = homeTeam;

@@ -1,12 +1,11 @@
 package com.goodseats.seatviewreviews.domain.stadium.model.vo;
 
-public enum Team {
-	DOOSAN,
+public enum HomeTeam {
+	DOOSAN_LG,
 	HANWHA,
 	KIA,
 	KIWOOM,
 	KT,
-	LG,
 	LOTTE,
 	NC,
 	SAMSUNG,
