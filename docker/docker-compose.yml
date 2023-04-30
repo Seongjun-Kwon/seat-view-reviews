@@ -11,7 +11,9 @@ services:
       TZ: Asia/Seoul
     volumes:
       - seat-view:/var/lib/seat-view/db
+      - ./my.cnf:/etc/mysql/my.cnf
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./stadium.sql:/docker-entrypoint-initdb.d/stadium.sql
     restart: always
 
 volumes:
