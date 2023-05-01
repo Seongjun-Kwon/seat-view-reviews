@@ -14,6 +14,7 @@ services:
       - ./my.cnf:/etc/mysql/my.cnf
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./stadium.sql:/docker-entrypoint-initdb.d/stadium.sql
+      - ./jamsil-seat-grade.sql:/docker-entrypoint-initdb.d/jamsil-seat-grade.sql
     restart: always
 
 volumes:
