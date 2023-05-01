@@ -22,13 +22,33 @@ CREATE TABLE `stadium`
     `deleted_at`      TIMESTAMP    NULL
 );
 
+CREATE TABLE `seat_grade`
+(
+    `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `stadium_id`      BIGINT       NOT NULL,
+    `name`            VARCHAR(30)  NOT NULL,
+    `price_info`      VARCHAR(100) NOT NULL,
+    `created_at`      TIMESTAMP    NOT NULL,
+    `last_updated_at` TIMESTAMP    NOT NULL,
+    `deleted_at`      TIMESTAMP    NULL
+);
+
+CREATE TABLE `seat_section`
+(
+    `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `seat_grade_id`   BIGINT      NOT NULL,
+    `name`            VARCHAR(50) NOT NULL,
+    `created_at`      TIMESTAMP   NOT NULL,
+    `last_updated_at` TIMESTAMP   NOT NULL,
+    `deleted_at`      TIMESTAMP   NULL
+);
+
 CREATE TABLE `seat`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `stadium_id`      BIGINT      NOT NULL,
-    `section`         VARCHAR(10) NOT NULL,
-    `price`           INT         NOT NULL,
-    `seat_number`     INT         NOT NULL,
+    `seat_grade_id`      BIGINT      NOT NULL,
+    `seat_section_id`    BIGINT      NOT NULL,
+    `seat_info`       VARCHAR(10) NOT NULL,
     `average_score`   DECIMAL     NOT NULL,
     `created_at`      TIMESTAMP   NOT NULL,
     `last_updated_at` TIMESTAMP   NOT NULL,
