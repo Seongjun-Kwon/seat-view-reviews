@@ -17,33 +17,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "seat")
+@Table(name = "seat_section")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Seat extends BaseEntity {
+public class SeatSection extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "seat_info", length = 10, nullable = false)
-	private String seatInfo;
-
-	@Column(name = "average_score", nullable = false)
-	private float averageScore;
+	@Column(name = "name", length = 10, nullable = false)
+	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "seat_grade_id")
 	private SeatGrade seatGrade;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "seat_section_id")
-	private SeatSection seatSection;
-
-	public Seat(String seatInfo, SeatGrade seatGrade, SeatSection seatSection) {
-		this.seatInfo = seatInfo;
-		this.averageScore = 0;
+	public SeatSection(String name, SeatGrade seatGrade) {
+		this.name = name;
 		this.seatGrade = seatGrade;
-		this.seatSection = seatSection;
 	}
 }

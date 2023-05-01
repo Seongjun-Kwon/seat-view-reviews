@@ -11,39 +11,35 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.goodseats.seatviewreviews.domain.BaseEntity;
+import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "seat")
+@Table(name = "seat_grade")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Seat extends BaseEntity {
+public class SeatGrade extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "seat_info", length = 10, nullable = false)
-	private String seatInfo;
+	@Column(name = "name", length = 30, nullable = false)
+	private String name;
 
-	@Column(name = "average_score", nullable = false)
-	private float averageScore;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "seat_grade_id")
-	private SeatGrade seatGrade;
+	@Column(name = "price_info")
+	private String priceInfo;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "seat_section_id")
-	private SeatSection seatSection;
+	@JoinColumn(name = "stadium_id")
+	private Stadium stadium;
 
-	public Seat(String seatInfo, SeatGrade seatGrade, SeatSection seatSection) {
-		this.seatInfo = seatInfo;
-		this.averageScore = 0;
-		this.seatGrade = seatGrade;
-		this.seatSection = seatSection;
+	public SeatGrade(String name, String priceInfo, Stadium stadium) {
+		this.name = name;
+		this.priceInfo = priceInfo;
+		this.stadium = stadium;
 	}
 }
