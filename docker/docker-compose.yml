@@ -12,11 +12,11 @@ services:
     volumes:
       - seat-view:/var/lib/seat-view/db
       - ./my.cnf:/etc/mysql/my.cnf
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./stadium.sql:/docker-entrypoint-initdb.d/stadium.sql
-      - ./jamsil-seat-grade.sql:/docker-entrypoint-initdb.d/jamsil-seat-grade.sql
-      - ./jamsil-seat-section.sql:/docker-entrypoint-initdb.d/jamsil-seat-section.sql
-      - ./jamsil-seat.sql:/docker-entrypoint-initdb.d/jamsil-seat.sql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql/stadium.sql:/docker-entrypoint-initdb.d/stadium.sql
+      - ./sql/jamsil-seat-grade.sql:/docker-entrypoint-initdb.d/jamsil-seat-grade.sql
+      - ./sql/jamsil-seat-section.sql:/docker-entrypoint-initdb.d/jamsil-seat-section.sql
+      - ./sql/jamsil-seat.sql:/docker-entrypoint-initdb.d/jamsil-seat.sql
     restart: always
 
 volumes:
