@@ -1,0 +1,126 @@
+DROP PROCEDURE IF EXISTS insert_seats;
+DELIMITER //
+CREATE PROCEDURE insert_seats(IN grade_id INT, IN section_id INT, IN start_seat_info INT, IN last_seat_info INT)
+BEGIN
+    DECLARE i INT DEFAULT start_seat_info;
+    WHILE i <= last_seat_info
+        DO
+            INSERT INTO seat (seat_info, average_score, seat_grade_id, seat_section_id, created_at, deleted_at,
+                              last_updated_at)
+            VALUES (CONCAT(i), 0, grade_id, section_id, NOW(), null, NOW());
+            SET i = i + 1;
+        END WHILE;
+END //
+DELIMITER ;
+
+CALL insert_seats(1, 1, 1, 264);
+CALL insert_seats(2, 2, 1, 48);
+CALL insert_seats(2, 3, 1, 59);
+CALL insert_seats(2, 4, 1, 59);
+CALL insert_seats(2, 5, 1, 48);
+CALL insert_seats(2, 6, 1, 82);
+CALL insert_seats(2, 7, 1, 64);
+CALL insert_seats(2, 8, 1, 62);
+CALL insert_seats(2, 9, 1, 80);
+CALL insert_seats(3, 10, 1, 100);
+CALL insert_seats(3, 11, 1, 100);
+CALL insert_seats(4, 12, 1, 143);
+CALL insert_seats(4, 13, 1, 121);
+CALL insert_seats(4, 14, 1, 101);
+CALL insert_seats(4, 15, 1, 294);
+CALL insert_seats(4, 16, 1, 275);
+CALL insert_seats(4, 17, 1, 180);
+CALL insert_seats(4, 18, 1, 101);
+CALL insert_seats(4, 19, 1, 120);
+CALL insert_seats(4, 20, 1, 266);
+CALL insert_seats(4, 21, 1, 187);
+CALL insert_seats(4, 22, 1, 274);
+CALL insert_seats(4, 23, 1, 300);
+CALL insert_seats(5, 24, 102, 104);
+CALL insert_seats(5, 25, 102, 103);
+CALL insert_seats(6, 26, 1, 195);
+CALL insert_seats(6, 27, 1, 228);
+CALL insert_seats(6, 28, 1, 245);
+CALL insert_seats(6, 29, 1, 270);
+CALL insert_seats(6, 30, 1, 266);
+CALL insert_seats(6, 31, 1, 243);
+CALL insert_seats(6, 32, 1, 227);
+CALL insert_seats(6, 33, 1, 194);
+CALL insert_seats(7, 34, 1, 284);
+CALL insert_seats(7, 35, 1, 235);
+CALL insert_seats(7, 36, 1, 248);
+CALL insert_seats(7, 37, 1, 251);
+CALL insert_seats(7, 38, 1, 202);
+CALL insert_seats(7, 39, 1, 167);
+CALL insert_seats(7, 40, 1, 215);
+CALL insert_seats(7, 41, 1, 170);
+CALL insert_seats(7, 42, 1, 154);
+CALL insert_seats(7, 43, 1, 200);
+CALL insert_seats(7, 44, 1, 189);
+CALL insert_seats(7, 45, 1, 231);
+CALL insert_seats(7, 46, 1, 244);
+CALL insert_seats(7, 47, 1, 245);
+CALL insert_seats(7, 48, 1, 238);
+CALL insert_seats(7, 49, 1, 286);
+CALL insert_seats(7, 50, 1, 186);
+CALL insert_seats(7, 51, 1, 149);
+CALL insert_seats(7, 52, 1, 151);
+CALL insert_seats(7, 53, 1, 200);
+CALL insert_seats(9, 58, 1, 144);
+CALL insert_seats(9, 59, 1, 143);
+CALL insert_seats(9, 60, 1, 167);
+CALL insert_seats(9, 61, 1, 185);
+CALL insert_seats(9, 62, 1, 178);
+CALL insert_seats(9, 63, 1, 221);
+CALL insert_seats(9, 64, 1, 225);
+CALL insert_seats(9, 65, 1, 255);
+CALL insert_seats(9, 66, 1, 248);
+CALL insert_seats(9, 67, 1, 283);
+CALL insert_seats(9, 68, 1, 280);
+CALL insert_seats(9, 69, 1, 293);
+CALL insert_seats(9, 70, 1, 293);
+CALL insert_seats(9, 71, 1, 424);
+CALL insert_seats(9, 72, 1, 402);
+CALL insert_seats(9, 73, 1, 400);
+CALL insert_seats(9, 74, 1, 422);
+CALL insert_seats(9, 75, 1, 415);
+CALL insert_seats(9, 76, 1, 403);
+CALL insert_seats(9, 77, 1, 404);
+CALL insert_seats(9, 78, 1, 424);
+CALL insert_seats(9, 79, 1, 298);
+CALL insert_seats(9, 80, 1, 294);
+CALL insert_seats(9, 81, 1, 304);
+CALL insert_seats(9, 82, 1, 287);
+CALL insert_seats(9, 83, 1, 244);
+CALL insert_seats(9, 84, 1, 263);
+CALL insert_seats(9, 85, 1, 229);
+CALL insert_seats(9, 86, 1, 214);
+CALL insert_seats(9, 87, 1, 190);
+CALL insert_seats(9, 88, 1, 184);
+CALL insert_seats(9, 89, 1, 177);
+CALL insert_seats(9, 90, 1, 142);
+CALL insert_seats(9, 91, 1, 152);
+CALL insert_seats(10, 92, 1, 132);
+CALL insert_seats(10, 93, 1, 372);
+CALL insert_seats(10, 94, 1, 341);
+CALL insert_seats(10, 95, 1, 325);
+CALL insert_seats(10, 96, 1, 280);
+CALL insert_seats(10, 97, 1, 291);
+CALL insert_seats(10, 98, 1, 249);
+CALL insert_seats(10, 99, 1, 232);
+CALL insert_seats(10, 100, 1, 239);
+CALL insert_seats(10, 101, 1, 227);
+CALL insert_seats(10, 102, 1, 177);
+CALL insert_seats(10, 103, 1, 188);
+CALL insert_seats(10, 104, 1, 242);
+CALL insert_seats(10, 105, 1, 241);
+CALL insert_seats(10, 106, 1, 225);
+CALL insert_seats(10, 107, 1, 278);
+CALL insert_seats(10, 108, 1, 277);
+CALL insert_seats(10, 109, 1, 275);
+CALL insert_seats(10, 110, 1, 326);
+CALL insert_seats(10, 111, 1, 349);
+CALL insert_seats(10, 112, 1, 373);
+CALL insert_seats(10, 113, 1, 132);
+
+
