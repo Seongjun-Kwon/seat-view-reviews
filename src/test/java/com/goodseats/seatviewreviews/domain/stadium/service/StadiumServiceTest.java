@@ -30,8 +30,8 @@ class StadiumServiceTest {
 	@DisplayName("Success - 경기장 목록 조회에 성공한다")
 	void getStadiumsSuccess() {
 		// given
-		Stadium jamsil = new Stadium("잠실 야구장", "testAddress", HomeTeam.DOOSAN_LG);
-		Stadium hanwha = new Stadium("한화생명 이글스 파크", "testAddress", HomeTeam.HANWHA);
+		Stadium jamsil = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
+		Stadium hanwha = new Stadium("한화생명 이글스 파크", "대전 중구 대종로 373", HomeTeam.HANWHA);
 		List<Stadium> stadiums = List.of(jamsil, hanwha);
 		when(stadiumRepository.findAll()).thenReturn(stadiums);
 
