@@ -1,5 +1,6 @@
 package com.goodseats.seatviewreviews.domain.stadium.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class StadiumController {
 
 	private final StadiumService stadiumService;
 
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<StadiumsResponse> getStadiums() {
 		StadiumsResponse stadiumsResponse = stadiumService.getStadiums();
 		return ResponseEntity.ok(stadiumsResponse);
