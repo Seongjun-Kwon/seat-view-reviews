@@ -3,6 +3,7 @@ package com.goodseats.seatviewreviews.domain.member.service;
 import static com.goodseats.seatviewreviews.common.error.exception.ErrorCode.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.goodseats.seatviewreviews.common.error.exception.AuthenticationException;
 import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
@@ -22,6 +23,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	@Transactional
 	public Long signUp(MemberSignUpRequest memberSignUpRequest) {
 		validateDuplicateEmail(memberSignUpRequest.loginEmail());
 		validateDuplicateNickname(memberSignUpRequest.nickname());
@@ -32,6 +34,7 @@ public class MemberService {
 		return savedMember.getId();
 	}
 
+	@Transactional(readOnly = true)
 	public AuthenticationDTO login(MemberLoginRequest memberLoginRequest) {
 		return memberRepository.findByLoginEmail(memberLoginRequest.loginEmail())
 				.filter(member -> passwordEncoder.isMatch(memberLoginRequest.password(), member.getPassword()))
