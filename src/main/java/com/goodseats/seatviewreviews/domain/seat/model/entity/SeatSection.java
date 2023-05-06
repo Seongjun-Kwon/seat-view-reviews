@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.goodseats.seatviewreviews.domain.BaseEntity;
+import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,11 +31,16 @@ public class SeatSection extends BaseEntity {
 	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "stadium_id")
+	private Stadium stadium;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "seat_grade_id")
 	private SeatGrade seatGrade;
 
-	public SeatSection(String name, SeatGrade seatGrade) {
+	public SeatSection(String name, Stadium stadium, SeatGrade seatGrade) {
 		this.name = name;
+		this.stadium = stadium;
 		this.seatGrade = seatGrade;
 	}
 }

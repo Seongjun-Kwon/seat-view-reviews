@@ -36,6 +36,7 @@ CREATE TABLE `seat_grade`
 CREATE TABLE `seat_section`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `stadium_id`   BIGINT      NOT NULL,
     `seat_grade_id`   BIGINT      NOT NULL,
     `name`            VARCHAR(50) NOT NULL,
     `created_at`      TIMESTAMP   NOT NULL,
