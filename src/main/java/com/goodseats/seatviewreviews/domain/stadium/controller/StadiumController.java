@@ -4,8 +4,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumDetailResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsResponse;
 import com.goodseats.seatviewreviews.domain.stadium.service.StadiumService;
 
@@ -22,5 +24,11 @@ public class StadiumController {
 	public ResponseEntity<StadiumsResponse> getStadiums() {
 		StadiumsResponse stadiumsResponse = stadiumService.getStadiums();
 		return ResponseEntity.ok(stadiumsResponse);
+	}
+
+	@GetMapping(value = "/{stadiumId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<StadiumDetailResponse> getStadium(@PathVariable Long stadiumId) {
+		StadiumDetailResponse stadiumDetailResponse = stadiumService.getStadium(stadiumId);
+		return ResponseEntity.ok(stadiumDetailResponse);
 	}
 }

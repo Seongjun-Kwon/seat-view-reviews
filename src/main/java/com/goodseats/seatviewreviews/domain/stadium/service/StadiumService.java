@@ -5,9 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goodseats.seatviewreviews.common.error.exception.ErrorCode;
+import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
 import com.goodseats.seatviewreviews.domain.stadium.mapper.StadiumMapper;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumDetailResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsElementResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,5 +30,13 @@ public class StadiumService {
 				.toList();
 
 		return new StadiumsResponse(elementResponses);
+	}
+
+	@Transactional(readOnly = true)
+	public StadiumDetailResponse getStadium(Long stadiumId) {
+		Stadium stadium = stadiumRepository.findById(stadiumId)
+				.orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
+
+		return StadiumMapper.toStadiumDetailResponse(stadium);
 	}
 }
