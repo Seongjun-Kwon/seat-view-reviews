@@ -57,7 +57,35 @@ class StadiumControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().json(objectMapper.writeValueAsString(stadiumsResponse)))
-				.andDo(print())
-				.andReturn();
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("Success - 경기장 상세 조회에 성공하고 200 으로 응답한다")
+	void getStadiumSuccess() throws Exception {
+		// given
+		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
+		Stadium savedStadium = stadiumRepository.save(stadium);
+
+		// when & then
+		mockMvc.perform(get("/api/v1/stadiums/{stadiumId}", savedStadium.getId())
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("stadiumName").value(savedStadium.getName()))
+				.andExpect(jsonPath("address").value(savedStadium.getAddress()))
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("Fail - 해당하는 경기장 id 가 없으면 경기장 상세 조회에 실패하고 404 로 응답한다")
+	void getStadiumFailByNotFound() throws Exception {
+		// given
+		Long wrongStadiumId = -1L;
+
+		// when & then
+		mockMvc.perform(get("/api/v1/stadiums/{stadiumId}", wrongStadiumId)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andDo(print());
 	}
 }
