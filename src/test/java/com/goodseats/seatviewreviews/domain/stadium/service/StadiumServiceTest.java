@@ -1,9 +1,11 @@
 package com.goodseats.seatviewreviews.domain.stadium.service;
 
+import static com.goodseats.seatviewreviews.common.error.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumDetailResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
@@ -47,5 +51,35 @@ class StadiumServiceTest {
 					.ignoringFields("stadiumId")
 					.isEqualTo(stadiums.get(i));
 		}
+	}
+
+	@Test
+	@DisplayName("Success - 경기장 상세 조회에 성공한다")
+	void getStadiumSuccess() {
+		// given
+		Long stadiumId = 1L;
+		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
+		when(stadiumRepository.findById(stadiumId)).thenReturn(Optional.of(stadium));
+
+		// when
+		StadiumDetailResponse stadiumDetailResponse = stadiumService.getStadium(stadiumId);
+
+		// then
+		verify(stadiumRepository).findById(stadiumId);
+		assertThat(stadiumDetailResponse.stadiumName()).isEqualTo(stadium.getName());
+		assertThat(stadiumDetailResponse.address()).isEqualTo(stadium.getAddress());
+	}
+
+	@Test
+	@DisplayName("Fail - 해당하는 경기장 id 가 없으면 경기장 상세 조회에 실패한다")
+	void getStadiumFailByNotFound() {
+		// given
+		Long stadiumId = 1L;
+		when(stadiumRepository.findById(stadiumId)).thenReturn(Optional.empty());
+
+		// when & then
+		assertThatThrownBy(() -> stadiumService.getStadium(stadiumId))
+				.isExactlyInstanceOf(NotFoundException.class)
+				.hasMessage(NOT_FOUND.getMessage());
 	}
 }
