@@ -1,5 +1,6 @@
 package com.goodseats.seatviewreviews.domain.seat.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ public class SeatController {
 
 	private final SeatService seatService;
 
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<SeatsResponse> getSeats(@RequestParam Long sectionId) {
 		SeatsResponse seatsResponse = seatService.getSeats(sectionId);
 		return ResponseEntity.ok(seatsResponse);
