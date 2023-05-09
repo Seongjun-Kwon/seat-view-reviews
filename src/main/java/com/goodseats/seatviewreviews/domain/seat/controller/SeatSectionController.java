@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.goodseats.seatviewreviews.domain.seat.model.dto.SeatSectionsResponse;
+import com.goodseats.seatviewreviews.domain.seat.model.dto.response.SeatSectionsResponse;
 import com.goodseats.seatviewreviews.domain.seat.service.SeatSectionService;
 
 import lombok.RequiredArgsConstructor;

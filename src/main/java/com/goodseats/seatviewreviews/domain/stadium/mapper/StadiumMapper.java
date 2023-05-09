@@ -1,7 +1,7 @@
 package com.goodseats.seatviewreviews.domain.stadium.mapper;
 
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumDetailResponse;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsElementResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumDetailResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumsElementResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 
 import lombok.AccessLevel;

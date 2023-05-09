@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodseats.seatviewreviews.domain.stadium.mapper.StadiumMapper;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsElementResponse;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumsElementResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumsResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;

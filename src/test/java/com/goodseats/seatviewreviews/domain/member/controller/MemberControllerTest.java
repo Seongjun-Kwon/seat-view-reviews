@@ -20,8 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
-import com.goodseats.seatviewreviews.domain.member.model.dto.MemberLoginRequest;
-import com.goodseats.seatviewreviews.domain.member.model.dto.MemberSignUpRequest;
+import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberLoginRequest;
+import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberSignUpRequest;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;

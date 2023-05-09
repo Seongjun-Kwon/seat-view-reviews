@@ -1,6 +1,6 @@
 package com.goodseats.seatviewreviews.domain.member.mapper;
 
-import com.goodseats.seatviewreviews.domain.member.model.dto.MemberSignUpRequest;
+import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberSignUpRequest;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 
 import lombok.AccessLevel;

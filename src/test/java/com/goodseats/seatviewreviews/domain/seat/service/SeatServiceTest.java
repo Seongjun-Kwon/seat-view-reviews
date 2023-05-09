@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.goodseats.seatviewreviews.domain.seat.model.dto.SeatsResponse;
+import com.goodseats.seatviewreviews.domain.seat.model.dto.response.SeatsResponse;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.SeatGrade;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.SeatSection;

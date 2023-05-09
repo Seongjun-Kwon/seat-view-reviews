@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goodseats.seatviewreviews.domain.seat.mapper.SeatMapper;
-import com.goodseats.seatviewreviews.domain.seat.model.dto.SeatsResponse;
+import com.goodseats.seatviewreviews.domain.seat.model.dto.response.SeatsResponse;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
 import com.goodseats.seatviewreviews.domain.seat.repository.SeatRepository;
 
