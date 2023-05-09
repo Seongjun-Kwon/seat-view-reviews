@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
-import com.goodseats.seatviewreviews.domain.member.model.dto.MemberLoginRequest;
-import com.goodseats.seatviewreviews.domain.member.model.dto.MemberSignUpRequest;
+import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberLoginRequest;
+import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberSignUpRequest;
 import com.goodseats.seatviewreviews.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;

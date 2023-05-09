@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumDetailResponse;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumDetailResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumsResponse;
 import com.goodseats.seatviewreviews.domain.stadium.service.StadiumService;
 
 import lombok.RequiredArgsConstructor;

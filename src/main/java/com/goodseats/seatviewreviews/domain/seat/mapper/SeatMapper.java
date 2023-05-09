@@ -2,8 +2,8 @@ package com.goodseats.seatviewreviews.domain.seat.mapper;
 
 import java.util.List;
 
-import com.goodseats.seatviewreviews.domain.seat.model.dto.SeatsElementResponse;
-import com.goodseats.seatviewreviews.domain.seat.model.dto.SeatsResponse;
+import com.goodseats.seatviewreviews.domain.seat.model.dto.response.SeatsElementResponse;
+import com.goodseats.seatviewreviews.domain.seat.model.dto.response.SeatsResponse;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
 
 import lombok.AccessLevel;

@@ -15,8 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumDetailResponse;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumDetailResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumsResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;

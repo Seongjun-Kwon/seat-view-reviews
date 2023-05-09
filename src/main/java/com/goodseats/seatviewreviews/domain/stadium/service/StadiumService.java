@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.goodseats.seatviewreviews.common.error.exception.ErrorCode;
 import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
 import com.goodseats.seatviewreviews.domain.stadium.mapper.StadiumMapper;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumDetailResponse;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsElementResponse;
-import com.goodseats.seatviewreviews.domain.stadium.model.dto.StadiumsResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumDetailResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumsElementResponse;
+import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumsResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;
 

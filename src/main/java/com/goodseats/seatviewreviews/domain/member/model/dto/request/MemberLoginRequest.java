@@ -1,4 +1,4 @@
-package com.goodseats.seatviewreviews.domain.member.model.dto;
+package com.goodseats.seatviewreviews.domain.member.model.dto.request;
 
 import javax.validation.constraints.NotBlank;
 

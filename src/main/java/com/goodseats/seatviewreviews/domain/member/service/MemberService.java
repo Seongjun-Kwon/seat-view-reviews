@@ -9,8 +9,8 @@ import com.goodseats.seatviewreviews.common.error.exception.AuthenticationExcept
 import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
 import com.goodseats.seatviewreviews.domain.member.mapper.MemberMapper;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
-import com.goodseats.seatviewreviews.domain.member.model.dto.MemberLoginRequest;
-import com.goodseats.seatviewreviews.domain.member.model.dto.MemberSignUpRequest;
+import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberLoginRequest;
+import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberSignUpRequest;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 
