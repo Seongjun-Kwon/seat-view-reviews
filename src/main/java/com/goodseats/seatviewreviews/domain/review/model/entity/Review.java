@@ -48,11 +48,11 @@ public class Review extends BaseEntity {
 	@JoinColumn(name = "seat_id")
 	private Seat seat;
 
-	public Review(String title, String content, int score, int hits, Member member, Seat seat) {
+	public Review(String title, String content, int score, Member member, Seat seat) {
 		this.title = title;
 		this.content = content;
 		this.score = score;
-		this.hits = hits;
+		this.hits = 0;
 		this.member = member;
 		this.seat = seat;
 	}
