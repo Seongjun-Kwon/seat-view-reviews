@@ -4,8 +4,10 @@ import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthori
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,13 +31,14 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	@Authority(authorities = {USER, ADMIN})
-	@PostMapping
+	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<Void> createReview(
 			@Valid @ModelAttribute ReviewCreateRequest reviewCreateRequest,
-			@SessionAttribute(value = SessionConstant.LOGIN_MEMBER_INFO, required = false) AuthenticationDTO authenticationDTO
+			@SessionAttribute(value = SessionConstant.LOGIN_MEMBER_INFO) AuthenticationDTO authenticationDTO,
+			HttpServletRequest request
 	) {
 
 		Long reviewId = reviewService.createReview(reviewCreateRequest, authenticationDTO.memberId());
-		return ResponseEntity.created(URI.create("/api/v1/reviews/" + reviewId)).build();
+		return ResponseEntity.created(URI.create(request.getRequestURI() + "/" + reviewId)).build();
 	}
 }
