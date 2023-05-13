@@ -29,6 +29,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 		}
 
 		HttpSession session = request.getSession(false);
+
+		if (Objects.isNull(session)) {
+			throw new AuthenticationException(UNAUTHORIZED);
+		}
+
 		AuthenticationDTO authenticationDTO = (AuthenticationDTO)session.getAttribute(LOGIN_MEMBER_INFO);
 
 		if (Objects.isNull(authenticationDTO)) {
