@@ -2,6 +2,7 @@ spring:
   config:
     import:
       - application-db.yml
+      - application-aws.yml
 
 logging:
   level:
