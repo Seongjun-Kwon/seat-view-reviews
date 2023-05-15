@@ -9,7 +9,8 @@ public enum ErrorCode {
 	DUPLICATED_ID(409, "중복된 아이디입니다."),
 	DUPLICATED_NICKNAME(409, "중복된 닉네임입니다."),
 	UNAUTHORIZED(401, "인증되지 않은 사용자입니다."),
-	BAD_LOGIN_REQUEST(400, "아이디 혹은 비밀번호가 틀립니다.");
+	BAD_LOGIN_REQUEST(400, "아이디 혹은 비밀번호가 틀립니다."),
+	BAD_IMAGE_REQUEST(400, "잘못된 이미지 업로드 요청입니다.");
 
 	private final int status;
 	private final String message;
