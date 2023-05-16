@@ -10,13 +10,14 @@ services:
     environment:
       TZ: Asia/Seoul
     volumes:
-      - seat-view:/var/lib/seat-view/db
+      - seat-view:/var/lib/mysql
       - ./my.cnf:/etc/mysql/my.cnf
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./sql/stadium.sql:/docker-entrypoint-initdb.d/stadium.sql
       - ./sql/jamsil-seat-grade.sql:/docker-entrypoint-initdb.d/jamsil-seat-grade.sql
       - ./sql/jamsil-seat-section.sql:/docker-entrypoint-initdb.d/jamsil-seat-section.sql
       - ./sql/jamsil-seat.sql:/docker-entrypoint-initdb.d/jamsil-seat.sql
+    command: bash -c "chmod 644 /etc/mysql/my.cnf && docker-entrypoint.sh mysqld"
     restart: always
 
 volumes:
