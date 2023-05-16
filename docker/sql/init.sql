@@ -1,4 +1,4 @@
-CREATE TABLE `member`
+CREATE TABLE IF NOT EXISTS `member`
 (
     `id`               BIGINT AUTO_INCREMENT PRIMARY KEY,
     `login_email`      VARCHAR(50) NOT NULL UNIQUE,
@@ -11,7 +11,7 @@ CREATE TABLE `member`
     `deleted_at`       TIMESTAMP   NULL
 );
 
-CREATE TABLE `stadium`
+CREATE TABLE IF NOT EXISTS `stadium`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `name`            VARCHAR(50)  NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE `stadium`
     `deleted_at`      TIMESTAMP    NULL
 );
 
-CREATE TABLE `seat_grade`
+CREATE TABLE IF NOT EXISTS `seat_grade`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `stadium_id`      BIGINT       NOT NULL,
@@ -33,10 +33,10 @@ CREATE TABLE `seat_grade`
     `deleted_at`      TIMESTAMP    NULL
 );
 
-CREATE TABLE `seat_section`
+CREATE TABLE IF NOT EXISTS `seat_section`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `stadium_id`   BIGINT      NOT NULL,
+    `stadium_id`      BIGINT      NOT NULL,
     `seat_grade_id`   BIGINT      NOT NULL,
     `name`            VARCHAR(50) NOT NULL,
     `created_at`      TIMESTAMP   NOT NULL,
@@ -44,11 +44,11 @@ CREATE TABLE `seat_section`
     `deleted_at`      TIMESTAMP   NULL
 );
 
-CREATE TABLE `seat`
+CREATE TABLE IF NOT EXISTS `seat`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `seat_grade_id`      BIGINT      NOT NULL,
-    `seat_section_id`    BIGINT      NOT NULL,
+    `seat_grade_id`   BIGINT      NOT NULL,
+    `seat_section_id` BIGINT      NOT NULL,
     `seat_info`       VARCHAR(10) NOT NULL,
     `average_score`   DECIMAL     NOT NULL,
     `created_at`      TIMESTAMP   NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `seat`
     `deleted_at`      TIMESTAMP   NULL
 );
 
-CREATE TABLE `point_log`
+CREATE TABLE IF NOT EXISTS `point_log`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `member_id`       BIGINT      NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE `point_log`
     `deleted_at`      TIMESTAMP   NULL
 );
 
-CREATE TABLE `review`
+CREATE TABLE IF NOT EXISTS `review`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `member_id`       BIGINT        NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE `review`
     `deleted_at`      TIMESTAMP     NULL
 );
 
-CREATE TABLE `comment`
+CREATE TABLE IF NOT EXISTS `comment`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `member_id`       BIGINT        NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE `comment`
     `deleted_at`      TIMESTAMP     NULL
 );
 
-CREATE TABLE `review_like`
+CREATE TABLE IF NOT EXISTS `review_like`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `member_id`       BIGINT      NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE `review_like`
     `deleted_at`      TIMESTAMP   NULL
 );
 
-CREATE TABLE `image`
+CREATE TABLE IF NOT EXISTS `image`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `image_url`       VARCHAR(500) NOT NULL,
@@ -114,6 +114,6 @@ CREATE TABLE `image`
     `saved_name`      VARCHAR(50)  NOT NULL,
     `created_at`      TIMESTAMP    NOT NULL,
     `last_updated_at` TIMESTAMP    NOT NULL,
-    `deleted_at`      TIMESTAMP    NOT NULL
+    `deleted_at`      TIMESTAMP    NULL
 );
 
