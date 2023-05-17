@@ -38,8 +38,8 @@ public class ImageService {
 		);
 		Image image = ImageMapper.toEntity(imageCreateRequest, imageUrl);
 		applicationEventPublisher.publishEvent(new RollbackUploadEvent(image));
-		imageRepository.save(image);
-		return image.getId();
+		Image savedImage = imageRepository.save(image);
+		return savedImage.getId();
 	}
 
 	private boolean isNotImage(MultipartFile multipartFile) {
