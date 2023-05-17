@@ -191,7 +191,11 @@ class MemberControllerTest {
 	@DisplayName("Success - 로그아웃에 성공하고 204 응답을 한다.")
 	void logoutSuccess() throws Exception {
 		// given
-		AuthenticationDTO authenticationDTO = new AuthenticationDTO(1L, MemberAuthority.USER);
+		String encodedPassword = BCrypt.hashpw(memberSignUpRequest.password(), BCrypt.gensalt());
+		Member member = new Member(memberSignUpRequest.loginEmail(), encodedPassword, memberSignUpRequest.nickname());
+		memberRepository.save(member);
+
+		AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
 
