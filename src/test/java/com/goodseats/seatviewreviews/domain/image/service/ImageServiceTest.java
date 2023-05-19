@@ -59,13 +59,13 @@ class ImageServiceTest {
 		when(imageRepository.save(any(Image.class))).thenReturn(image);
 
 		// when
-		Long savedImageId = imageService.createImage(imageCreateRequest);
+		String savedImageUrl = imageService.createImage(imageCreateRequest);
 
 		// then
 		verify(fileStorageService).upload(imageCreateRequest.multipartFile(), imageCreateRequest.imageType().getSubPath());
 		verify(applicationEventPublisher).publishEvent(any(RollbackUploadEvent.class));
 		verify(imageRepository).save(any(Image.class));
-		assertThat(savedImageId).isEqualTo(imageId);
+		assertThat(savedImageUrl).isEqualTo(imageUrl);
 	}
 
 	@Test
@@ -77,7 +77,7 @@ class ImageServiceTest {
 		);
 		Long referenceId = 1L;
 		ImageType imageType = ImageType.REVIEW;
-		ImageCreateRequest imageCreateRequest = new ImageCreateRequest(multipartFile, ImageType.REVIEW, referenceId);
+		ImageCreateRequest imageCreateRequest = new ImageCreateRequest(multipartFile, imageType, referenceId);
 
 		// when & then
 		assertThatThrownBy(() -> imageService.createImage(imageCreateRequest))
