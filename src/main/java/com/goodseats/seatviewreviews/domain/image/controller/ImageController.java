@@ -5,8 +5,6 @@ import static org.springframework.http.MediaType.*;
 
 import java.net.URI;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,10 +26,8 @@ public class ImageController {
 
 	@Authority(authorities = {USER, ADMIN})
 	@PostMapping(consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> createImage(
-			@ModelAttribute ImageCreateRequest imageCreateRequest, HttpServletRequest request
-	) {
-		Long savedImageId = imageService.createImage(imageCreateRequest);
-		return ResponseEntity.created(URI.create(request.getRequestURI() + "/" + savedImageId)).build();
+	public ResponseEntity<Void> createImage(@ModelAttribute ImageCreateRequest imageCreateRequest) {
+		String imageUrl = imageService.createImage(imageCreateRequest);
+		return ResponseEntity.created(URI.create(imageUrl)).build();
 	}
 }

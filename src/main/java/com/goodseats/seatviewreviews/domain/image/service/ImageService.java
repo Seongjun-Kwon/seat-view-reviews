@@ -28,7 +28,7 @@ public class ImageService {
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	@Transactional
-	public Long createImage(ImageCreateRequest imageCreateRequest) {
+	public String createImage(ImageCreateRequest imageCreateRequest) {
 		if (isNotImage(imageCreateRequest.multipartFile())) {
 			throw new IllegalArgumentException(BAD_IMAGE_REQUEST.getMessage());
 		}
@@ -39,7 +39,7 @@ public class ImageService {
 		Image image = ImageMapper.toEntity(imageCreateRequest, imageUrl);
 		applicationEventPublisher.publishEvent(new RollbackUploadEvent(image));
 		Image savedImage = imageRepository.save(image);
-		return savedImage.getId();
+		return savedImage.getImageUrl();
 	}
 
 	private boolean isNotImage(MultipartFile multipartFile) {
