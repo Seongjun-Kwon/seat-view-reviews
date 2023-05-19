@@ -17,7 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
-import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewCreateRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
@@ -43,15 +43,13 @@ class ReviewServiceTest {
 	private ReviewService reviewService;
 
 	@Test
-	@DisplayName("Success - 후기 생성에 성공한다")
-	void createReviewSuccess() {
+	@DisplayName("Success - 후기 임시 생성에 성공한다")
+	void createTempReviewSuccess() {
 		// given
 		Long seatId = 1L;
 		Long memberId = 1L;
 		Long reviewId = 1L;
-		ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(
-				"테스트 제목", "테스트 내용", 5, seatId
-		);
+		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(seatId);
 
 		Member member = new Member("test@test.com", "test", "test");
 		ReflectionTestUtils.setField(member, "id", memberId);
@@ -62,9 +60,7 @@ class ReviewServiceTest {
 		Seat seat = new Seat("1", seatGrade, seatSection);
 		ReflectionTestUtils.setField(seat, "id", seatId);
 
-		Review review = new Review(
-				reviewCreateRequest.title(), reviewCreateRequest.content(), reviewCreateRequest.score(), member, seat
-		);
+		Review review = new Review(member, seat);
 		ReflectionTestUtils.setField(review, "id", reviewId);
 
 		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
@@ -72,7 +68,7 @@ class ReviewServiceTest {
 		when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
 		// when
-		Long savedReviewId = reviewService.createReview(reviewCreateRequest, memberId);
+		Long savedReviewId = reviewService.createTempReview(tempReviewCreateRequest, memberId);
 
 		// then
 		verify(memberRepository).findById(memberId);
@@ -83,13 +79,11 @@ class ReviewServiceTest {
 
 	@Test
 	@DisplayName("Fail - 후기 작성 하려는 좌석의 id 가 없으면 실패한다")
-	void createReviewFailByNotFoundSeatId() {
+	void createTempReviewFailByNotFoundSeatId() {
 		// given
 		Long seatId = 1L;
 		Long memberId = 1L;
-		ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(
-				"테스트 제목", "테스트 내용", 5, seatId
-		);
+		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(seatId);
 
 		Member member = new Member("test@test.com", "test", "test");
 		ReflectionTestUtils.setField(member, "id", memberId);
@@ -104,7 +98,7 @@ class ReviewServiceTest {
 		when(seatRepository.findById(seatId)).thenReturn(Optional.empty());
 
 		// when & then
-		assertThatThrownBy(() -> reviewService.createReview(reviewCreateRequest, memberId))
+		assertThatThrownBy(() -> reviewService.createTempReview(tempReviewCreateRequest, memberId))
 				.isExactlyInstanceOf(NotFoundException.class)
 				.hasMessage(NOT_FOUND.getMessage());
 	}

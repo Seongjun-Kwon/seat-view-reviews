@@ -9,7 +9,7 @@ import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 import com.goodseats.seatviewreviews.domain.review.mapper.ReviewMapper;
-import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewCreateRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
@@ -26,15 +26,14 @@ public class ReviewService {
 	private final SeatRepository seatRepository;
 
 	@Transactional
-	public Long createReview(ReviewCreateRequest reviewCreateRequest, Long memberId) {
+	public Long createTempReview(TempReviewCreateRequest tempReviewCreateRequest, Long memberId) {
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
-		Seat seat = seatRepository.findById(reviewCreateRequest.seatId())
+		Seat seat = seatRepository.findById(tempReviewCreateRequest.seatId())
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 
-		Review review = ReviewMapper.toEntity(reviewCreateRequest, member, seat);
+		Review review = ReviewMapper.toEntity(member, seat);
 		Review savedReview = reviewRepository.save(review);
-
 		return savedReview.getId();
 	}
 }

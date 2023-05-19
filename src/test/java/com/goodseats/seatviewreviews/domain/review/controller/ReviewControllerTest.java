@@ -14,11 +14,12 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
-import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewCreateRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.SeatGrade;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.SeatSection;
@@ -38,6 +39,9 @@ class ReviewControllerTest {
 	private MockMvc mockMvc;
 
 	@Autowired
+	private ObjectMapper objectMapper;
+
+	@Autowired
 	private MemberRepository memberRepository;
 
 	@Autowired
@@ -53,8 +57,8 @@ class ReviewControllerTest {
 	private SeatRepository seatRepository;
 
 	@Test
-	@DisplayName("Success - 후기 생성에 성공하고 200 응답한다")
-	void createReviewSuccess() throws Exception {
+	@DisplayName("Success - 후기 임시 생성에 성공하고 200 응답한다")
+	void createTempReviewSuccess() throws Exception {
 		// given
 		Member member = new Member("test@test.com", "test", "test");
 		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
@@ -72,27 +76,22 @@ class ReviewControllerTest {
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
 
-		ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(
-				"테스트 제목", "테스트 내용", 5, seat.getId()
-		);
+		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(seat.getId());
 
 		// when & then
 		mockMvc.perform(post("/api/v1/reviews")
 						.session(session)
-						.param("title", reviewCreateRequest.title())
-						.param("content", reviewCreateRequest.content())
-						.param("score", String.valueOf(reviewCreateRequest.score()))
-						.param("seatId", String.valueOf(reviewCreateRequest.seatId()))
-						.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-						.accept(MediaType.APPLICATION_JSON))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(tempReviewCreateRequest)))
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	@DisplayName("Fail - 후기 작성 하려는 좌석의 id 가 없으면 실패하고 404 응답한다")
-	void createReviewFailByNotFoundSeatId() throws Exception {
+	void createTempReviewFailByNotFoundSeatId() throws Exception {
 		// given
-		Long wrongSeatId=0L;
+		Long wrongSeatId = 0L;
 		Member member = new Member("test@test.com", "test", "test");
 
 		memberRepository.save(member);
@@ -101,19 +100,14 @@ class ReviewControllerTest {
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
 
-		ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(
-				"테스트 제목", "테스트 내용", 5, wrongSeatId
-		);
+		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(wrongSeatId);
 
 		// when & then
 		mockMvc.perform(post("/api/v1/reviews")
 						.session(session)
-						.param("title", reviewCreateRequest.title())
-						.param("content", reviewCreateRequest.content())
-						.param("score", String.valueOf(reviewCreateRequest.score()))
-						.param("seatId", String.valueOf(reviewCreateRequest.seatId()))
-						.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-						.accept(MediaType.APPLICATION_JSON))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(tempReviewCreateRequest)))
 				.andExpect(status().isNotFound());
 	}
 }
