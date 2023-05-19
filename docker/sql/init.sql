@@ -71,15 +71,16 @@ CREATE TABLE IF NOT EXISTS `point_log`
 CREATE TABLE IF NOT EXISTS `review`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `member_id`       BIGINT        NOT NULL,
-    `seat_id`         BIGINT        NOT NULL,
-    `title`           VARCHAR(50)   NOT NULL,
-    `content`         VARCHAR(2000) NOT NULL,
-    `score`           INT           NOT NULL,
-    `hits`            INT           NOT NULL,
-    `created_at`      TIMESTAMP     NOT NULL,
-    `last_updated_at` TIMESTAMP     NOT NULL,
-    `deleted_at`      TIMESTAMP     NULL
+    `member_id`       BIGINT         NOT NULL,
+    `seat_id`         BIGINT         NOT NULL,
+    `title`           VARCHAR(50)    NULL,
+    `content`         VARCHAR(10000) NULL,
+    `score`           INT            NULL,
+    `hits`            INT            NOT NULL,
+    `is_published`    BOOLEAN        NOT NULL,
+    `created_at`      TIMESTAMP      NOT NULL,
+    `last_updated_at` TIMESTAMP      NOT NULL,
+    `deleted_at`      TIMESTAMP      NULL
 );
 
 CREATE TABLE IF NOT EXISTS `comment`

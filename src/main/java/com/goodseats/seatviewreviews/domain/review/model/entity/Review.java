@@ -28,17 +28,20 @@ public class Review extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "title", length = 50, nullable = false)
+	@Column(name = "title", length = 50, nullable = true)
 	private String title;
 
-	@Column(name = "content", length = 2000, nullable = false)
+	@Column(name = "content", length = 10000, nullable = true)
 	private String content;
 
-	@Column(name = "score", nullable = false)
+	@Column(name = "score", nullable = true)
 	private int score;
 
 	@Column(name = "hits", nullable = false)
 	private int hits;
+
+	@Column(name = "is_published", nullable = false)
+	private boolean isPublished;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
@@ -53,6 +56,14 @@ public class Review extends BaseEntity {
 		this.content = content;
 		this.score = score;
 		this.hits = 0;
+		this.isPublished = false;
+		this.member = member;
+		this.seat = seat;
+	}
+
+	public Review(Member member, Seat seat) {
+		this.hits = 0;
+		this.isPublished = false;
 		this.member = member;
 		this.seat = seat;
 	}
