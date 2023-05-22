@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.goodseats.seatviewreviews.common.error.exception.AuthenticationException;
+import com.goodseats.seatviewreviews.common.error.exception.ErrorCode;
 import com.goodseats.seatviewreviews.domain.BaseEntity;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
@@ -66,5 +68,18 @@ public class Review extends BaseEntity {
 		this.isPublished = false;
 		this.member = member;
 		this.seat = seat;
+	}
+
+	public void publish(String title, String content, int score) {
+		this.title = title;
+		this.content = content;
+		this.score = score;
+		this.isPublished = true;
+	}
+
+	public void verifyWriter(Long memberId) {
+		if (!this.member.getId().equals(memberId)) {
+			throw new AuthenticationException(ErrorCode.UNAUTHORIZED);
+		}
 	}
 }

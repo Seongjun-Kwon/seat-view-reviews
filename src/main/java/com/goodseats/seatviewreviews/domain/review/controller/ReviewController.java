@@ -9,6 +9,9 @@ import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.common.security.SessionConstant;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
+import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
 import com.goodseats.seatviewreviews.domain.review.service.ReviewService;
 
@@ -39,5 +43,16 @@ public class ReviewController {
 	) {
 		Long tempReviewId = reviewService.createTempReview(tempReviewCreateRequest, authenticationDTO.memberId());
 		return ResponseEntity.created(URI.create(request.getRequestURI() + "/" + tempReviewId)).build();
+	}
+
+	@Authority(authorities = {USER, ADMIN})
+	@PatchMapping(value = "/{reviewId}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<Void> publishReview(
+			@Valid @ModelAttribute ReviewPublishRequest reviewPublishRequest,
+			@PathVariable Long reviewId,
+			@SessionAttribute(value = SessionConstant.LOGIN_MEMBER_INFO) AuthenticationDTO authenticationDTO
+	) {
+		reviewService.publishReview(reviewPublishRequest, reviewId, authenticationDTO.memberId());
+		return ResponseEntity.noContent().build();
 	}
 }

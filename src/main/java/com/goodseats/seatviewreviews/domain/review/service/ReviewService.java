@@ -9,6 +9,7 @@ import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 import com.goodseats.seatviewreviews.domain.review.mapper.ReviewMapper;
+import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
@@ -35,5 +36,14 @@ public class ReviewService {
 		Review review = ReviewMapper.toEntity(member, seat);
 		Review savedReview = reviewRepository.save(review);
 		return savedReview.getId();
+	}
+
+	@Transactional
+	public void publishReview(ReviewPublishRequest reviewPublishRequest, Long reviewId, Long memberId) {
+		Review tempReview = reviewRepository.findById(reviewId)
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+		tempReview.verifyWriter(memberId);
+
+		tempReview.publish(reviewPublishRequest.title(), reviewPublishRequest.content(), reviewPublishRequest.score());
 	}
 }
