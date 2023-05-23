@@ -56,7 +56,7 @@ public class ImageService {
 
 	@Transactional
 	public void deleteImages(ImageDeleteRequest imageDeleteRequest) {
-		List<Image> images = imageRepository.findAllByImageTypeAndReferenceId(
+		List<Image> images = imageRepository.findAllByImageTypeAndReferenceIdAndDeletedAtIsNull(
 				imageDeleteRequest.imageType(), imageDeleteRequest.referenceId()
 		);
 

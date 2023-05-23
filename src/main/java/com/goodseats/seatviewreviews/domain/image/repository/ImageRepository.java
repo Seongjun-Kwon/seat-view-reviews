@@ -9,5 +9,5 @@ import com.goodseats.seatviewreviews.domain.image.model.vo.ImageType;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
-	List<Image> findAllByImageTypeAndReferenceId(ImageType imageType, Long referenceId);
+	List<Image> findAllByImageTypeAndReferenceIdAndDeletedAtIsNull(ImageType imageType, Long referenceId);
 }
