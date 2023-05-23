@@ -18,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.goodseats.seatviewreviews.common.file.FileStorageService;
 import com.goodseats.seatviewreviews.domain.image.event.RollbackUploadEvent;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;
+import com.goodseats.seatviewreviews.domain.image.model.dto.response.ImageCreateResponse;
 import com.goodseats.seatviewreviews.domain.image.model.entity.Image;
 import com.goodseats.seatviewreviews.domain.image.model.vo.ImageType;
 import com.goodseats.seatviewreviews.domain.image.repository.ImageRepository;
@@ -59,13 +60,14 @@ class ImageServiceTest {
 		when(imageRepository.save(any(Image.class))).thenReturn(image);
 
 		// when
-		String savedImageUrl = imageService.createImage(imageCreateRequest);
+		ImageCreateResponse ImageCreateResponse = imageService.createImage(imageCreateRequest);
 
 		// then
 		verify(fileStorageService).upload(imageCreateRequest.multipartFile(), imageCreateRequest.imageType().getSubPath());
 		verify(applicationEventPublisher).publishEvent(any(RollbackUploadEvent.class));
 		verify(imageRepository).save(any(Image.class));
-		assertThat(savedImageUrl).isEqualTo(imageUrl);
+		assertThat(ImageCreateResponse.imageId()).isEqualTo(image.getId());
+		assertThat(ImageCreateResponse.imageUrl()).isEqualTo(image.getImageUrl());
 	}
 
 	@Test

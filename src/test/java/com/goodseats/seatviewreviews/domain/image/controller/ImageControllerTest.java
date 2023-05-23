@@ -35,7 +35,7 @@ class ImageControllerTest {
 	private MemberRepository memberRepository;
 
 	@Test
-	@DisplayName("Success - 이미지 저장에 성공하고 201 로 응답한다")
+	@DisplayName("Success - 이미지 저장에 성공하고 200 으로 응답한다")
 	void createImageSuccess() throws Exception {
 		// given
 		Member member = new Member("test@test.com", "test", "test");
@@ -59,7 +59,9 @@ class ImageControllerTest {
 						.contentType(MULTIPART_FORM_DATA)
 						.accept(APPLICATION_JSON)
 						.session(session))
-				.andExpect(status().isCreated())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("imageId").isNumber())
+				.andExpect(jsonPath("imageUrl").isString())
 				.andDo(print());
 	}
 
