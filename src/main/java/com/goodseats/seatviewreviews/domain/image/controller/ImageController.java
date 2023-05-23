@@ -6,7 +6,9 @@ import static org.springframework.http.MediaType.*;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,5 +31,12 @@ public class ImageController {
 	public ResponseEntity<Void> createImage(@ModelAttribute ImageCreateRequest imageCreateRequest) {
 		String imageUrl = imageService.createImage(imageCreateRequest);
 		return ResponseEntity.created(URI.create(imageUrl)).build();
+	}
+
+	@Authority(authorities = {USER, ADMIN})
+	@DeleteMapping("/{imageId}")
+	public ResponseEntity<Void> deleteImage(@PathVariable Long imageId) {
+		imageService.deleteImage(imageId);
+		return ResponseEntity.noContent().build();
 	}
 }

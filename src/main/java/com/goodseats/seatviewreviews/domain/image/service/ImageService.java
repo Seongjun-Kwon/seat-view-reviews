@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
 import com.goodseats.seatviewreviews.common.file.FileStorageService;
+import com.goodseats.seatviewreviews.domain.image.event.ImageDeleteEvent;
 import com.goodseats.seatviewreviews.domain.image.event.RollbackUploadEvent;
 import com.goodseats.seatviewreviews.domain.image.mapper.ImageMapper;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;
@@ -40,6 +42,19 @@ public class ImageService {
 		applicationEventPublisher.publishEvent(new RollbackUploadEvent(image));
 		Image savedImage = imageRepository.save(image);
 		return savedImage.getImageUrl();
+	}
+
+	@Transactional
+	public void deleteImage(Long imageId) {
+		Image image = imageRepository.findById(imageId)
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+
+		deleteImage(image);
+	}
+
+	private void deleteImage(Image image) {
+		image.delete();
+		applicationEventPublisher.publishEvent(new ImageDeleteEvent(image));
 	}
 
 	private boolean isNotImage(MultipartFile multipartFile) {
