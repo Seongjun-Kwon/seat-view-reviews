@@ -2,6 +2,7 @@ package com.goodseats.seatviewreviews.domain.image.service;
 
 import static com.goodseats.seatviewreviews.common.error.exception.ErrorCode.*;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,6 +17,7 @@ import com.goodseats.seatviewreviews.domain.image.event.ImageDeleteEvent;
 import com.goodseats.seatviewreviews.domain.image.event.RollbackUploadEvent;
 import com.goodseats.seatviewreviews.domain.image.mapper.ImageMapper;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;
+import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageDeleteRequest;
 import com.goodseats.seatviewreviews.domain.image.model.entity.Image;
 import com.goodseats.seatviewreviews.domain.image.repository.ImageRepository;
 
@@ -50,6 +52,15 @@ public class ImageService {
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 
 		deleteImage(image);
+	}
+
+	@Transactional
+	public void deleteImages(ImageDeleteRequest imageDeleteRequest) {
+		List<Image> images = imageRepository.findAllByImageTypeAndReferenceId(
+				imageDeleteRequest.imageType(), imageDeleteRequest.referenceId()
+		);
+
+		images.forEach(this::deleteImage);
 	}
 
 	private void deleteImage(Image image) {

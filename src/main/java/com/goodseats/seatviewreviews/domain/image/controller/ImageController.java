@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;
+import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageDeleteRequest;
 import com.goodseats.seatviewreviews.domain.image.service.ImageService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,13 @@ public class ImageController {
 	@DeleteMapping("/{imageId}")
 	public ResponseEntity<Void> deleteImage(@PathVariable Long imageId) {
 		imageService.deleteImage(imageId);
+		return ResponseEntity.noContent().build();
+	}
+
+	@Authority(authorities = {USER, ADMIN})
+	@DeleteMapping
+	public ResponseEntity<Void> deleteImages(@RequestBody ImageDeleteRequest imageDeleteRequest) {
+		imageService.deleteImages(imageDeleteRequest);
 		return ResponseEntity.noContent().build();
 	}
 }
