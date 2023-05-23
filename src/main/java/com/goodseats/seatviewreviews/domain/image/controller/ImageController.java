@@ -3,8 +3,6 @@ package com.goodseats.seatviewreviews.domain.image.controller;
 import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority.*;
 import static org.springframework.http.MediaType.*;
 
-import java.net.URI;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageDeleteRequest;
+import com.goodseats.seatviewreviews.domain.image.model.dto.response.ImageCreateResponse;
 import com.goodseats.seatviewreviews.domain.image.service.ImageService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,9 +29,9 @@ public class ImageController {
 
 	@Authority(authorities = {USER, ADMIN})
 	@PostMapping(consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> createImage(@ModelAttribute ImageCreateRequest imageCreateRequest) {
-		String imageUrl = imageService.createImage(imageCreateRequest);
-		return ResponseEntity.created(URI.create(imageUrl)).build();
+	public ResponseEntity<ImageCreateResponse> createImage(@ModelAttribute ImageCreateRequest imageCreateRequest) {
+		ImageCreateResponse imageCreateResponse = imageService.createImage(imageCreateRequest);
+		return ResponseEntity.ok(imageCreateResponse);
 	}
 
 	@Authority(authorities = {USER, ADMIN})

@@ -18,6 +18,7 @@ import com.goodseats.seatviewreviews.domain.image.event.RollbackUploadEvent;
 import com.goodseats.seatviewreviews.domain.image.mapper.ImageMapper;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageDeleteRequest;
+import com.goodseats.seatviewreviews.domain.image.model.dto.response.ImageCreateResponse;
 import com.goodseats.seatviewreviews.domain.image.model.entity.Image;
 import com.goodseats.seatviewreviews.domain.image.repository.ImageRepository;
 
@@ -32,7 +33,7 @@ public class ImageService {
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	@Transactional
-	public String createImage(ImageCreateRequest imageCreateRequest) {
+	public ImageCreateResponse createImage(ImageCreateRequest imageCreateRequest) {
 		if (isNotImage(imageCreateRequest.multipartFile())) {
 			throw new IllegalArgumentException(BAD_IMAGE_REQUEST.getMessage());
 		}
@@ -40,10 +41,11 @@ public class ImageService {
 		String imageUrl = fileStorageService.upload(
 				imageCreateRequest.multipartFile(), imageCreateRequest.imageType().getSubPath()
 		);
+
 		Image image = ImageMapper.toEntity(imageCreateRequest, imageUrl);
 		applicationEventPublisher.publishEvent(new RollbackUploadEvent(image));
 		Image savedImage = imageRepository.save(image);
-		return savedImage.getImageUrl();
+		return new ImageCreateResponse(savedImage.getId(), savedImage.getImageUrl());
 	}
 
 	@Transactional
