@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,7 @@ import com.goodseats.seatviewreviews.common.file.FileStorageService;
 import com.goodseats.seatviewreviews.domain.image.event.ImageDeleteEvent;
 import com.goodseats.seatviewreviews.domain.image.event.RollbackUploadEvent;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;
+import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageDeleteRequest;
 import com.goodseats.seatviewreviews.domain.image.model.dto.response.ImageCreateResponse;
 import com.goodseats.seatviewreviews.domain.image.model.entity.Image;
 import com.goodseats.seatviewreviews.domain.image.model.vo.ImageType;
@@ -145,5 +147,28 @@ class ImageServiceTest {
 					.isExactlyInstanceOf(DuplicatedException.class)
 					.hasMessage(ALREADY_DELETED.getMessage());
 		}
+	}
+
+	@Test
+	@DisplayName("Success - 연관된 이미지들 삭제에 성공한다")
+	void deleteImagesSuccess() {
+		// given
+		ImageType imageType = ImageType.REVIEW;
+		Long referenceId = 1L;
+		Image image1 = new Image(imageType, referenceId, "testUrl1", "테스트 이미지1.jpg");
+		Image image2 = new Image(imageType, referenceId, "testUrl2", "테스트 이미지2.jpg");
+		List<Image> images = List.of(image1, image2);
+
+		ImageDeleteRequest imageDeleteRequest = new ImageDeleteRequest(imageType, referenceId);
+
+		when(imageRepository.findAllByImageTypeAndReferenceIdAndDeletedAtIsNull(
+				imageDeleteRequest.imageType(), imageDeleteRequest.referenceId()
+		)).thenReturn(images);
+
+		// when
+		imageService.deleteImages(imageDeleteRequest);
+
+		// then
+		images.forEach(image -> assertThat(image.getDeletedAt()).isNotNull());
 	}
 }
