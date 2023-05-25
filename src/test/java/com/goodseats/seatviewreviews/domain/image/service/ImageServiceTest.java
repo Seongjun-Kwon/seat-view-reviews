@@ -5,7 +5,10 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +18,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
+import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
 import com.goodseats.seatviewreviews.common.file.FileStorageService;
+import com.goodseats.seatviewreviews.domain.image.event.ImageDeleteEvent;
 import com.goodseats.seatviewreviews.domain.image.event.RollbackUploadEvent;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;
 import com.goodseats.seatviewreviews.domain.image.model.dto.response.ImageCreateResponse;
@@ -85,5 +91,59 @@ class ImageServiceTest {
 		assertThatThrownBy(() -> imageService.createImage(imageCreateRequest))
 				.isExactlyInstanceOf(IllegalArgumentException.class)
 				.hasMessage(BAD_IMAGE_REQUEST.getMessage());
+	}
+
+	@Test
+	@DisplayName("Success - 이미지 단건 삭제에 성공한다")
+	void deleteImageSuccess() {
+		// given
+		Long imageId=1L;
+		Image image = new Image(ImageType.REVIEW, 1L, "testUrl", "테스트 이미지.jpg");
+		ReflectionTestUtils.setField(image, "id", imageId);
+
+		when(imageRepository.findById(imageId)).thenReturn(Optional.of(image));
+		doNothing().when(applicationEventPublisher).publishEvent(any(ImageDeleteEvent.class));
+
+		// when
+		imageService.deleteImage(imageId);
+
+		// then
+		assertThat(image.getDeletedAt()).isNotNull();
+	}
+
+	@Nested
+	@DisplayName("deleteImageFail")
+	class DeleteImage {
+
+		@Test
+		@DisplayName("Fail - 삭제하고자 하는 이미지가 존재하지 않으면 실패한다")
+		void deleteImageFailByNotFound() {
+			// given
+			Long imageId=1L;
+
+			when(imageRepository.findById(imageId)).thenReturn(Optional.empty());
+
+			// when & then
+			assertThatThrownBy(() -> imageService.deleteImage(imageId))
+					.isExactlyInstanceOf(NotFoundException.class)
+					.hasMessage(NOT_FOUND.getMessage());
+		}
+
+		@Test
+		@DisplayName("Fail - 삭제하고자 하는 이미지가 이미 삭제되었으면 실패한다")
+		void deleteImageFailByAlreadyDeleted() {
+			// given
+			Long imageId=1L;
+			Image image = new Image(ImageType.REVIEW, 1L, "testUrl", "테스트 이미지.jpg");
+			ReflectionTestUtils.setField(image, "id", imageId);
+			image.delete();
+
+			when(imageRepository.findById(imageId)).thenReturn(Optional.of(image));
+
+			// when & then
+			assertThatThrownBy(() -> imageService.deleteImage(imageId))
+					.isExactlyInstanceOf(DuplicatedException.class)
+					.hasMessage(ALREADY_DELETED.getMessage());
+		}
 	}
 }
