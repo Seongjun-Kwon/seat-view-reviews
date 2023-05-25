@@ -1,11 +1,13 @@
 package com.goodseats.seatviewreviews.domain.image.controller;
 
 import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,6 +20,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageDeleteRequest;
 import com.goodseats.seatviewreviews.domain.image.model.entity.Image;
 import com.goodseats.seatviewreviews.domain.image.model.vo.ImageType;
 import com.goodseats.seatviewreviews.domain.image.repository.ImageRepository;
@@ -33,6 +37,9 @@ class ImageControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private MemberRepository memberRepository;
@@ -191,5 +198,36 @@ class ImageControllerTest {
 							.session(session))
 					.andExpect(status().isConflict());
 		}
+	}
+
+	@Test
+	@DisplayName("Success - 연관된 이미지들 삭제에 성공하고 204 응답한다")
+	void deleteImagesSuccess() throws Exception {
+		// given
+		Member member = new Member("test@test.com", "test", "test");
+		memberRepository.save(member);
+
+		AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
+
+		ImageType imageType = ImageType.REVIEW;
+		Long referenceId = 1L;
+		Image image1 = new Image(imageType, referenceId, "testUrl1", "테스트 이미지1.jpg");
+		Image image2 = new Image(imageType, referenceId, "testUrl2", "테스트 이미지2.jpg");
+		List<Image> images = List.of(image1, image2);
+		imageRepository.saveAll(images);
+
+		ImageDeleteRequest imageDeleteRequest = new ImageDeleteRequest(imageType, referenceId);
+
+		// when
+		mockMvc.perform(delete("/api/v1/images")
+						.session(session)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(imageDeleteRequest)))
+				.andExpect(status().isNoContent());
+
+		// then
+		images.forEach(image -> assertThat(image.getDeletedAt()).isNotNull());
 	}
 }
