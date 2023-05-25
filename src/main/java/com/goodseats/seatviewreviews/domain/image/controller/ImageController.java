@@ -42,7 +42,7 @@ public class ImageController {
 	}
 
 	@Authority(authorities = {USER, ADMIN})
-	@DeleteMapping
+	@DeleteMapping(consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> deleteImages(@RequestBody ImageDeleteRequest imageDeleteRequest) {
 		imageService.deleteImages(imageDeleteRequest);
 		return ResponseEntity.noContent().build();
