@@ -44,6 +44,8 @@ jobs:
           username: ${{secrets.EC2_USERNAME}}
           key: ${{secrets.EC2_KEY}}
           script: |
-            docker-compose -f ./docker/docker-compose.yml stop
-            docker-compose -f ./docker/docker-compose.yml pull
-            docker-compose -f ./docker/docker-compose.yml up -d
+            scp -r ./env ${{secrets.EC2_USERNAME}}@${{secrets.EC2_HOST}}:~
+            scp docker-compose.yml ${{secrets.EC2_USERNAME}}@${{secrets.EC2_HOST}}:~
+            docker-compose stop
+            docker-compose pull
+            docker-compose up -d
