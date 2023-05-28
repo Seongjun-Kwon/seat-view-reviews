@@ -25,6 +25,9 @@ jobs:
           echo "${{secrets.AWS_ENV}}" >> env/aws.env
           echo "${{secrets.DB_ENV}}" >> env/dev-db.env
 
+      - name: Run docker DB container
+        run: docker-compose -f ./docker/docker-compose.yml up -d db
+
       - name: Get execution permission to gradlew
         run: chmod +x ./gradlew
 
