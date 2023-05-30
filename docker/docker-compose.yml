@@ -6,7 +6,7 @@ services:
       - "3306:3306"
     env_file:
       - ../env/docker-compose.env
-    container_name: seat-view
+    container_name: seat-view-db
     environment:
       TZ: Asia/Seoul
     volumes:
@@ -18,6 +18,21 @@ services:
       - ./sql/jamsil-seat-section.sql:/docker-entrypoint-initdb.d/jamsil-seat-section.sql
       - ./sql/jamsil-seat.sql:/docker-entrypoint-initdb.d/jamsil-seat.sql
     command: bash -c "chmod 644 /etc/mysql/my.cnf && docker-entrypoint.sh mysqld"
+    restart: always
+
+  seat-view-jar:
+    container_name: seat-view-jar
+    image: jeromeeugenemorrow/seat-view-reviews:latest
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ACCESS_KEY: ${ACCESS_KEY}
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on:
+      - db
     restart: always
 
 volumes:
