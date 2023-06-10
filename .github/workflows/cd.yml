@@ -48,6 +48,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ap-northeast-2
 
+      - name: Get github actions public IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+
       - name: Add github actions IP to security group
         run: |
           aws ec2 authorize-security-group-ingress --group-id ${{secrets.AWS_SECURITY_GROUP_ID}} --protocol tcp --port 22 --cidr ${{steps.ip.outputs.ipv4}}/32    
