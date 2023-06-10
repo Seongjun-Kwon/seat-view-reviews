@@ -1,12 +1,12 @@
 version: '3'
 services:
   db:
+    container_name: seat-view-db
     image: mysql:8.0.32
     ports:
       - "3306:3306"
     env_file:
       - ../env/docker-compose.env
-    container_name: seat-view-db
     environment:
       TZ: Asia/Seoul
     volumes:
@@ -25,12 +25,11 @@ services:
     image: jeromeeugenemorrow/seat-view-reviews:latest
     ports:
       - "8080:8080"
+    env_file:
+      - ../env/dev-db.env
+      - ../env/aws.env
     environment:
-      DB_URL: ${DB_URL}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      ACCESS_KEY: ${ACCESS_KEY}
-      SECRET_KEY: ${SECRET_KEY}
+      TZ: Asia/Seoul
     depends_on:
       - db
     restart: always
