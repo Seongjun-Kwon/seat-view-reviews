@@ -1,6 +1,7 @@
 package com.goodseats.seatviewreviews.domain.review.mapper;
 
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
+import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
 
@@ -12,5 +13,11 @@ public class ReviewMapper {
 
 	public static Review toEntity(Member member, Seat seat) {
 		return new Review(member, seat);
+	}
+
+	public static ReviewDetailResponse toReviewDetailResponse(Review review) {
+		return new ReviewDetailResponse(
+				review.getTitle(), review.getContent(), review.getScore(), review.getHits(), review.getMember().getNickname()
+		);
 	}
 }

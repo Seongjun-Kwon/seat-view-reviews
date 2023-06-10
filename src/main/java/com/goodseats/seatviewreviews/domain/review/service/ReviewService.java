@@ -11,6 +11,7 @@ import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 import com.goodseats.seatviewreviews.domain.review.mapper.ReviewMapper;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
@@ -45,5 +46,13 @@ public class ReviewService {
 		tempReview.verifyWriter(memberId);
 
 		tempReview.publish(reviewPublishRequest.title(), reviewPublishRequest.content(), reviewPublishRequest.score());
+	}
+
+	@Transactional(readOnly = true)
+	public ReviewDetailResponse getReview(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+
+		return ReviewMapper.toReviewDetailResponse(review);
 	}
 }
