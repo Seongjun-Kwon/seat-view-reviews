@@ -6,4 +6,4 @@ ENV DB_URL=${DB_URL} \
     ACCESS_KEY=${ACCESS_KEY} \
     SECRET_KEY=${SECRET_KEY}
 COPY ${JAR_FILE} seat-view-reviews.jar
-ENTRYPOINT ["nohup", "java", "-jar", "seat-view-reviews.jar", "> /dev/null 2> /dev/null &"]
+ENTRYPOINT ["nohup", "java", "-jar", "seat-view-reviews.jar", ">", "/dev/null", "2>", "/dev/null", "&"]
