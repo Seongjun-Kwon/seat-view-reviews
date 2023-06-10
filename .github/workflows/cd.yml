@@ -41,6 +41,10 @@ jobs:
           docker build -t ${{secrets.DOCKERHUB_USERNAME}}/seat-view-reviews:latest .
           docker push ${{secrets.DOCKERHUB_USERNAME}}/seat-view-reviews:latest
 
+      - name: Add github actions IP to security group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-name ${{secrets.AWS_SECURITY_GROUP_ID}} --protocol tcp --port 22 --cidr ${{steps.ip.outputs.ipv4}}/32    
+
       - name: Access AWS EC2 and run the app
         uses: appleboy/ssh-action@master
         with:
@@ -53,3 +57,7 @@ jobs:
             docker-compose -f ./docker/docker-compose.yml stop
             docker-compose -f ./docker/docker-compose.yml pull
             docker-compose -f ./docker/docker-compose.yml up -d
+
+      - name: Remove github actions IP from security group
+        run: |
+          aws ec2 revoke-security-group-ingress --group-name ${{secrets.AWS_SECURITY_GROUP_ID}} --protocol tcp --port 22 --cidr ${{steps.ip.outputs.ipv4}}/32
