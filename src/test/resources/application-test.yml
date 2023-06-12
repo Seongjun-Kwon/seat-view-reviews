@@ -1,0 +1,21 @@
+spring:
+  config:
+    import:
+      - optional:file:env/test-db.env[.properties]
+      - optional:file:env/redis.env[.properties]
+    activate:
+      on-profile: test
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}

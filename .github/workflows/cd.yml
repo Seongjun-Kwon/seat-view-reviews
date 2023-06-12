@@ -2,7 +2,8 @@ name: CD
 
 on:
   push:
-    branches: [ "develop" ]
+    branches:
+      - develop
 
 jobs:
   build:
@@ -10,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -23,10 +24,14 @@ jobs:
           mkdir -p env
           echo "${{secrets.DOCKER_COMPOSE_ENV}}" >> env/docker-compose.env
           echo "${{secrets.AWS_ENV}}" >> env/aws.env
-          echo "${{secrets.DB_ENV}}" >> env/dev-db.env
+          echo "${{secrets.TEST_DB_ENV}}" >> env/test-db.env
+          echo "${{secrets.DEV_DB_ENV}}" >> env/dev-db.env
+          echo "${{secrets.REDIS_ENV}}" >> env/redis.env
 
-      - name: Run docker DB container
-        run: docker-compose -f ./docker/docker-compose.yml up -d db
+      - name: Run docker DB, Redis container
+        run: | 
+          docker-compose -f ./docker/docker-compose.yml up -d db
+          docker-compose -f ./docker/docker-compose.yml up -d redis
 
       - name: Get execution permission to gradlew
         run: chmod +x ./gradlew
@@ -40,15 +45,44 @@ jobs:
           docker build -t ${{secrets.DOCKERHUB_USERNAME}}/seat-view-reviews:latest .
           docker push ${{secrets.DOCKERHUB_USERNAME}}/seat-view-reviews:latest
 
+      - name: Get github actions public IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_KEY}}
+          aws-region: ap-northeast-2
+
+      - name: Add github actions IP to security group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{secrets.AWS_SECURITY_GROUP_ID}} --protocol tcp --port 22 --cidr ${{steps.ip.outputs.ipv4}}/32    
+
+      - name: Send necessary files to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USERNAME}}
+          key: ${{secrets.EC2_KEY}}
+          port: ${{secrets.EC2_PORT}}
+          source: "env/*,docker/*"
+          strip_components: 0
+          target: "~"
+
       - name: Access AWS EC2 and run the app
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.EC2_HOST}}
           username: ${{secrets.EC2_USERNAME}}
           key: ${{secrets.EC2_KEY}}
+          port: ${{secrets.EC2_PORT}}
           script: |
-            scp -r ./env ${{secrets.EC2_USERNAME}}@${{secrets.EC2_HOST}}:~
-            scp docker-compose.yml ${{secrets.EC2_USERNAME}}@${{secrets.EC2_HOST}}:~
-            docker-compose stop
-            docker-compose pull
-            docker-compose up -d
+            docker-compose -f ./docker/docker-compose.yml stop
+            docker-compose -f ./docker/docker-compose.yml pull
+            docker-compose -f ./docker/docker-compose.yml up -d
+
+      - name: Remove github actions IP from security group
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{secrets.AWS_SECURITY_GROUP_ID}} --protocol tcp --port 22 --cidr ${{steps.ip.outputs.ipv4}}/32

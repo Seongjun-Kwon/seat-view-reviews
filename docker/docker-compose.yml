@@ -1,22 +1,18 @@
 version: '3'
 services:
   db:
+    container_name: seat-view-db
     image: mysql:8.0.32
     ports:
       - "3306:3306"
     env_file:
       - ../env/docker-compose.env
-    container_name: seat-view-db
     environment:
       TZ: Asia/Seoul
     volumes:
       - seat-view:/var/lib/mysql
       - ./my.cnf:/etc/mysql/my.cnf
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./sql/stadium.sql:/docker-entrypoint-initdb.d/stadium.sql
-      - ./sql/jamsil-seat-grade.sql:/docker-entrypoint-initdb.d/jamsil-seat-grade.sql
-      - ./sql/jamsil-seat-section.sql:/docker-entrypoint-initdb.d/jamsil-seat-section.sql
-      - ./sql/jamsil-seat.sql:/docker-entrypoint-initdb.d/jamsil-seat.sql
     command: bash -c "chmod 644 /etc/mysql/my.cnf && docker-entrypoint.sh mysqld"
     restart: always
 
@@ -39,12 +35,12 @@ services:
     image: jeromeeugenemorrow/seat-view-reviews:latest
     ports:
       - "8080:8080"
+    env_file:
+      - ../env/dev-db.env
+      - ../env/aws.env
+      - ../env/redis.env
     environment:
-      DB_URL: ${DB_URL}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      ACCESS_KEY: ${ACCESS_KEY}
-      SECRET_KEY: ${SECRET_KEY}
+      TZ: Asia/Seoul
     depends_on:
       - db
       - redis
