@@ -14,7 +14,7 @@ services:
       - ./my.cnf:/etc/mysql/my.cnf
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     command: bash -c "chmod 644 /etc/mysql/my.cnf && docker-entrypoint.sh mysqld"
-    restart: always
+    restart: on-failure
 
   seat-view-jar:
     container_name: seat-view-jar
@@ -28,7 +28,7 @@ services:
       TZ: Asia/Seoul
     depends_on:
       - db
-    restart: always
+    restart: on-failure
 
 volumes:
   seat-view:
