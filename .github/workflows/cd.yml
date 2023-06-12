@@ -29,7 +29,9 @@ jobs:
           echo "${{secrets.REDIS_ENV}}" >> env/redis.env
 
       - name: Run docker DB container
-        run: docker-compose -f ./docker/docker-compose.yml up -d db
+        run: | 
+          docker-compose -f ./docker/docker-compose.yml up -d db
+          docker-compose -f ./docker/docker-compose.yml up -d redis
 
       - name: Get execution permission to gradlew
         run: chmod +x ./gradlew
