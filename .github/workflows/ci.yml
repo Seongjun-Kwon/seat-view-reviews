@@ -25,6 +25,7 @@ jobs:
           echo "${{secrets.DOCKER_COMPOSE_ENV}}" >> env/docker-compose.env
           echo "${{secrets.AWS_ENV}}" >> env/aws.env
           echo "${{secrets.TEST_DB_ENV}}" >> env/test-db.env
+          echo "${{secrets.DEV_DB_ENV}}" >> env/dev-db.env
 
       - name: Run docker DB container
         run: docker-compose -f ./docker/docker-compose.yml up -d db
