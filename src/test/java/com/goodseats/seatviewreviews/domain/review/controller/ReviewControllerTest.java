@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;
 
+@ActiveProfiles("test")
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
