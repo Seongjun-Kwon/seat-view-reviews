@@ -2,6 +2,7 @@ spring:
   config:
     import:
       - optional:file:env/test-db.env[.properties]
+      - optional:file:env/redis.env[.properties]
     activate:
       on-profile: test
 
@@ -14,3 +15,7 @@ spring:
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
