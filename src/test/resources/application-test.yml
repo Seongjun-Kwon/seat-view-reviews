@@ -1,8 +1,10 @@
 spring:
   config:
     import:
-      - optional:file:env/dev-db.env[.properties]
+      - optional:file:env/test-db.env[.properties]
       - optional:file:env/redis.env[.properties]
+    activate:
+      on-profile: test
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -13,11 +15,6 @@ spring:
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
-    open-in-view: false
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
 
   redis:
     host: ${REDIS_HOST}

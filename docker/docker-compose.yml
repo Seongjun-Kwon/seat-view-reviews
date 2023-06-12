@@ -16,6 +16,20 @@ services:
     command: bash -c "chmod 644 /etc/mysql/my.cnf && docker-entrypoint.sh mysqld"
     restart: on-failure
 
+  redis:
+    image: redis:6.0.16
+    ports:
+      - "6379:6379"
+    env_file:
+      - ../env/redis.env
+    container_name: seat-view-redis
+    environment:
+      TZ: Asia/Seoul
+    volumes:
+      - seat-view:/data
+    restart: on-failure
+    command: redis-server
+
   seat-view-jar:
     container_name: seat-view-jar
     image: jeromeeugenemorrow/seat-view-reviews:latest
@@ -24,10 +38,12 @@ services:
     env_file:
       - ../env/dev-db.env
       - ../env/aws.env
+      - ../env/redis.env
     environment:
       TZ: Asia/Seoul
     depends_on:
       - db
+      - redis
     restart: on-failure
 
 volumes:
