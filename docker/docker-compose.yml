@@ -14,6 +14,11 @@ services:
       - ./my.cnf:/etc/mysql/my.cnf
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     command: bash -c "chmod 644 /etc/mysql/my.cnf && docker-entrypoint.sh mysqld"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: always
 
   redis:
@@ -27,8 +32,13 @@ services:
       TZ: Asia/Seoul
     volumes:
       - seat-view:/data
-    restart: always
     command: redis-server
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
 
   seat-view-jar:
     container_name: seat-view-jar
@@ -44,6 +54,11 @@ services:
     depends_on:
       - db
       - redis
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: always
 
 volumes:
