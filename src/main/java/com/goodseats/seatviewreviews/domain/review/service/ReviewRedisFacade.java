@@ -27,11 +27,11 @@ public class ReviewRedisFacade {
 
 	public ReviewDetailResponse getReview(String userKey, Long reviewId) {
 
-		RLock hitsLock = redissonClient.getLock("hitsLock");
+		RLock hitsLock = redissonClient.getLock(LOCK_NAME);
 		ReviewDetailResponse reviewDetailResponse = reviewService.getReview(reviewId);
 
 		try {
-			boolean available = hitsLock.tryLock(2, 2, TimeUnit.SECONDS);
+			boolean available = hitsLock.tryLock(LOCK_WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS);
 			if (!available) {
 				throw new InterruptedException();
 			}
