@@ -39,8 +39,8 @@ public class Review extends BaseEntity {
 	@Column(name = "score", nullable = true)
 	private int score;
 
-	@Column(name = "hits", nullable = false)
-	private int hits;
+	@Column(name = "view_count", nullable = false)
+	private int viewCount;
 
 	@Column(name = "is_published", nullable = false)
 	private boolean isPublished;
@@ -57,14 +57,14 @@ public class Review extends BaseEntity {
 		this.title = title;
 		this.content = content;
 		this.score = score;
-		this.hits = 0;
+		this.viewCount = 0;
 		this.isPublished = false;
 		this.member = member;
 		this.seat = seat;
 	}
 
 	public Review(Member member, Seat seat) {
-		this.hits = 0;
+		this.viewCount = 0;
 		this.isPublished = false;
 		this.member = member;
 		this.seat = seat;

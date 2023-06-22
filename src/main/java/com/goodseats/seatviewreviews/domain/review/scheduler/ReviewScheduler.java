@@ -30,14 +30,14 @@ public class ReviewScheduler {
 
 	@Transactional
 	@Scheduled(cron = "0 */5 * * * *")
-	public void syncHitsToDB() {
+	public void syncViewCountToDB() {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime startTime = now.minusMinutes(SCHEDULED_MINUTE);
 		String startTimeString = startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-		RMap<String, String> reviewHitsLogs = redissonClient.getMap(REVIEW_HITS_LOGS_NAME);
+		RMap<String, String> reviewViewCountLogs = redissonClient.getMap(REVIEW_VIEW_COUNT_LOGS_NAME);
 
-		List<String> targetKeys = reviewHitsLogs.keySet().stream()
+		List<String> targetKeys = reviewViewCountLogs.keySet().stream()
 				.filter(key -> isTarget(startTimeString, key))
 				.collect(Collectors.groupingBy(
 								this::extractReviewId,
@@ -53,9 +53,9 @@ public class ReviewScheduler {
 
 		targetKeys
 				.forEach(key -> {
-					int hits = Integer.parseInt(reviewHitsLogs.get(key));
+					int viewCount = Integer.parseInt(reviewViewCountLogs.get(key));
 					Long reviewId = Long.valueOf(extractReviewId(key));
-					reviewRepository.updateHits(hits, reviewId);
+					reviewRepository.updateViewCount(viewCount, reviewId);
 				});
 	}
 

@@ -10,6 +10,6 @@ import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
 	@Modifying(flushAutomatically = true, clearAutomatically = true)
-	@Query("UPDATE Review r SET r.hits = :hits WHERE r.id=:reviewId")
-	void updateHits(@Param("hits") int hits, @Param("reviewId") Long reviewId);
+	@Query("UPDATE Review r SET r.viewCount = :viewCount WHERE r.id=:reviewId")
+	void updateViewCount(@Param("viewCount") int viewCount, @Param("reviewId") Long reviewId);
 }

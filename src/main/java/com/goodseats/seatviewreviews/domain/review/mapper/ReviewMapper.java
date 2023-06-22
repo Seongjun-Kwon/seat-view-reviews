@@ -17,7 +17,7 @@ public class ReviewMapper {
 
 	public static ReviewDetailResponse toReviewDetailResponse(Review review) {
 		return new ReviewDetailResponse(
-				review.getTitle(), review.getContent(), review.getScore(), review.getHits(), review.getMember().getNickname()
+				review.getTitle(), review.getContent(), review.getScore(), review.getViewCount(), review.getMember().getNickname()
 		);
 	}
 }

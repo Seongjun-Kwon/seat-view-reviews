@@ -27,11 +27,11 @@ public class ReviewRedisFacade {
 
 	public ReviewDetailResponse getReview(String userKey, Long reviewId) {
 
-		RLock hitsLock = redissonClient.getLock(LOCK_NAME);
+		RLock viewCountLock = redissonClient.getLock(LOCK_NAME);
 		ReviewDetailResponse reviewDetailResponse = reviewService.getReview(reviewId);
 
 		try {
-			boolean available = hitsLock.tryLock(LOCK_WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS);
+			boolean available = viewCountLock.tryLock(LOCK_WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS);
 			if (!available) {
 				throw new InterruptedException();
 			}
@@ -42,26 +42,26 @@ public class ReviewRedisFacade {
 			}
 
 			saveUserReviewViewLog(userReviewViewLog);
-			increaseReviewHits(reviewId, reviewDetailResponse.hits());
+			increaseReviewViewCount(reviewId, reviewDetailResponse.viewCount());
 
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {
-			hitsLock.unlock();
+			viewCountLock.unlock();
 		}
 
 		return reviewDetailResponse;
 	}
 
 	public void clearHitLogs() {
-		RSet<String> userHitsLogSet = redissonClient.getSet(USER_REVIEW_VIEW_LOGS_NAME);
-		RMap<String, Integer> reviewHitsTimeLogMap = redissonClient.getMap(REVIEW_HITS_LOGS_NAME);
+		RSet<String> userViewCountLogSet = redissonClient.getSet(USER_REVIEW_VIEW_LOGS_NAME);
+		RMap<String, Integer> reviewViewCountTimeLogMap = redissonClient.getMap(REVIEW_VIEW_COUNT_LOGS_NAME);
 
-		if (userHitsLogSet.isExists()) {
-			userHitsLogSet.clear();
+		if (userViewCountLogSet.isExists()) {
+			userViewCountLogSet.clear();
 		}
-		if (reviewHitsTimeLogMap.isExists()) {
-			reviewHitsTimeLogMap.clear();
+		if (reviewViewCountTimeLogMap.isExists()) {
+			reviewViewCountTimeLogMap.clear();
 		}
 	}
 
@@ -73,34 +73,37 @@ public class ReviewRedisFacade {
 		redissonClient.getSet(USER_REVIEW_VIEW_LOGS_NAME).add(userReviewViewLog);
 	}
 
-	private void increaseReviewHits(Long reviewId, int defaultHits) {
-		RMap<String, String> reviewHitsLogs = redissonClient.getMap(REVIEW_HITS_LOGS_NAME);
+	private void increaseReviewViewCount(Long reviewId, int defaultViewCount) {
+		RMap<String, String> reviewViewCountLogs = redissonClient.getMap(REVIEW_VIEW_COUNT_LOGS_NAME);
 
-		String reviewHitsLogsKey = generateReviewHitsLogKey(reviewId);
-		String latestHitsKey = getLatestHitsKey(reviewHitsLogs, reviewId, reviewHitsLogsKey);
-		int latestHits = Integer.parseInt(reviewHitsLogs.getOrDefault(latestHitsKey, String.valueOf(defaultHits)));
+		String reviewViewCountLogsKey = generateReviewViewCountLogKey(reviewId);
+		String latestViewCountKey = getLatestViewCountKey(reviewViewCountLogs, reviewId, reviewViewCountLogsKey);
+		int latestViewCount = Integer.parseInt(
+				reviewViewCountLogs.getOrDefault(latestViewCountKey, String.valueOf(defaultViewCount)));
 
-		reviewHitsLogs.put(reviewHitsLogsKey, String.valueOf(latestHits + 1));
+		reviewViewCountLogs.put(reviewViewCountLogsKey, String.valueOf(latestViewCount + 1));
 	}
 
 	private String generateUserReviewViewLog(String userKey, Long reviewId) {
 		return "user" + DELIMITER + userKey + SEPARATOR + "reviewId" + DELIMITER + reviewId;
 	}
 
-	private String generateReviewHitsLogKey(Long reviewId) {
+	private String generateReviewViewCountLogKey(Long reviewId) {
 		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		return "reviewId" + DELIMITER + reviewId + SEPARATOR + "time" + DELIMITER + nowTime;
 	}
 
-	private String getLatestHitsKey(RMap<String, String> reviewHitsLogs, Long reviewId, String reviewHitsLogsKey) {
-		return reviewHitsLogs.keySet()
+	private String getLatestViewCountKey(
+			RMap<String, String> reviewViewCountLogs, Long reviewId, String reviewViewCountLogsKey
+	) {
+		return reviewViewCountLogs.keySet()
 				.stream()
 				.map(String::valueOf)
 				.collect(Collectors.toSet())
 				.stream()
 				.filter(key -> extractReviewId(key).equals(String.valueOf(reviewId)))
 				.max(Comparator.comparing(this::extractTime))
-				.orElse(reviewHitsLogsKey);
+				.orElse(reviewViewCountLogsKey);
 	}
 
 	private String extractReviewId(String key) {
