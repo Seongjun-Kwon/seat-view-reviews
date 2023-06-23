@@ -82,4 +82,8 @@ public class Review extends BaseEntity {
 			throw new AuthenticationException(ErrorCode.UNAUTHORIZED);
 		}
 	}
+
+	public void updateViewCount(int viewCount) {
+		this.viewCount = viewCount;
+	}
 }

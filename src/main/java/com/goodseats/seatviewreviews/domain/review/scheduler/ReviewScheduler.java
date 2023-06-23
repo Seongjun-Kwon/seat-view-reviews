@@ -17,6 +17,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goodseats.seatviewreviews.common.error.exception.ErrorCode;
+import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
+import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.review.service.ReviewRedisFacade;
 
@@ -86,7 +89,11 @@ public class ReviewScheduler {
 				.forEach(key -> {
 					int viewCount = Integer.parseInt(reviewAndViewCountLogs.get(key));
 					Long reviewId = Long.valueOf(extractReviewId(key));
-					reviewRepository.updateViewCount(viewCount, reviewId);
+
+					Review review = reviewRepository.findById(reviewId)
+							.orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
+
+					review.updateViewCount(viewCount);
 				});
 	}
 }
