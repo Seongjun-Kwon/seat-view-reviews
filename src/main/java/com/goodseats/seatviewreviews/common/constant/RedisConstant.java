@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 public class RedisConstant {
 
 	public static final String REDISSON_ADDRESS_PREFIX = "redis://";
-	public static final String USER_REVIEW_VIEW_LOGS_NAME = "userReviewViewLogs";
-	public static final String REVIEW_VIEW_COUNT_LOGS_NAME = "reviewViewCountLogs";
+	public static final String USER_VIEWED_REVIEW_LOGS_NAME = "userViewedReviewLogs";
+	public static final String REVIEW_AND_VIEW_COUNT_LOGS_NAME = "reviewViewCountLogs";
 	public static final String DELIMITER = "_";
 	public static final String SEPARATOR = ", ";
 	public static final String LOCK_NAME = "viewCountLock";

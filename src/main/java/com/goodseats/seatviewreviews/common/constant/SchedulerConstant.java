@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SchedulerConstant {
 
-	public static final int SCHEDULED_MINUTE = 5;
+	public static final int SCHEDULING_MINUTE = 5;
 }
