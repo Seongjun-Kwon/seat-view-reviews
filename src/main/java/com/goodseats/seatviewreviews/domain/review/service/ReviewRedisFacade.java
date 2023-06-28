@@ -87,14 +87,8 @@ public class ReviewRedisFacade {
 
 	private void increaseViewCount(Long reviewId, int defaultViewCount) {
 		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
-
+		int latestViewCount = getLatestViewCount(reviewAndViewCountLogs, reviewId, defaultViewCount);
 		String reviewAndViewCountLogsKey = generateReviewAndViewCountLogsKey(reviewId);
-		String latestReviewAndViewCountLogKey
-				= getLatestReviewAndViewCountLogKey(reviewAndViewCountLogs, reviewId, reviewAndViewCountLogsKey);
-		int latestViewCount = Integer.parseInt(
-				reviewAndViewCountLogs.getOrDefault(latestReviewAndViewCountLogKey, String.valueOf(defaultViewCount))
-		);
-
 		reviewAndViewCountLogs.put(reviewAndViewCountLogsKey, String.valueOf(latestViewCount + 1));
 	}
 
@@ -103,8 +97,8 @@ public class ReviewRedisFacade {
 		return "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
 	}
 
-	private String getLatestReviewAndViewCountLogKey(
-			RMap<String, String> reviewAndViewCountLogs, Long reviewId, String reviewAndViewCountLogsKey
+	private int getLatestViewCount(
+			RMap<String, String> reviewAndViewCountLogs, Long reviewId, int defaultViewCount
 	) {
 		return reviewAndViewCountLogs.keySet()
 				.stream()
@@ -113,7 +107,8 @@ public class ReviewRedisFacade {
 				.stream()
 				.filter(key -> extractReviewId(key).equals(String.valueOf(reviewId)))
 				.max(Comparator.comparing(this::extractViewedTime))
-				.orElse(reviewAndViewCountLogsKey);
+				.map(latestKey -> Integer.parseInt(reviewAndViewCountLogs.get(latestKey)))
+				.orElse(defaultViewCount);
 	}
 
 	private String extractReviewId(String key) {
