@@ -2,7 +2,7 @@ spring:
   config:
     import:
       - optional:file:env/test-db.env[.properties]
-      - optional:file:env/redis.env[.properties]
+      - optional:file:env/test-redis.env[.properties]
     activate:
       on-profile: test
 
