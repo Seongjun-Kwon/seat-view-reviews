@@ -13,6 +13,7 @@ import org.redisson.api.RMap;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
 
@@ -25,10 +26,24 @@ public class ReviewRedisFacade {
 	private final RedissonClient redissonClient;
 	private final ReviewService reviewService;
 
+	@Transactional(readOnly = true)
 	public ReviewDetailResponse getReview(String userKey, Long reviewId) {
-		ReviewDetailResponse reviewDetailResponse = reviewService.getReview(reviewId);
-		controlViewCountConcurrency(userKey, reviewId, reviewDetailResponse);
-		return reviewDetailResponse;
+		controlViewCountConcurrency(userKey, reviewId);
+		return reviewService.getReview(reviewId);
+	}
+
+	public int getLatestViewCount(Long reviewId, int defaultViewCount) {
+		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
+
+		return reviewAndViewCountLogs.keySet()
+				.stream()
+				.map(String::valueOf)
+				.collect(Collectors.toSet())
+				.stream()
+				.filter(key -> extractReviewId(key).equals(String.valueOf(reviewId)))
+				.max(Comparator.comparing(this::extractViewedTime))
+				.map(latestKey -> Integer.parseInt(reviewAndViewCountLogs.get(latestKey)))
+				.orElse(defaultViewCount);
 	}
 
 	public void clearAllLogs() {
@@ -43,7 +58,7 @@ public class ReviewRedisFacade {
 		}
 	}
 
-	private void controlViewCountConcurrency(String userKey, Long reviewId, ReviewDetailResponse reviewDetailResponse) {
+	private void controlViewCountConcurrency(String userKey, Long reviewId) {
 		RLock viewCountLock = redissonClient.getLock(LOCK_NAME);
 
 		try {
@@ -55,6 +70,7 @@ public class ReviewRedisFacade {
 				return;
 			}
 
+			ReviewDetailResponse reviewDetailResponse = reviewService.getReview(reviewId);
 			saveUserViewedReviewLog(userViewedReviewLog);
 			increaseViewCount(reviewId, reviewDetailResponse.viewCount());
 
@@ -87,7 +103,7 @@ public class ReviewRedisFacade {
 
 	private void increaseViewCount(Long reviewId, int defaultViewCount) {
 		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
-		int latestViewCount = getLatestViewCount(reviewAndViewCountLogs, reviewId, defaultViewCount);
+		int latestViewCount = getLatestViewCount(reviewId, defaultViewCount);
 		String reviewAndViewCountLogsKey = generateReviewAndViewCountLogsKey(reviewId);
 		reviewAndViewCountLogs.put(reviewAndViewCountLogsKey, String.valueOf(latestViewCount + 1));
 	}
@@ -95,20 +111,6 @@ public class ReviewRedisFacade {
 	private String generateReviewAndViewCountLogsKey(Long reviewId) {
 		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		return "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
-	}
-
-	private int getLatestViewCount(
-			RMap<String, String> reviewAndViewCountLogs, Long reviewId, int defaultViewCount
-	) {
-		return reviewAndViewCountLogs.keySet()
-				.stream()
-				.map(String::valueOf)
-				.collect(Collectors.toSet())
-				.stream()
-				.filter(key -> extractReviewId(key).equals(String.valueOf(reviewId)))
-				.max(Comparator.comparing(this::extractViewedTime))
-				.map(latestKey -> Integer.parseInt(reviewAndViewCountLogs.get(latestKey)))
-				.orElse(defaultViewCount);
 	}
 
 	private String extractReviewId(String key) {
