@@ -2,7 +2,7 @@ spring:
   config:
     import:
       - optional:file:env/dev-db.env[.properties]
-      - optional:file:env/redis.env[.properties]
+      - optional:file:env/dev-redis.env[.properties]
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

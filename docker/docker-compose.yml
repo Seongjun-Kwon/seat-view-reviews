@@ -26,7 +26,8 @@ services:
     ports:
       - "6379:6379"
     env_file:
-      - ../env/redis.env
+      - ../env/dev-redis.env
+      - ../env/test-redis.env
     container_name: seat-view-redis
     environment:
       TZ: Asia/Seoul
@@ -48,7 +49,7 @@ services:
     env_file:
       - ../env/dev-db.env
       - ../env/aws.env
-      - ../env/redis.env
+      - ../env/dev-redis.env
     environment:
       TZ: Asia/Seoul
     depends_on:
