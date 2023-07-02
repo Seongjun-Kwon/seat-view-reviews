@@ -2,11 +2,15 @@ package com.goodseats.seatviewreviews.domain.review.controller;
 
 import static com.goodseats.seatviewreviews.common.constant.CookieConstant.*;
 import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -274,5 +278,35 @@ class ReviewControllerTest {
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
 				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("Success - 동시에 50명이 조회했을 때 조회 수가 50개 증가한다")
+	void increaseViewCountInMultiThreads() throws InterruptedException {
+		// given
+		ExecutorService executorService = Executors.newFixedThreadPool(50);
+		CountDownLatch latch = new CountDownLatch(50);
+
+		Thread.sleep(500);
+
+		// when
+		for (int i = 0; i < 50; i++) {
+			executorService.submit(() -> {
+				try {
+					mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
+							.accept(MediaType.APPLICATION_JSON));
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+
+		latch.await();
+
+		// then
+		int latestViewCount = reviewRedisFacade.getLatestViewCount(publishedReview.getId(), publishedReview.getViewCount());
+		assertThat(latestViewCount).isEqualTo(50);
 	}
 }
