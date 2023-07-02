@@ -26,7 +26,8 @@ jobs:
           echo "${{secrets.AWS_ENV}}" >> env/aws.env
           echo "${{secrets.TEST_DB_ENV}}" >> env/test-db.env
           echo "${{secrets.DEV_DB_ENV}}" >> env/dev-db.env
-          echo "${{secrets.REDIS_ENV}}" >> env/redis.env
+          echo "${{secrets.TEST_REDIS_ENV}}" >> env/test-redis.env
+          echo "${{secrets.DEV_REDIS_ENV}}" >> env/dev-redis.env
 
       - name: Run docker DB, Redis container
         run: | 
