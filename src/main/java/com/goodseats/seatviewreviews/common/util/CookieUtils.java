@@ -18,6 +18,7 @@ public class CookieUtils {
 
 	public static Cookie setUserKey(Cookie userKey, HttpServletResponse response) {
 		if (Objects.nonNull(userKey)) {
+			response.addCookie(userKey);
 			return userKey;
 		}
 
