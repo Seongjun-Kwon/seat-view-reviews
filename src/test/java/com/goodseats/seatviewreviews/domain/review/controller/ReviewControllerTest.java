@@ -265,6 +265,34 @@ class ReviewControllerTest {
 					.andExpect(cookie().value(USER_KEY, userCookieValue))
 					.andDo(print());
 		}
+
+		@Test
+		@DisplayName("Success - 사용자가 이미 조회 한 후기를 조회 시 조회 수가 늘어나지 않는다")
+		void notIncreaseViewCountWhenAlreadyRead() throws Exception {
+			// given
+			String userCookieValue = String.valueOf(UUID.randomUUID());
+			MockCookie cookie = new MockCookie(USER_KEY, userCookieValue);
+
+			mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
+							.accept(MediaType.APPLICATION_JSON)
+							.cookie(cookie))
+					.andDo(print());
+
+			int viewCountBeforeRead
+					= reviewRedisFacade.getLatestViewCount(publishedReview.getId(), publishedReview.getViewCount());
+
+			// when
+			mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
+							.accept(MediaType.APPLICATION_JSON)
+							.cookie(cookie))
+					.andExpect(status().isOk())
+					.andDo(print());
+
+			// then
+			int viewCountAfterRead
+					= reviewRedisFacade.getLatestViewCount(publishedReview.getId(), publishedReview.getViewCount());
+			assertThat(viewCountAfterRead).isEqualTo(viewCountBeforeRead);
+		}
 	}
 
 	@Test
