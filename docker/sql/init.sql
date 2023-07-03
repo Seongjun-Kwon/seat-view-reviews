@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `review`
     `title`           VARCHAR(50)    NULL,
     `content`         VARCHAR(10000) NULL,
     `score`           INT            NULL,
-    `hits`            INT            NOT NULL,
+    `view_count`            INT            NOT NULL,
     `is_published`    BOOLEAN        NOT NULL,
     `created_at`      TIMESTAMP      NOT NULL,
     `last_updated_at` TIMESTAMP      NOT NULL,

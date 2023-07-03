@@ -21,6 +21,7 @@ import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
@@ -186,5 +187,64 @@ class ReviewServiceTest {
 					.isExactlyInstanceOf(AuthenticationException.class)
 					.hasMessage(UNAUTHORIZED.getMessage());
 		}
+	}
+
+	@Test
+	@DisplayName("Success - 후기 상세 조회에 성공한다")
+	void getReviewSuccess() {
+		// given
+		Long seatId = 1L;
+		Long memberId = 1L;
+		Long reviewId = 1L;
+
+		Member member = new Member("test@test.com", "test", "test");
+		ReflectionTestUtils.setField(member, "id", memberId);
+
+		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
+		SeatGrade seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
+		SeatSection seatSection = new SeatSection("110", stadium, seatGrade);
+		Seat seat = new Seat("1", seatGrade, seatSection);
+		ReflectionTestUtils.setField(seat, "id", seatId);
+
+		Review review = new Review("테스트 제목", "테스트 내용", 5, member, seat);
+		ReflectionTestUtils.setField(review, "id", reviewId);
+
+		when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+
+		// when
+		ReviewDetailResponse reviewDetailResponse = reviewService.getReview(reviewId);
+
+		// then
+		verify(reviewRepository).findById(reviewId);
+		assertThat(reviewDetailResponse.title()).isEqualTo(review.getTitle());
+		assertThat(reviewDetailResponse.content()).isEqualTo(review.getContent());
+		assertThat(reviewDetailResponse.viewCount()).isEqualTo(review.getViewCount());
+		assertThat(reviewDetailResponse.score()).isEqualTo(review.getScore());
+		assertThat(reviewDetailResponse.writer()).isEqualTo(review.getMember().getNickname());
+	}
+
+	@Test
+	@DisplayName("Fail - 조회하려는 후기가 없으면 후기 상세 조회에 실패한다")
+	void getReviewFailByNotFound() {
+		// given
+		Long seatId = 1L;
+		Long memberId = 1L;
+		Long reviewId = 1L;
+
+		Member member = new Member("test@test.com", "test", "test");
+		ReflectionTestUtils.setField(member, "id", memberId);
+
+		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
+		SeatGrade seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
+		SeatSection seatSection = new SeatSection("110", stadium, seatGrade);
+		Seat seat = new Seat("1", seatGrade, seatSection);
+		ReflectionTestUtils.setField(seat, "id", seatId);
+
+		when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
+
+		// when & then
+		assertThatThrownBy(() -> reviewService.getReview(reviewId))
+				.isExactlyInstanceOf(NotFoundException.class)
+				.hasMessage(NOT_FOUND.getMessage());
 	}
 }
