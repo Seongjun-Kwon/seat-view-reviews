@@ -43,7 +43,7 @@ public class ReviewScheduler {
 	}
 
 	@Scheduled(cron = "0 0 0 * * *")
-	public void clearHitLogs() {
+	public void clearViewCountLogs() {
 		reviewRedisFacade.clearAllLogs();
 	}
 
