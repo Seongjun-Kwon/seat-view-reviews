@@ -2,6 +2,8 @@ package com.goodseats.seatviewreviews.domain.review.service;
 
 import static com.goodseats.seatviewreviews.common.error.exception.ErrorCode.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import com.goodseats.seatviewreviews.domain.review.mapper.ReviewMapper;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
+import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewsResponse;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
@@ -54,5 +57,14 @@ public class ReviewService {
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 
 		return ReviewMapper.toReviewDetailResponse(review);
+	}
+
+	@Transactional(readOnly = true)
+	public ReviewsResponse getReviews(Long seatId, Pageable pageable) {
+		Seat seat = seatRepository.findById(seatId)
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+
+		Page<Review> reviewPage = reviewRepository.findAllBySeatAndPublishedTrue(seat, pageable);
+		return ReviewMapper.toReviewsResponse(reviewPage);
 	}
 }
