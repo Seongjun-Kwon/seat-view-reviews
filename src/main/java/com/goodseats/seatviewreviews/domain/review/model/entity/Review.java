@@ -42,8 +42,8 @@ public class Review extends BaseEntity {
 	@Column(name = "view_count", nullable = false)
 	private int viewCount;
 
-	@Column(name = "is_published", nullable = false)
-	private boolean isPublished;
+	@Column(name = "published", nullable = false)
+	private boolean published;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
@@ -58,14 +58,14 @@ public class Review extends BaseEntity {
 		this.content = content;
 		this.score = score;
 		this.viewCount = 0;
-		this.isPublished = false;
+		this.published = false;
 		this.member = member;
 		this.seat = seat;
 	}
 
 	public Review(Member member, Seat seat) {
 		this.viewCount = 0;
-		this.isPublished = false;
+		this.published = false;
 		this.member = member;
 		this.seat = seat;
 	}
@@ -74,7 +74,7 @@ public class Review extends BaseEntity {
 		this.title = title;
 		this.content = content;
 		this.score = score;
-		this.isPublished = true;
+		this.published = true;
 	}
 
 	public void verifyWriter(Long memberId) {
