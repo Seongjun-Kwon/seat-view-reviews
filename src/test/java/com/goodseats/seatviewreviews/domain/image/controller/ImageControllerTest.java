@@ -1,6 +1,5 @@
 package com.goodseats.seatviewreviews.domain.image.controller;
 
-import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -22,11 +21,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.goodseats.seatviewreviews.common.TestUtils;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageDeleteRequest;
 import com.goodseats.seatviewreviews.domain.image.model.entity.Image;
 import com.goodseats.seatviewreviews.domain.image.model.vo.ImageType;
 import com.goodseats.seatviewreviews.domain.image.repository.ImageRepository;
-import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
@@ -49,6 +48,12 @@ class ImageControllerTest {
 	@Autowired
 	private ImageRepository imageRepository;
 
+	private MockMultipartFile multipartFile = new MockMultipartFile(
+			"multipartFile", "testOriginalName.png", IMAGE_PNG_VALUE, "testContent".getBytes()
+	);
+	private ImageType imageType = ImageType.REVIEW;
+	private Long referenceId = 1L;
+
 	@Test
 	@DisplayName("Success - 이미지 저장에 성공하고 200 으로 응답한다")
 	void createImageSuccess() throws Exception {
@@ -56,15 +61,7 @@ class ImageControllerTest {
 		Member member = new Member("test@test.com", "test", "test");
 		memberRepository.save(member);
 
-		AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
-
-		MockMultipartFile multipartFile = new MockMultipartFile(
-				"multipartFile", "testOriginalName.png", IMAGE_PNG_VALUE, "testContent".getBytes()
-		);
-		ImageType imageType = ImageType.REVIEW;
-		Long referenceId = 1L;
+		MockHttpSession session = TestUtils.getLoginSession(member, MemberAuthority.USER);
 
 		// when & then
 		mockMvc.perform(multipart("/api/v1/images")
@@ -90,15 +87,11 @@ class ImageControllerTest {
 			Member member = new Member("test@test.com", "test", "test");
 			memberRepository.save(member);
 
-			AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
-			MockHttpSession session = new MockHttpSession();
-			session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
+			MockHttpSession session = TestUtils.getLoginSession(member, MemberAuthority.USER);
 
 			MockMultipartFile multipartFile = new MockMultipartFile(
 					"multipartFile", "testOriginalName.png", APPLICATION_PDF_VALUE, "testContent".getBytes()
 			);
-			ImageType imageType = ImageType.REVIEW;
-			Long referenceId = 1L;
 
 			// when & then
 			mockMvc.perform(multipart("/api/v1/images")
@@ -115,14 +108,7 @@ class ImageControllerTest {
 		@Test
 		@DisplayName("Fail - 비회원이 이미지 저장을 요청하면 실패하고 401 응답한다")
 		void createImageFailByUnauthorized() throws Exception {
-			// given
-			MockMultipartFile multipartFile = new MockMultipartFile(
-					"multipartFile", "testOriginalName.png", APPLICATION_PDF_VALUE, "testContent".getBytes()
-			);
-			ImageType imageType = ImageType.REVIEW;
-			Long referenceId = 1L;
-
-			// when & then
+			// given & when & then
 			mockMvc.perform(multipart("/api/v1/images")
 							.file(multipartFile)
 							.param("imageType", imageType.toString())
@@ -141,9 +127,7 @@ class ImageControllerTest {
 		Member member = new Member("test@test.com", "test", "test");
 		memberRepository.save(member);
 
-		AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
+		MockHttpSession session = TestUtils.getLoginSession(member, MemberAuthority.USER);
 
 		Image image = new Image(ImageType.REVIEW, 1L, "testUrl", "테스트 이미지.jpg");
 		Image savedImage = imageRepository.save(image);
@@ -168,9 +152,7 @@ class ImageControllerTest {
 			Member member = new Member("test@test.com", "test", "test");
 			memberRepository.save(member);
 
-			AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
-			MockHttpSession session = new MockHttpSession();
-			session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
+			MockHttpSession session = TestUtils.getLoginSession(member, MemberAuthority.USER);
 
 			Long imageId = 1L;
 
@@ -187,9 +169,7 @@ class ImageControllerTest {
 			Member member = new Member("test@test.com", "test", "test");
 			memberRepository.save(member);
 
-			AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
-			MockHttpSession session = new MockHttpSession();
-			session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
+			MockHttpSession session = TestUtils.getLoginSession(member, MemberAuthority.USER);
 
 			Image image = new Image(ImageType.REVIEW, 1L, "testUrl", "테스트 이미지.jpg");
 			Image savedImage = imageRepository.save(image);
@@ -209,12 +189,8 @@ class ImageControllerTest {
 		Member member = new Member("test@test.com", "test", "test");
 		memberRepository.save(member);
 
-		AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
+		MockHttpSession session = TestUtils.getLoginSession(member, MemberAuthority.USER);
 
-		ImageType imageType = ImageType.REVIEW;
-		Long referenceId = 1L;
 		Image image1 = new Image(imageType, referenceId, "testUrl1", "테스트 이미지1.jpg");
 		Image image2 = new Image(imageType, referenceId, "testUrl2", "테스트 이미지2.jpg");
 		List<Image> images = List.of(image1, image2);

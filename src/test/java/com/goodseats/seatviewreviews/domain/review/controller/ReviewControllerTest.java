@@ -1,7 +1,6 @@
 package com.goodseats.seatviewreviews.domain.review.controller;
 
 import static com.goodseats.seatviewreviews.common.constant.CookieConstant.*;
-import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -27,7 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
+import com.goodseats.seatviewreviews.common.TestUtils;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
@@ -124,10 +123,7 @@ class ReviewControllerTest {
 	@DisplayName("Success - 후기 임시 생성에 성공하고 200 응답한다")
 	void createTempReviewSuccess() throws Exception {
 		// given
-		AuthenticationDTO authenticationDTO = new AuthenticationDTO(writer.getId(), MemberAuthority.USER);
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
-
+		MockHttpSession session = TestUtils.getLoginSession(writer, MemberAuthority.USER);
 		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(seat.getId());
 
 		// when & then
@@ -143,12 +139,9 @@ class ReviewControllerTest {
 	@DisplayName("Fail - 후기 작성 하려는 좌석의 id 가 없으면 실패하고 404 응답한다")
 	void createTempReviewFailByNotFoundSeatId() throws Exception {
 		// given
+		MockHttpSession session = TestUtils.getLoginSession(writer, MemberAuthority.USER);
+
 		Long wrongSeatId = 0L;
-
-		AuthenticationDTO authenticationDTO = new AuthenticationDTO(writer.getId(), MemberAuthority.USER);
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
-
 		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(wrongSeatId);
 
 		// when & then
@@ -164,10 +157,7 @@ class ReviewControllerTest {
 	@DisplayName("Success - 후기 발행에 성공하고 204 응답한다")
 	void publishReviewSuccess() throws Exception {
 		// given
-		AuthenticationDTO authenticationDTO = new AuthenticationDTO(writer.getId(), MemberAuthority.USER);
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
-
+		MockHttpSession session = TestUtils.getLoginSession(writer, MemberAuthority.USER);
 		ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
 		// when & then
@@ -187,12 +177,9 @@ class ReviewControllerTest {
 		@Test
 		@DisplayName("Fail - 발행하고자 하는 임시 후기가 존재하지 않으면 실패하고 404 응답한다")
 		void publishReviewFailByNotFoundTempReview() throws Exception {
+			MockHttpSession session = TestUtils.getLoginSession(writer, MemberAuthority.USER);
+
 			Long wrongReviewId = 1L;
-
-			AuthenticationDTO authenticationDTO = new AuthenticationDTO(writer.getId(), MemberAuthority.USER);
-			MockHttpSession session = new MockHttpSession();
-			session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
-
 			ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
 			// when & then
@@ -209,10 +196,7 @@ class ReviewControllerTest {
 		@DisplayName("Fail - 발행하는 회원이 임시 후기를 작성한 회원이 아니면 실패하고 401 응답한다")
 		void publishReviewFailByNotTempReviewWriter() throws Exception {
 			// given
-			AuthenticationDTO authenticationDTO = new AuthenticationDTO(notWriter.getId(), MemberAuthority.USER);
-			MockHttpSession session = new MockHttpSession();
-			session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
-
+			MockHttpSession session = TestUtils.getLoginSession(notWriter, MemberAuthority.USER);
 			ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
 			// when & then

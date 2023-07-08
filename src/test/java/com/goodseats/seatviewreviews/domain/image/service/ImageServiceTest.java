@@ -46,16 +46,17 @@ class ImageServiceTest {
 	@InjectMocks
 	private ImageService imageService;
 
+	private MockMultipartFile multipartFile = new MockMultipartFile(
+			"testName", "testOriginalName", IMAGE_PNG_VALUE, "testContent".getBytes()
+	);
+	private ImageType imageType = ImageType.REVIEW;
+	private Long referenceId = 1L;
+
 	@Test
 	@DisplayName("Success - 이미지 저장에 성공한다")
 	void createImageSuccess() {
 		// given
-		MockMultipartFile multipartFile = new MockMultipartFile(
-				"testName", "testOriginalName", IMAGE_PNG_VALUE, "testContent".getBytes()
-		);
-		Long referenceId = 1L;
-		ImageType imageType = ImageType.REVIEW;
-		ImageCreateRequest imageCreateRequest = new ImageCreateRequest(multipartFile, ImageType.REVIEW, referenceId);
+		ImageCreateRequest imageCreateRequest = new ImageCreateRequest(multipartFile, imageType, referenceId);
 
 		Long imageId = 1L;
 		String imageUrl = "testUrl";
@@ -85,8 +86,6 @@ class ImageServiceTest {
 		MockMultipartFile multipartFile = new MockMultipartFile(
 				"testName", "testOriginalName", APPLICATION_PDF_VALUE, "testContent".getBytes()
 		);
-		Long referenceId = 1L;
-		ImageType imageType = ImageType.REVIEW;
 		ImageCreateRequest imageCreateRequest = new ImageCreateRequest(multipartFile, imageType, referenceId);
 
 		// when & then
@@ -99,7 +98,7 @@ class ImageServiceTest {
 	@DisplayName("Success - 이미지 단건 삭제에 성공한다")
 	void deleteImageSuccess() {
 		// given
-		Long imageId=1L;
+		Long imageId = 1L;
 		Image image = new Image(ImageType.REVIEW, 1L, "testUrl", "테스트 이미지.jpg");
 		ReflectionTestUtils.setField(image, "id", imageId);
 
@@ -121,7 +120,7 @@ class ImageServiceTest {
 		@DisplayName("Fail - 삭제하고자 하는 이미지가 존재하지 않으면 실패한다")
 		void deleteImageFailByNotFound() {
 			// given
-			Long imageId=1L;
+			Long imageId = 1L;
 
 			when(imageRepository.findById(imageId)).thenReturn(Optional.empty());
 
@@ -135,7 +134,7 @@ class ImageServiceTest {
 		@DisplayName("Fail - 삭제하고자 하는 이미지가 이미 삭제되었으면 실패한다")
 		void deleteImageFailByAlreadyDeleted() {
 			// given
-			Long imageId=1L;
+			Long imageId = 1L;
 			Image image = new Image(ImageType.REVIEW, 1L, "testUrl", "테스트 이미지.jpg");
 			ReflectionTestUtils.setField(image, "id", imageId);
 			image.delete();
@@ -153,8 +152,6 @@ class ImageServiceTest {
 	@DisplayName("Success - 연관된 이미지들 삭제에 성공한다")
 	void deleteImagesSuccess() {
 		// given
-		ImageType imageType = ImageType.REVIEW;
-		Long referenceId = 1L;
 		Image image1 = new Image(imageType, referenceId, "testUrl1", "테스트 이미지1.jpg");
 		Image image2 = new Image(imageType, referenceId, "testUrl2", "테스트 이미지2.jpg");
 		List<Image> images = List.of(image1, image2);
