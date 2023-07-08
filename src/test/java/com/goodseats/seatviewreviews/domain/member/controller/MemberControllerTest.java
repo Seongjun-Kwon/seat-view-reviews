@@ -1,6 +1,5 @@
 package com.goodseats.seatviewreviews.domain.member.controller;
 
-import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -20,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
+import com.goodseats.seatviewreviews.common.TestUtils;
 import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberLoginRequest;
 import com.goodseats.seatviewreviews.domain.member.model.dto.request.MemberSignUpRequest;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
@@ -197,9 +196,7 @@ class MemberControllerTest {
 		Member member = new Member(memberSignUpRequest.loginEmail(), encodedPassword, memberSignUpRequest.nickname());
 		memberRepository.save(member);
 
-		AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute(LOGIN_MEMBER_INFO, authenticationDTO);
+		MockHttpSession session = TestUtils.getLoginSession(member, MemberAuthority.USER);
 
 		// when & then
 		mockMvc.perform(post("/api/v1/members/logout")
