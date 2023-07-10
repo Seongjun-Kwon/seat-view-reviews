@@ -30,7 +30,7 @@ public class ReviewMapper {
 
 	public static ReviewsElementResponse toReviewsElementResponse(Review review) {
 		return new ReviewsElementResponse(
-				review.getTitle(), review.getScore(), review.getViewCount(), review.getMember().getNickname()
+				review.getId(), review.getTitle(), review.getScore(), review.getViewCount(), review.getMember().getNickname()
 		);
 	}
 
