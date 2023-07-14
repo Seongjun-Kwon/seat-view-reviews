@@ -28,7 +28,10 @@ public class ReviewRedisFacade {
 
 	@Transactional(readOnly = true)
 	public ReviewDetailResponse getReview(String userKey, Long reviewId) {
-		controlViewCountConcurrency(userKey, reviewId);
+		if (hasNotViewedReview(userKey, reviewId)) {
+			controlViewCountConcurrency(userKey, reviewId);
+		}
+
 		return reviewService.getReview(reviewId);
 	}
 
@@ -65,15 +68,9 @@ public class ReviewRedisFacade {
 			tryLock(viewCountLock);
 
 			String userViewedReviewLog = generateUserViewedReviewLog(userKey, reviewId);
-
-			if (alreadyViewedReview(userViewedReviewLog)) {
-				return;
-			}
-
 			ReviewDetailResponse reviewDetailResponse = reviewService.getReview(reviewId);
 			saveUserViewedReviewLog(userViewedReviewLog);
 			increaseViewCount(reviewId, reviewDetailResponse.viewCount());
-
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -93,8 +90,9 @@ public class ReviewRedisFacade {
 		return "user" + "_" + userKey + ", " + "reviewId" + "_" + reviewId;
 	}
 
-	private boolean alreadyViewedReview(String userViewedReviewLog) {
-		return redissonClient.getSet(USER_VIEWED_REVIEW_LOGS_NAME).contains(userViewedReviewLog);
+	private boolean hasNotViewedReview(String userKey, Long reviewId) {
+		String userViewedReviewLog = generateUserViewedReviewLog(userKey, reviewId);
+		return !redissonClient.getSet(USER_VIEWED_REVIEW_LOGS_NAME).contains(userViewedReviewLog);
 	}
 
 	private void saveUserViewedReviewLog(String userViewedReviewLog) {
@@ -109,7 +107,7 @@ public class ReviewRedisFacade {
 	}
 
 	private String generateReviewAndViewCountLogsKey(Long reviewId) {
-		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 		return "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
 	}
 
@@ -122,6 +120,6 @@ public class ReviewRedisFacade {
 	private LocalDateTime extractViewedTime(String key) {
 		int beforeTimeIndex = key.lastIndexOf(DELIMITER);
 		String timeString = key.substring(beforeTimeIndex + 1);
-		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 	}
 }
