@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.goodseats.seatviewreviews.common.error.exception.AuthenticationException;
+import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
 import com.goodseats.seatviewreviews.common.error.exception.ErrorCode;
 import com.goodseats.seatviewreviews.domain.BaseEntity;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
@@ -53,16 +54,6 @@ public class Review extends BaseEntity {
 	@JoinColumn(name = "seat_id")
 	private Seat seat;
 
-	public Review(String title, String content, int score, Member member, Seat seat) {
-		this.title = title;
-		this.content = content;
-		this.score = score;
-		this.viewCount = 0;
-		this.published = false;
-		this.member = member;
-		this.seat = seat;
-	}
-
 	public Review(Member member, Seat seat) {
 		this.viewCount = 0;
 		this.published = false;
@@ -71,6 +62,10 @@ public class Review extends BaseEntity {
 	}
 
 	public void publish(String title, String content, int score) {
+		if (this.published) {
+			throw new DuplicatedException(ErrorCode.ALREADY_PUBLISHED);
+		}
+
 		this.title = title;
 		this.content = content;
 		this.score = score;

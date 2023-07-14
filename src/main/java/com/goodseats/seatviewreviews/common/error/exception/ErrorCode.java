@@ -11,7 +11,8 @@ public enum ErrorCode {
 	UNAUTHORIZED(401, "인증되지 않은 사용자입니다."),
 	BAD_LOGIN_REQUEST(400, "아이디 혹은 비밀번호가 틀립니다."),
 	BAD_IMAGE_REQUEST(400, "잘못된 이미지 업로드 요청입니다."),
-	ALREADY_DELETED(409, "이미 삭제된 데이터입니다.");
+	ALREADY_DELETED(409, "이미 삭제된 데이터입니다."),
+	ALREADY_PUBLISHED(409, "이미 발행된 후기입니다.");
 
 	private final int status;
 	private final String message;
