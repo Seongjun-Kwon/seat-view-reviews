@@ -46,7 +46,6 @@ import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;
 
 @ActiveProfiles("test")
-// @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class ReviewControllerTest {
@@ -96,7 +95,8 @@ class ReviewControllerTest {
 		seatSection = new SeatSection("110", stadium, seatGrade);
 		seat = new Seat("1", seatGrade, seatSection);
 		tempReview = new Review(writer, seat);
-		publishedReview = new Review("테스트 제목", "테스트 내용", 5, writer, seat);
+		publishedReview = new Review(writer, seat);
+		publishedReview.publish("테스트 제목", "테스트 내용", 5);
 
 		memberRepository.save(writer);
 		memberRepository.save(notWriter);

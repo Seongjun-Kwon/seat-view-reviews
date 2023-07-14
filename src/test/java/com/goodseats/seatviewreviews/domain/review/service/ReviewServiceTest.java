@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -46,63 +47,65 @@ class ReviewServiceTest {
 	@InjectMocks
 	private ReviewService reviewService;
 
+	private Member member;
+	private Stadium stadium;
+	private SeatGrade seatGrade;
+	private SeatSection seatSection;
+	private Seat seat;
+	private Review tempReview;
+	private Review publishedReview;
+
+	@BeforeEach
+	void setUp() {
+		member = new Member("test@test.com", "test", "test");
+		stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
+		seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
+		seatSection = new SeatSection("110", stadium, seatGrade);
+		seat = new Seat("1", seatGrade, seatSection);
+		tempReview = new Review(member, seat);
+		publishedReview = new Review(member, seat);
+		publishedReview.publish("테스트 제목", "테스트 내용", 5);
+
+		ReflectionTestUtils.setField(member, "id", 1L);
+		ReflectionTestUtils.setField(stadium, "id", 1L);
+		ReflectionTestUtils.setField(seatGrade, "id", 1L);
+		ReflectionTestUtils.setField(seatSection, "id", 1L);
+		ReflectionTestUtils.setField(seat, "id", 1L);
+		ReflectionTestUtils.setField(tempReview, "id", 1L);
+		ReflectionTestUtils.setField(publishedReview, "id", 1L);
+	}
+
 	@Test
 	@DisplayName("Success - 후기 임시 생성에 성공한다")
 	void createTempReviewSuccess() {
 		// given
-		Long seatId = 1L;
-		Long memberId = 1L;
-		Long reviewId = 1L;
-		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(seatId);
+		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(seat.getId());
 
-		Member member = new Member("test@test.com", "test", "test");
-		ReflectionTestUtils.setField(member, "id", memberId);
-
-		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
-		SeatGrade seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
-		SeatSection seatSection = new SeatSection("110", stadium, seatGrade);
-		Seat seat = new Seat("1", seatGrade, seatSection);
-		ReflectionTestUtils.setField(seat, "id", seatId);
-
-		Review review = new Review(member, seat);
-		ReflectionTestUtils.setField(review, "id", reviewId);
-
-		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-		when(seatRepository.findById(seatId)).thenReturn(Optional.of(seat));
-		when(reviewRepository.save(any(Review.class))).thenReturn(review);
+		when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+		when(seatRepository.findById(seat.getId())).thenReturn(Optional.of(seat));
+		when(reviewRepository.save(any(Review.class))).thenReturn(tempReview);
 
 		// when
-		Long savedReviewId = reviewService.createTempReview(tempReviewCreateRequest, memberId);
+		Long savedReviewId = reviewService.createTempReview(tempReviewCreateRequest, member.getId());
 
 		// then
-		verify(memberRepository).findById(memberId);
-		verify(seatRepository).findById(seatId);
+		verify(memberRepository).findById(member.getId());
+		verify(seatRepository).findById(seat.getId());
 		verify(reviewRepository).save(any(Review.class));
-		assertThat(savedReviewId).isEqualTo(review.getId());
+		assertThat(savedReviewId).isEqualTo(tempReview.getId());
 	}
 
 	@Test
 	@DisplayName("Fail - 후기 작성 하려는 좌석의 id 가 없으면 실패한다")
 	void createTempReviewFailByNotFoundSeatId() {
 		// given
-		Long seatId = 1L;
-		Long memberId = 1L;
-		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(seatId);
+		TempReviewCreateRequest tempReviewCreateRequest = new TempReviewCreateRequest(seat.getId());
 
-		Member member = new Member("test@test.com", "test", "test");
-		ReflectionTestUtils.setField(member, "id", memberId);
-
-		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
-		SeatGrade seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
-		SeatSection seatSection = new SeatSection("110", stadium, seatGrade);
-		Seat seat = new Seat("1", seatGrade, seatSection);
-		ReflectionTestUtils.setField(seat, "id", seatId);
-
-		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-		when(seatRepository.findById(seatId)).thenReturn(Optional.empty());
+		when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+		when(seatRepository.findById(seat.getId())).thenReturn(Optional.empty());
 
 		// when & then
-		assertThatThrownBy(() -> reviewService.createTempReview(tempReviewCreateRequest, memberId))
+		assertThatThrownBy(() -> reviewService.createTempReview(tempReviewCreateRequest, member.getId()))
 				.isExactlyInstanceOf(NotFoundException.class)
 				.hasMessage(NOT_FOUND.getMessage());
 	}
@@ -111,27 +114,12 @@ class ReviewServiceTest {
 	@DisplayName("Success - 후기 발행에 성공한다")
 	void publishReviewSuccess() {
 		// given
-		Long seatId = 1L;
-		Long memberId = 1L;
-		Long reviewId = 1L;
 		ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
-		Member member = new Member("test@test.com", "test", "test");
-		ReflectionTestUtils.setField(member, "id", memberId);
-
-		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
-		SeatGrade seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
-		SeatSection seatSection = new SeatSection("110", stadium, seatGrade);
-		Seat seat = new Seat("1", seatGrade, seatSection);
-		ReflectionTestUtils.setField(seat, "id", seatId);
-
-		Review tempReview = new Review(member, seat);
-		ReflectionTestUtils.setField(tempReview, "id", reviewId);
-
-		when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(tempReview));
+		when(reviewRepository.findById(tempReview.getId())).thenReturn(Optional.of(tempReview));
 
 		// when
-		reviewService.publishReview(reviewPublishRequest, reviewId, memberId);
+		reviewService.publishReview(reviewPublishRequest, tempReview.getId(), member.getId());
 
 		// then
 		assertThat(tempReview.getTitle()).isEqualTo(reviewPublishRequest.title());
@@ -147,14 +135,12 @@ class ReviewServiceTest {
 		@DisplayName("Fail - 발행하고자 하는 임시 후기가 존재하지 않으면 실패한다")
 		void publishReviewFailByNotFoundTempReview() {
 			// given
-			Long memberId = 1L;
-			Long reviewId = 1L;
 			ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
-			when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
+			when(reviewRepository.findById(tempReview.getId())).thenReturn(Optional.empty());
 
 			// when & then
-			assertThatThrownBy(() -> reviewService.publishReview(reviewPublishRequest, reviewId, memberId))
+			assertThatThrownBy(() -> reviewService.publishReview(reviewPublishRequest, tempReview.getId(), member.getId()))
 					.isExactlyInstanceOf(NotFoundException.class)
 					.hasMessage(NOT_FOUND.getMessage());
 		}
@@ -162,28 +148,13 @@ class ReviewServiceTest {
 		@Test
 		@DisplayName("Fail - 발행하는 회원이 임시 후기를 작성한 회원이 아니면 실패한다")
 		void publishReviewFailByNotTempReviewWriter() {
-			Long seatId = 1L;
-			Long memberId = 1L;
 			Long wrongMemberId = 2L;
-			Long reviewId = 1L;
 			ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
-			Member member = new Member("test@test.com", "test", "test");
-			ReflectionTestUtils.setField(member, "id", memberId);
-
-			Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
-			SeatGrade seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
-			SeatSection seatSection = new SeatSection("110", stadium, seatGrade);
-			Seat seat = new Seat("1", seatGrade, seatSection);
-			ReflectionTestUtils.setField(seat, "id", seatId);
-
-			Review tempReview = new Review(member, seat);
-			ReflectionTestUtils.setField(tempReview, "id", reviewId);
-
-			when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(tempReview));
+			when(reviewRepository.findById(tempReview.getId())).thenReturn(Optional.of(tempReview));
 
 			// when & then
-			assertThatThrownBy(() -> reviewService.publishReview(reviewPublishRequest, reviewId, wrongMemberId))
+			assertThatThrownBy(() -> reviewService.publishReview(reviewPublishRequest, tempReview.getId(), wrongMemberId))
 					.isExactlyInstanceOf(AuthenticationException.class)
 					.hasMessage(UNAUTHORIZED.getMessage());
 		}
@@ -193,57 +164,28 @@ class ReviewServiceTest {
 	@DisplayName("Success - 후기 상세 조회에 성공한다")
 	void getReviewSuccess() {
 		// given
-		Long seatId = 1L;
-		Long memberId = 1L;
-		Long reviewId = 1L;
-
-		Member member = new Member("test@test.com", "test", "test");
-		ReflectionTestUtils.setField(member, "id", memberId);
-
-		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
-		SeatGrade seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
-		SeatSection seatSection = new SeatSection("110", stadium, seatGrade);
-		Seat seat = new Seat("1", seatGrade, seatSection);
-		ReflectionTestUtils.setField(seat, "id", seatId);
-
-		Review review = new Review("테스트 제목", "테스트 내용", 5, member, seat);
-		ReflectionTestUtils.setField(review, "id", reviewId);
-
-		when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+		when(reviewRepository.findById(publishedReview.getId())).thenReturn(Optional.of(publishedReview));
 
 		// when
-		ReviewDetailResponse reviewDetailResponse = reviewService.getReview(reviewId);
+		ReviewDetailResponse reviewDetailResponse = reviewService.getReview(publishedReview.getId());
 
 		// then
-		verify(reviewRepository).findById(reviewId);
-		assertThat(reviewDetailResponse.title()).isEqualTo(review.getTitle());
-		assertThat(reviewDetailResponse.content()).isEqualTo(review.getContent());
-		assertThat(reviewDetailResponse.viewCount()).isEqualTo(review.getViewCount());
-		assertThat(reviewDetailResponse.score()).isEqualTo(review.getScore());
-		assertThat(reviewDetailResponse.writer()).isEqualTo(review.getMember().getNickname());
+		verify(reviewRepository).findById(publishedReview.getId());
+		assertThat(reviewDetailResponse.title()).isEqualTo(publishedReview.getTitle());
+		assertThat(reviewDetailResponse.content()).isEqualTo(publishedReview.getContent());
+		assertThat(reviewDetailResponse.viewCount()).isEqualTo(publishedReview.getViewCount());
+		assertThat(reviewDetailResponse.score()).isEqualTo(publishedReview.getScore());
+		assertThat(reviewDetailResponse.writer()).isEqualTo(publishedReview.getMember().getNickname());
 	}
 
 	@Test
 	@DisplayName("Fail - 조회하려는 후기가 없으면 후기 상세 조회에 실패한다")
 	void getReviewFailByNotFound() {
 		// given
-		Long seatId = 1L;
-		Long memberId = 1L;
-		Long reviewId = 1L;
-
-		Member member = new Member("test@test.com", "test", "test");
-		ReflectionTestUtils.setField(member, "id", memberId);
-
-		Stadium stadium = new Stadium("잠실 야구장", "서울 송파구 올림픽로 19-2 서울종합운동장", HomeTeam.DOOSAN_LG);
-		SeatGrade seatGrade = new SeatGrade("테이블", "주중 47,000 / 주말 53,000", stadium);
-		SeatSection seatSection = new SeatSection("110", stadium, seatGrade);
-		Seat seat = new Seat("1", seatGrade, seatSection);
-		ReflectionTestUtils.setField(seat, "id", seatId);
-
-		when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
+		when(reviewRepository.findById(publishedReview.getId())).thenReturn(Optional.empty());
 
 		// when & then
-		assertThatThrownBy(() -> reviewService.getReview(reviewId))
+		assertThatThrownBy(() -> reviewService.getReview(publishedReview.getId()))
 				.isExactlyInstanceOf(NotFoundException.class)
 				.hasMessage(NOT_FOUND.getMessage());
 	}

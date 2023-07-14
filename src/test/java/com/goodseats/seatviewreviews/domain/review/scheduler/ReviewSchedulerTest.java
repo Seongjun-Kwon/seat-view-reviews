@@ -67,7 +67,8 @@ class ReviewSchedulerTest {
 		Seat seat = new Seat("1", seatGrade, seatSection);
 		ReflectionTestUtils.setField(seat, "id", seatId);
 
-		Review review = new Review("테스트 제목", "테스트 내용", 5, member, seat);
+		Review review = new Review(member, seat);
+		review.publish("테스트 제목", "테스트 내용", 5);
 		ReflectionTestUtils.setField(review, "id", reviewId);
 
 		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
