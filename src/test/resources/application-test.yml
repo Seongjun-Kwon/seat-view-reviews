@@ -15,6 +15,10 @@ spring:
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
   redis:
     host: ${REDIS_HOST}
