@@ -64,7 +64,7 @@ public class ReviewService {
 		Seat seat = seatRepository.findById(seatId)
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 
-		Page<Review> reviewPage = reviewRepository.findAllBySeatAndPublishedTrue(seat, pageable);
+		Page<Review> reviewPage = reviewRepository.findAllWithFetchMemberBySeatIdAndPublishedTrue(seat.getId(), pageable);
 		return ReviewMapper.toReviewsResponse(reviewPage);
 	}
 }
