@@ -46,7 +46,6 @@ import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;
 
 @ActiveProfiles("test")
-// @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class ReviewControllerTest {
@@ -96,7 +95,8 @@ class ReviewControllerTest {
 		seatSection = new SeatSection("110", stadium, seatGrade);
 		seat = new Seat("1", seatGrade, seatSection);
 		tempReview = new Review(writer, seat);
-		publishedReview = new Review("테스트 제목", "테스트 내용", 5, writer, seat);
+		publishedReview = new Review(writer, seat);
+		publishedReview.publish("테스트 제목", "테스트 내용", 5);
 
 		memberRepository.save(writer);
 		memberRepository.save(notWriter);
@@ -293,16 +293,16 @@ class ReviewControllerTest {
 	}
 
 	@Test
-	@DisplayName("Success - 동시에 50명이 조회했을 때 조회 수가 50개 증가한다")
+	@DisplayName("Success - 동시에 100명이 조회했을 때 조회 수가 100개 증가한다")
 	void increaseViewCountInMultiThreads() throws InterruptedException {
 		// given
-		ExecutorService executorService = Executors.newFixedThreadPool(50);
-		CountDownLatch latch = new CountDownLatch(50);
+		ExecutorService executorService = Executors.newFixedThreadPool(100);
+		CountDownLatch latch = new CountDownLatch(100);
 
 		Thread.sleep(500);
 
 		// when
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 100; i++) {
 			executorService.submit(() -> {
 				try {
 					mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
@@ -319,6 +319,6 @@ class ReviewControllerTest {
 
 		// then
 		int latestViewCount = reviewRedisFacade.getLatestViewCount(publishedReview.getId(), publishedReview.getViewCount());
-		assertThat(latestViewCount).isEqualTo(50);
+		assertThat(latestViewCount).isEqualTo(100);
 	}
 }

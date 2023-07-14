@@ -63,7 +63,8 @@ class ReviewServiceTest {
 		seatSection = new SeatSection("110", stadium, seatGrade);
 		seat = new Seat("1", seatGrade, seatSection);
 		tempReview = new Review(member, seat);
-		publishedReview = new Review("테스트 제목", "테스트 내용", 5, member, seat);
+		publishedReview = new Review(member, seat);
+		publishedReview.publish("테스트 제목", "테스트 내용", 5);
 
 		ReflectionTestUtils.setField(member, "id", 1L);
 		ReflectionTestUtils.setField(stadium, "id", 1L);
