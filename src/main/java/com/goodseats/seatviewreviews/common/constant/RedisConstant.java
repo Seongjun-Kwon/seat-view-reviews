@@ -12,7 +12,7 @@ public class RedisConstant {
 	public static final String DELIMITER = "_";
 	public static final String SEPARATOR = ", ";
 	public static final String LOCK_NAME = "viewCountLock";
-	public static final int LOCK_WAIT_TIME = 2;
-	public static final int LEASE_TIME = 1;
+	public static final int LOCK_WAIT_TIME = 10;
+	public static final int LEASE_TIME = 5;
 
 }
