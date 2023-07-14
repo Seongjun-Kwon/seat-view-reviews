@@ -19,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockCookie;
 import org.springframework.mock.web.MockHttpSession;
@@ -30,8 +32,10 @@ import com.goodseats.seatviewreviews.common.TestUtils;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
+import com.goodseats.seatviewreviews.domain.review.mapper.ReviewMapper;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewsResponse;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.review.service.ReviewRedisFacade;
@@ -320,5 +324,48 @@ class ReviewControllerTest {
 		// then
 		int latestViewCount = reviewRedisFacade.getLatestViewCount(publishedReview.getId(), publishedReview.getViewCount());
 		assertThat(latestViewCount).isEqualTo(100);
+	}
+
+	@Test
+	@DisplayName("Success - 특정 좌석의 후기 목록 조회에 성공하고 200 응답한다")
+	void getReviewsSuccess() throws Exception {
+		// given
+		Review tempReview1 = new Review(writer, seat);
+		Review tempReview2 = new Review(writer, seat);
+		tempReview1.publish("테스트 제목1", "테스트 내용1", 5);
+		tempReview2.publish("테스트 제목2", "테스트 내용2", 5);
+		reviewRepository.saveAndFlush(tempReview1);
+		reviewRepository.saveAndFlush(tempReview2);
+
+		Page<Review> reviewPage = reviewRepository.findAllWithFetchMemberBySeatIdAndPublishedTrue(
+				seat.getId(), PageRequest.of(0, 1)
+		);
+		ReviewsResponse reviewsResponse = ReviewMapper.toReviewsResponse(reviewPage);
+
+		// when & then
+		mockMvc.perform(get("/api/v1/reviews")
+						.queryParam("seatId", String.valueOf(seat.getId()))
+						.queryParam("page", "0")
+						.queryParam("size", "1")
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().json(objectMapper.writeValueAsString(reviewsResponse)))
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("Fail - 후기 목록을 조회하려는 좌석이 존재하지 않는 좌석이면 실패하고 404 응답한다")
+	void getReviewsFailByNotFoundSeat() throws Exception {
+		// given
+		Long wrongSeatId = 0L;
+
+		// when & then
+		mockMvc.perform(get("/api/v1/reviews")
+						.queryParam("seatId", String.valueOf(wrongSeatId))
+						.queryParam("page", "0")
+						.queryParam("size", "1")
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andDo(print());
 	}
 }

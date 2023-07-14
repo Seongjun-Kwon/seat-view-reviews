@@ -4,6 +4,7 @@ import static com.goodseats.seatviewreviews.common.error.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.goodseats.seatviewreviews.common.error.exception.AuthenticationException;
@@ -23,6 +26,7 @@ import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
+import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewsResponse;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
@@ -188,5 +192,44 @@ class ReviewServiceTest {
 		assertThatThrownBy(() -> reviewService.getReview(publishedReview.getId()))
 				.isExactlyInstanceOf(NotFoundException.class)
 				.hasMessage(NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("Success - 특정 좌석의 후기 목록 조회에 성공한다")
+	void getReviewsSuccess() {
+		// given
+		Review review1 = new Review(member, seat);
+		Review review2 = new Review(member, seat);
+		review1.publish("테스트 제목1", "테스트 내용1", 5);
+		review2.publish("테스트 제목2", "테스트 내용2", 5);
+		ReflectionTestUtils.setField(review1, "id", 1L);
+		ReflectionTestUtils.setField(review2, "id", 2L);
+		List<Review> reviews = List.of(review1, review2);
+		PageImpl<Review> reviewPage = new PageImpl<>(reviews, PageRequest.of(0, 10), reviews.size());
+
+		when(seatRepository.findById(seat.getId())).thenReturn(Optional.of(seat));
+		when(reviewRepository.findAllWithFetchMemberBySeatIdAndPublishedTrue(eq(seat.getId()), any(PageRequest.class)))
+				.thenReturn(reviewPage);
+
+		// when
+		ReviewsResponse reviewsResponse = reviewService.getReviews(seat.getId(), PageRequest.of(0, 10));
+
+		// then
+		verify(seatRepository).findById(seat.getId());
+		verify(reviewRepository).findAllWithFetchMemberBySeatIdAndPublishedTrue(eq(seat.getId()), any(PageRequest.class));
+		assertThat(reviewsResponse.reviews().size()).isEqualTo(reviewPage.getTotalElements());
+	}
+
+	@Test
+	@DisplayName("Fail - 후기 목록을 조회하려는 좌석이 존재하지 않는 좌석이면 실패한다")
+	void getReviewsFailByNotFoundSeat() {
+		// given
+		when(seatRepository.findById(seat.getId())).thenReturn(Optional.empty());
+
+		// when & then
+		assertThatThrownBy(() -> reviewService.getReviews(seat.getId(), PageRequest.of(0, 10)))
+				.isExactlyInstanceOf(NotFoundException.class)
+				.hasMessage(NOT_FOUND.getMessage());
+		verify(seatRepository).findById(seat.getId());
 	}
 }

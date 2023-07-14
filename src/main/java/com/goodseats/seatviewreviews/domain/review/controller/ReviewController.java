@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
@@ -30,6 +32,7 @@ import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
+import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewsResponse;
 import com.goodseats.seatviewreviews.domain.review.service.ReviewRedisFacade;
 import com.goodseats.seatviewreviews.domain.review.service.ReviewService;
 
@@ -74,5 +77,11 @@ public class ReviewController {
 		userKey = CookieUtils.setUserKey(userKey, response);
 		ReviewDetailResponse reviewDetailResponse = reviewRedisFacade.getReview(userKey.getValue(), reviewId);
 		return ResponseEntity.ok(reviewDetailResponse);
+	}
+
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ReviewsResponse> getReviews(@RequestParam Long seatId, Pageable pageable) {
+		ReviewsResponse reviewsResponse = reviewService.getReviews(seatId, pageable);
+		return ResponseEntity.ok(reviewsResponse);
 	}
 }
