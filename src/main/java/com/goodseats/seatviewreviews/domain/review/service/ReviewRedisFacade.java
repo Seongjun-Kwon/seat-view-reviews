@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;
@@ -39,9 +38,6 @@ public class ReviewRedisFacade {
 		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
 
 		return reviewAndViewCountLogs.keySet()
-				.stream()
-				.map(String::valueOf)
-				.collect(Collectors.toSet())
 				.stream()
 				.filter(key -> extractReviewId(key).equals(String.valueOf(reviewId)))
 				.max(Comparator.comparing(this::extractViewedTime))
