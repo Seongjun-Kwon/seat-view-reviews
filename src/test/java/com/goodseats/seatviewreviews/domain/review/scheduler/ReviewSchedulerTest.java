@@ -71,7 +71,7 @@ class ReviewSchedulerTest {
 		review.publish("테스트 제목", "테스트 내용", 5);
 		ReflectionTestUtils.setField(review, "id", reviewId);
 
-		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern(VIEWED_TIME_FORMAT));
 		String key = "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
 		Set<Object> keySet = new HashSet<>();
 		keySet.add(key);
@@ -100,7 +100,7 @@ class ReviewSchedulerTest {
 		// given
 		Long reviewId = 1L;
 
-		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern(VIEWED_TIME_FORMAT));
 		String key = "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
 		Set<Object> keySet = new HashSet<>();
 		keySet.add(key);
