@@ -49,7 +49,7 @@ public class ReviewScheduler {
 	private String getPreviousScheduledMinute() {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime previousScheduledMinute = now.minusMinutes(VIEW_COUNT_SCHEDULING_MINUTE);
-		return previousScheduledMinute.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+		return previousScheduledMinute.format(DateTimeFormatter.ofPattern(VIEWED_TIME_FORMAT));
 	}
 
 	private List<String> getTargetsToSync(String previousScheduledMinute) {
@@ -82,7 +82,7 @@ public class ReviewScheduler {
 	private LocalDateTime extractViewedTime(String key) {
 		int beforeTimeIndex = key.lastIndexOf(DELIMITER);
 		String timeString = key.substring(beforeTimeIndex + 1);
-		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern(VIEWED_TIME_FORMAT));
 	}
 
 	private void updateViewCount(List<String> targetKeys) {

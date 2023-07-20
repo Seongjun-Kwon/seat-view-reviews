@@ -103,7 +103,7 @@ public class ReviewRedisFacade {
 	}
 
 	private String generateReviewAndViewCountLogsKey(Long reviewId) {
-		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern(VIEWED_TIME_FORMAT));
 		return "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
 	}
 
@@ -116,6 +116,6 @@ public class ReviewRedisFacade {
 	private LocalDateTime extractViewedTime(String key) {
 		int beforeTimeIndex = key.lastIndexOf(DELIMITER);
 		String timeString = key.substring(beforeTimeIndex + 1);
-		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern(VIEWED_TIME_FORMAT));
 	}
 }

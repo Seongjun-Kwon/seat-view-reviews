@@ -14,5 +14,5 @@ public class RedisConstant {
 	public static final String LOCK_NAME = "viewCountLock";
 	public static final int LOCK_WAIT_TIME = 10;
 	public static final int LEASE_TIME = 5;
-
+	public static final String VIEWED_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 }
