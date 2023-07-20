@@ -36,10 +36,9 @@ public class ReviewScheduler {
 	@Transactional
 	@Scheduled(cron = "0 */5 * * * *")
 	public void syncViewCountToDB() {
-		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
 		String previousScheduledMinute = getPreviousScheduledMinute();
-		List<String> targetKeys = getTargetsToSync(previousScheduledMinute, reviewAndViewCountLogs);
-		updateViewCount(reviewAndViewCountLogs, targetKeys);
+		List<String> targetKeys = getTargetsToSync(previousScheduledMinute);
+		updateViewCount(targetKeys);
 	}
 
 	@Scheduled(cron = "0 0 0 * * *")
@@ -50,10 +49,12 @@ public class ReviewScheduler {
 	private String getPreviousScheduledMinute() {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime previousScheduledMinute = now.minusMinutes(VIEW_COUNT_SCHEDULING_MINUTE);
-		return previousScheduledMinute.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		return previousScheduledMinute.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 	}
 
-	private List<String> getTargetsToSync(String previousScheduledMinute, RMap<String, String> reviewAndViewCountLogs) {
+	private List<String> getTargetsToSync(String previousScheduledMinute) {
+		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
+
 		return reviewAndViewCountLogs.keySet().stream()
 				.filter(key -> isTargetToSync(previousScheduledMinute, key))
 				.collect(Collectors.toMap(
@@ -81,10 +82,12 @@ public class ReviewScheduler {
 	private LocalDateTime extractViewedTime(String key) {
 		int beforeTimeIndex = key.lastIndexOf(DELIMITER);
 		String timeString = key.substring(beforeTimeIndex + 1);
-		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 	}
 
-	private void updateViewCount(RMap<String, String> reviewAndViewCountLogs, List<String> targetKeys) {
+	private void updateViewCount(List<String> targetKeys) {
+		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
+
 		targetKeys
 				.forEach(key -> {
 					int viewCount = Integer.parseInt(reviewAndViewCountLogs.get(key));
