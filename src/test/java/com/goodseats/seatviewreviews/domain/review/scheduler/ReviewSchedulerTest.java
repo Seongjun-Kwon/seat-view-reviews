@@ -71,7 +71,7 @@ class ReviewSchedulerTest {
 		review.publish("테스트 제목", "테스트 내용", 5);
 		ReflectionTestUtils.setField(review, "id", reviewId);
 
-		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 		String key = "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
 		Set<Object> keySet = new HashSet<>();
 		keySet.add(key);
@@ -87,7 +87,7 @@ class ReviewSchedulerTest {
 		reviewScheduler.syncViewCountToDB();
 
 		// then
-		verify(redissonClient).getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
+		verify(redissonClient, times(2)).getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
 		verify(reviewAndViewCountLogs).keySet();
 		verify(reviewAndViewCountLogs).get(key);
 		verify(reviewRepository).findById(reviewId);
@@ -100,7 +100,7 @@ class ReviewSchedulerTest {
 		// given
 		Long reviewId = 1L;
 
-		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 		String key = "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
 		Set<Object> keySet = new HashSet<>();
 		keySet.add(key);
@@ -116,7 +116,7 @@ class ReviewSchedulerTest {
 		assertThatThrownBy(() -> reviewScheduler.syncViewCountToDB())
 				.isExactlyInstanceOf(NotFoundException.class)
 				.hasMessage(ErrorCode.NOT_FOUND.getMessage());
-		verify(redissonClient).getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
+		verify(redissonClient, times(2)).getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
 		verify(reviewAndViewCountLogs).keySet();
 		verify(reviewAndViewCountLogs).get(key);
 		verify(reviewRepository).findById(reviewId);
