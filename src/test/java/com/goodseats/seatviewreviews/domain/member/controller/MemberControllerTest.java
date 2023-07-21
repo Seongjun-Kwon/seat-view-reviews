@@ -1,6 +1,11 @@
 package com.goodseats.seatviewreviews.domain.member.controller;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -11,10 +16,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +37,7 @@ import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 class MemberControllerTest {
 
 	@Autowired
@@ -60,7 +68,16 @@ class MemberControllerTest {
 						.param("password", memberSignUpRequest.password())
 						.param("nickname", memberSignUpRequest.nickname()))
 				.andExpect(status().isCreated())
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("회원가입 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+						requestParameters(
+								parameterWithName("loginEmail").description("회원 로그인 이메일"),
+								parameterWithName("password").description("로그인 비밀번호"),
+								parameterWithName("nickname").description("회원 닉네임")
+						)));
 	}
 
 	@Nested
@@ -98,7 +115,24 @@ class MemberControllerTest {
 							.param("password", duplicateEmailSignUpRequest.password())
 							.param("nickname", duplicateEmailSignUpRequest.nickname()))
 					.andExpect(status().isConflict())
-					.andDo(print());
+					.andDo(print())
+					.andDo(document("회원가입 실패 - 중복된 이메일인 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+							requestParameters(
+									parameterWithName("loginEmail").description("회원 로그인 이메일"),
+									parameterWithName("password").description("로그인 비밀번호"),
+									parameterWithName("nickname").description("회원 닉네임")
+							),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 
 		@Test
@@ -118,7 +152,24 @@ class MemberControllerTest {
 							.param("password", duplicateNicknameSignUpRequest.password())
 							.param("nickname", duplicateNicknameSignUpRequest.nickname()))
 					.andExpect(status().isConflict())
-					.andDo(print());
+					.andDo(print())
+					.andDo(document("회원가입 실패 - 중복된 닉네임인 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+							requestParameters(
+									parameterWithName("loginEmail").description("회원 로그인 이메일"),
+									parameterWithName("password").description("로그인 비밀번호"),
+									parameterWithName("nickname").description("회원 닉네임")
+							),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 	}
 
@@ -136,7 +187,15 @@ class MemberControllerTest {
 						.param("loginEmail", loginRequest.loginEmail())
 						.param("password", loginRequest.password()))
 				.andExpect(status().isNoContent())
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("로그인 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+						requestParameters(
+								parameterWithName("loginEmail").description("로그인 이메일"),
+								parameterWithName("password").description("로그인 비밀번호")
+						)));
 	}
 
 	@Nested
@@ -162,7 +221,23 @@ class MemberControllerTest {
 							.param("loginEmail", wrongLoginEmailRequest.loginEmail())
 							.param("password", wrongLoginEmailRequest.password()))
 					.andExpect(status().isBadRequest())
-					.andDo(print());
+					.andDo(print())
+					.andDo(document("로그인 실패 - 잘못된 아이디인 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+							requestParameters(
+									parameterWithName("loginEmail").description("로그인 이메일"),
+									parameterWithName("password").description("로그인 비밀번호")
+							),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 
 		@Test
@@ -184,7 +259,23 @@ class MemberControllerTest {
 							.param("loginEmail", wrongPasswordRequest.loginEmail())
 							.param("password", wrongPasswordRequest.password()))
 					.andExpect(status().isBadRequest())
-					.andDo(print());
+					.andDo(print())
+					.andDo(document("로그인 실패 - 잘못된 비밀번호인 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+							requestParameters(
+									parameterWithName("loginEmail").description("로그인 이메일"),
+									parameterWithName("password").description("로그인 비밀번호")
+							),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 	}
 
@@ -202,7 +293,10 @@ class MemberControllerTest {
 		mockMvc.perform(post("/api/v1/members/logout")
 						.session(session))
 				.andExpect(status().isNoContent())
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("로그아웃 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint())));
 		assertThat(session.isInvalid()).isTrue();
 	}
 
@@ -216,6 +310,17 @@ class MemberControllerTest {
 		mockMvc.perform(post("/api/v1/members/logout")
 						.session(session))
 				.andExpect(status().isUnauthorized())
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("로그아웃 실패 - 비로그인 유저인 경우",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						responseFields(
+								fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+								fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+								fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+								fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+								fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+						)));
 	}
 }
