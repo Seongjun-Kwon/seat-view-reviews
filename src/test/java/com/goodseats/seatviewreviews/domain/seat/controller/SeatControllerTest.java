@@ -1,5 +1,10 @@
 package com.goodseats.seatviewreviews.domain.seat.controller;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -9,9 +14,11 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +40,7 @@ import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 class SeatControllerTest {
 
 	@Autowired
@@ -78,6 +86,16 @@ class SeatControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().json(objectMapper.writeValueAsString(seatsResponse)))
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("좌석 목록 조회 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(headerWithName("Accept").description("가능한 응답 타입 정보")),
+						requestParameters(parameterWithName("sectionId").description("조회하려는 좌석 구역 id")),
+						responseFields(
+								fieldWithPath("seats").type(JsonFieldType.ARRAY).description("좌석 목록"),
+								fieldWithPath("seats[].seatInfo").type(JsonFieldType.STRING).description("좌석 번호"),
+								fieldWithPath("seats[].score").type(JsonFieldType.NUMBER).description("좌석 평점")
+						)));
 	}
 }

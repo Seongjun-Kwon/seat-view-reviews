@@ -2,6 +2,11 @@ package com.goodseats.seatviewreviews.domain.review.controller;
 
 import static com.goodseats.seatviewreviews.common.constant.CookieConstant.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -17,6 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -24,6 +30,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockCookie;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -52,6 +60,7 @@ import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 class ReviewControllerTest {
 
 	@Autowired
@@ -136,7 +145,17 @@ class ReviewControllerTest {
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(tempReviewCreateRequest)))
-				.andExpect(status().isCreated());
+				.andExpect(status().isCreated())
+				.andDo(print())
+				.andDo(document("후기 임시 생성 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(
+								headerWithName("Content-type").description("요청 타입 정보"),
+								headerWithName("Accept").description("가능한 응답 타임 정보")
+						),
+						requestFields(fieldWithPath("seatId").type(JsonFieldType.NUMBER).description("후기 작성하는 좌석 id")),
+						responseHeaders(headerWithName("Location").description("생성된 후기에 접근 가능한 url"))));
 	}
 
 	@Test
@@ -154,7 +173,24 @@ class ReviewControllerTest {
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(tempReviewCreateRequest)))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isNotFound())
+				.andDo(print())
+				.andDo(document("후기 임시 생성 실패 - 좌석 id 없는 경우",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(
+								headerWithName("Content-type").description("요청 타입 정보"),
+								headerWithName("Accept").description("가능한 응답 타임 정보")
+						),
+						requestFields(fieldWithPath("seatId").type(JsonFieldType.NUMBER).description("후기 작성하는 좌석 id")),
+						responseFields(
+								fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+								fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+								fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+								fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+								fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+						)));
 	}
 
 	@Test
@@ -165,13 +201,24 @@ class ReviewControllerTest {
 		ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
 		// when & then
-		mockMvc.perform(patch("/api/v1/reviews/{reviewId}", tempReview.getId())
+		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/reviews/{reviewId}", tempReview.getId())
 						.session(session)
 						.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 						.param("title", reviewPublishRequest.title())
 						.param("content", reviewPublishRequest.content())
 						.param("score", String.valueOf(reviewPublishRequest.score())))
-				.andExpect(status().isNoContent());
+				.andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(document("후기 발행 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+						pathParameters(parameterWithName("reviewId").description("발행하려는 후기 id")),
+						requestParameters(
+								parameterWithName("title").description("후기 제목"),
+								parameterWithName("content").description("후기 내용"),
+								parameterWithName("score").description("좌석에 준 평점")
+						)));
 	}
 
 	@Nested
@@ -187,13 +234,32 @@ class ReviewControllerTest {
 			ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
 			// when & then
-			mockMvc.perform(patch("/api/v1/reviews/{reviewId}", wrongReviewId)
+			mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/reviews/{reviewId}", wrongReviewId)
 							.session(session)
 							.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 							.param("title", reviewPublishRequest.title())
 							.param("content", reviewPublishRequest.content())
 							.param("score", String.valueOf(reviewPublishRequest.score())))
-					.andExpect(status().isNotFound());
+					.andExpect(status().isNotFound())
+					.andDo(print())
+					.andDo(document("후기 발행 실패 - 임시 후기 id 없는 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+							pathParameters(parameterWithName("reviewId").description("발행하려는 후기 id")),
+							requestParameters(
+									parameterWithName("title").description("후기 제목"),
+									parameterWithName("content").description("후기 내용"),
+									parameterWithName("score").description("좌석에 준 평점")
+							),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 
 		@Test
@@ -204,13 +270,32 @@ class ReviewControllerTest {
 			ReviewPublishRequest reviewPublishRequest = new ReviewPublishRequest("테스트 제목", "테스트 내용", 5);
 
 			// when & then
-			mockMvc.perform(patch("/api/v1/reviews/{reviewId}", tempReview.getId())
+			mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/reviews/{reviewId}", tempReview.getId())
 							.session(session)
 							.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 							.param("title", reviewPublishRequest.title())
 							.param("content", reviewPublishRequest.content())
 							.param("score", String.valueOf(reviewPublishRequest.score())))
-					.andExpect(status().isUnauthorized());
+					.andExpect(status().isUnauthorized())
+					.andDo(print())
+					.andDo(document("후기 발행 실패 - 임시 후기 작성자가 아닌 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+							pathParameters(parameterWithName("reviewId").description("발행하려는 후기 id")),
+							requestParameters(
+									parameterWithName("title").description("후기 제목"),
+									parameterWithName("content").description("후기 내용"),
+									parameterWithName("score").description("좌석에 준 평점")
+							),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 	}
 
@@ -221,7 +306,7 @@ class ReviewControllerTest {
 		@DisplayName("Success - 처음 조회하는 후기의 상세 조회에 성공하고 200 응답한다")
 		void getReviewSuccessWhenFirstRead() throws Exception {
 			// given & when & then
-			mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
+			mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/reviews/{reviewId}", publishedReview.getId())
 							.accept(MediaType.APPLICATION_JSON))
 					.andExpect(status().isOk())
 					.andExpect(jsonPath("title").value(publishedReview.getTitle()))
@@ -230,7 +315,19 @@ class ReviewControllerTest {
 					.andExpect(jsonPath("viewCount").value(publishedReview.getViewCount()))
 					.andExpect(jsonPath("writer").value(publishedReview.getMember().getNickname()))
 					.andExpect(cookie().exists(USER_KEY))
-					.andDo(print());
+					.andDo(print())
+					.andDo(document("후기 상세 조회 성공",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(headerWithName("Accept").description("가능한 응답 타입 정보")),
+							pathParameters(parameterWithName("reviewId").description("조회하려는 후기 id")),
+							responseFields(
+									fieldWithPath("title").type(JsonFieldType.STRING).description("후기 제목"),
+									fieldWithPath("content").type(JsonFieldType.STRING).description("후기 내용"),
+									fieldWithPath("score").type(JsonFieldType.NUMBER).description("좌석에 준 평점"),
+									fieldWithPath("viewCount").type(JsonFieldType.NUMBER).description("후기 조회 수"),
+									fieldWithPath("writer").type(JsonFieldType.STRING).description("후기 작성자")
+							)));
 		}
 
 		@Test
@@ -284,16 +381,29 @@ class ReviewControllerTest {
 	}
 
 	@Test
-	@DisplayName("Fail - 조회하려는 후기 id 가 없으면 실패하고 404 응답한다")
+	@DisplayName("Fail - 조회하려는 후기 id 가 없으면 상세 조회에 실패하고 404 응답한다")
 	void getReviewFailByNotFound() throws Exception {
 		// given
 		Long wrongReviewId = -1L;
 
 		// when & then
-		mockMvc.perform(get("/api/v1/reviews/{reviewId}", wrongReviewId)
+		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/reviews/{reviewId}", wrongReviewId)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("후기 상세 조회 실패 - 후기 id 없는 경우",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(headerWithName("Accept").description("가능한 응답 타입 정보")),
+						pathParameters(parameterWithName("reviewId").description("조회하려는 후기 id")),
+						responseFields(
+								fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+								fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+								fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+								fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+								fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+						)));
 	}
 
 	@Test
@@ -350,7 +460,24 @@ class ReviewControllerTest {
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().json(objectMapper.writeValueAsString(reviewsResponse)))
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("후기 목록 조회 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(headerWithName("Accept").description("가능한 응답 타입 정보")),
+						requestParameters(
+								parameterWithName("seatId").description("조회하려는 좌석 id"),
+								parameterWithName("page").description("조회하려는 페이지 번호"),
+								parameterWithName("size").description("한 페이지의 후기 수")
+						),
+						responseFields(
+								fieldWithPath("reviews").type(JsonFieldType.ARRAY).description("후기 목록"),
+								fieldWithPath("reviews[].reviewId").type(JsonFieldType.NUMBER).description("후기 목록"),
+								fieldWithPath("reviews[].title").type(JsonFieldType.STRING).description("후기 제목"),
+								fieldWithPath("reviews[].score").type(JsonFieldType.NUMBER).description("좌석에 준 평점"),
+								fieldWithPath("reviews[].viewCount").type(JsonFieldType.NUMBER).description("후기 조회 수"),
+								fieldWithPath("reviews[].writer").type(JsonFieldType.STRING).description("후기 작성자")
+						)));
 	}
 
 	@Test
@@ -366,6 +493,23 @@ class ReviewControllerTest {
 						.queryParam("size", "1")
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("후기 목록 조회 실패 - 좌석 id 없는 경우",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(headerWithName("Accept").description("가능한 응답 타입 정보")),
+						requestParameters(
+								parameterWithName("seatId").description("조회하려는 좌석 id"),
+								parameterWithName("page").description("조회하려는 페이지 번호"),
+								parameterWithName("size").description("한 페이지의 후기 수")
+						),
+						responseFields(
+								fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+								fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+								fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+								fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+								fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+						)));
 	}
 }

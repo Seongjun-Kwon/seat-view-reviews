@@ -2,6 +2,11 @@ package com.goodseats.seatviewreviews.domain.image.controller;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.MediaType.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -12,10 +17,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +42,7 @@ import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 class ImageControllerTest {
 
 	@Autowired
@@ -74,7 +83,23 @@ class ImageControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("imageId").isNumber())
 				.andExpect(jsonPath("imageUrl").isString())
-				.andDo(print());
+				.andDo(print())
+				.andDo(document("이미지 저장 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(
+								headerWithName("Content-type").description("요청 타입 정보"),
+								headerWithName("Accept").description("가능한 응답 타입 정보")
+						),
+						requestParts(partWithName("multipartFile").description("이미지 파일")),
+						requestParameters(
+								parameterWithName("imageType").description("연관된 엔티티 타입"),
+								parameterWithName("referenceId").description("연관된 엔티티 id")
+						),
+						responseFields(
+								fieldWithPath("imageId").type(JsonFieldType.NUMBER).description("이미지 id"),
+								fieldWithPath("imageUrl").type(JsonFieldType.STRING).description("이미지에 접근 가능한 url")
+						)));
 	}
 
 	@Nested
@@ -102,7 +127,27 @@ class ImageControllerTest {
 							.accept(APPLICATION_JSON)
 							.session(session))
 					.andExpect(status().isBadRequest())
-					.andDo(print());
+					.andDo(print())
+					.andDo(document("이미지 저장 실패 - 이미지 파일이 아닌 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(
+									headerWithName("Content-type").description("요청 타입 정보"),
+									headerWithName("Accept").description("가능한 응답 타입 정보")
+							),
+							requestParts(partWithName("multipartFile").description("이미지 파일")),
+							requestParameters(
+									parameterWithName("imageType").description("연관된 엔티티 타입"),
+									parameterWithName("referenceId").description("연관된 엔티티 id")
+							),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 
 		@Test
@@ -116,7 +161,27 @@ class ImageControllerTest {
 							.contentType(MULTIPART_FORM_DATA)
 							.accept(APPLICATION_JSON))
 					.andExpect(status().isUnauthorized())
-					.andDo(print());
+					.andDo(print())
+					.andDo(document("이미지 저장 실패 - 비회원이 요청한 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							requestHeaders(
+									headerWithName("Content-type").description("요청 타입 정보"),
+									headerWithName("Accept").description("가능한 응답 타입 정보")
+							),
+							requestParts(partWithName("multipartFile").description("이미지 파일")),
+							requestParameters(
+									parameterWithName("imageType").description("연관된 엔티티 타입"),
+									parameterWithName("referenceId").description("연관된 엔티티 id")
+							),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 	}
 
@@ -133,9 +198,14 @@ class ImageControllerTest {
 		Image savedImage = imageRepository.save(image);
 
 		// when
-		mockMvc.perform(delete("/api/v1/images/{imageId}", savedImage.getId())
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/images/{imageId}", savedImage.getId())
 						.session(session))
-				.andExpect(status().isNoContent());
+				.andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(document("이미지 단건 삭제 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						pathParameters(parameterWithName("imageId").description("삭제하려는 이미지 id"))));
 
 		// then
 		assertThat(savedImage.getDeletedAt()).isNotNull();
@@ -157,9 +227,22 @@ class ImageControllerTest {
 			Long imageId = 1L;
 
 			// when & then
-			mockMvc.perform(delete("/api/v1/images/{imageId}", imageId)
+			mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/images/{imageId}", imageId)
 							.session(session))
-					.andExpect(status().isNotFound());
+					.andExpect(status().isNotFound())
+					.andDo(print())
+					.andDo(document("이미지 단건 삭제 실패 - 이미지 id 없는 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							pathParameters(parameterWithName("imageId").description("삭제하려는 이미지 id")),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 
 		@Test
@@ -176,9 +259,22 @@ class ImageControllerTest {
 			image.delete();
 
 			// when & then
-			mockMvc.perform(delete("/api/v1/images/{imageId}", savedImage.getId())
+			mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/images/{imageId}", savedImage.getId())
 							.session(session))
-					.andExpect(status().isConflict());
+					.andExpect(status().isConflict())
+					.andDo(print())
+					.andDo(document("이미지 단건 삭제 실패 - 이미 삭제된 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							pathParameters(parameterWithName("imageId").description("삭제하려는 이미지 id")),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
 		}
 	}
 
@@ -203,7 +299,16 @@ class ImageControllerTest {
 						.session(session)
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(imageDeleteRequest)))
-				.andExpect(status().isNoContent());
+				.andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(document("연관된 이미지 목록 삭제 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
+						requestFields(
+								fieldWithPath("imageType").type(JsonFieldType.STRING).description("연관된 엔티티 타입"),
+								fieldWithPath("referenceId").type(JsonFieldType.NUMBER).description("연관된 엔티티 id")
+						)));
 
 		// then
 		images.forEach(image -> assertThat(image.getDeletedAt()).isNotNull());
