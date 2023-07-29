@@ -66,7 +66,7 @@
    <summary> 본문 확인 (👈 Click)</summary>
 <br />
 
-추가 예정
+[API 문서](http://ec2-3-39-196-188.ap-northeast-2.compute.amazonaws.com:8080/docs/rest-docs.html)
 </details>
 
 <br>
@@ -111,17 +111,14 @@
 <br />
 
 ### API 문서화 툴
-Swagger 와 REST docs 사이에서 고민하였습니다.
+Swagger 와 Spring REST docs 사이에서 고민하였습니다.
 
 Swagger 를 사용할 시 아래와 같은 단점이 있습니다.
 1. 문서화 작업을 위한 어노테이션으로 인해 비즈니스 코드의 가독성이 떨어진다.
 2. 테스트 기반이 아니기에 기능이 100% 동작한다고 확신할 수 없다.
 3. 모든 오류에 대한 여러 가지 응답을 문서화할 수 없다.
 
-위와 같은 문제를 Spring REST docs 는 모두 해결할 수 있습니다.
-다만, 개인적으로 Spring REST docs 로 만들어진 문서는 가독성이 떨어진다고 여겨서 고민하였습니다.
-
-OpenAPI 스펙을 활용하여 Spring REST docs 로 만든 문서를 Swagger UI 로 볼 수 있도록 하였습니다.
+위와 같은 단점을 Spring REST docs 는 모두 해결할 수 있기에 Spring REST docs 로 API 문서를 작성하였습니다.
 
 <br>
 
@@ -196,6 +193,8 @@ OpenAPI 스펙을 활용하여 Spring REST docs 로 만든 문서를 Swagger UI 
 - [Github actions, Docker image, Docker hub 를 활용한 CI/CD 과정](https://jun-codinghistory.tistory.com/782)
 - [AWS EC2 메모리 부족을 스왑 메모리로 해결하기](https://jun-codinghistory.tistory.com/794)
 - [도커 컨테이너 로그 설정하기](https://jun-codinghistory.tistory.com/796)
+- [JPQL 로 Pageable 객체 사용 시 주의할 점](https://jun-codinghistory.tistory.com/825)
+- [[Spring REST Docs] 빌드 시 HTML 이 생성되지 않을 때](https://jun-codinghistory.tistory.com/836)
 
 </details>
 
