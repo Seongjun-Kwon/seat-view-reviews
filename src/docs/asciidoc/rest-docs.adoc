@@ -3,11 +3,10 @@ ifndef::snippets[]
 endif::[]
 
 = 야구장 좌석 후기 서비스
-:doctype: book
-:icons: font
-:source-highlighter: highlightjs
 :toc: left
 :toclevels: 3
+:icons: font
+:source-highlighter: highlightjs
 :sectlinks:
 
 == 1. 경기장
