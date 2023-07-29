@@ -3,6 +3,8 @@ package com.goodseats.seatviewreviews.domain.image.controller;
 import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority.*;
 import static org.springframework.http.MediaType.*;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,7 +31,7 @@ public class ImageController {
 
 	@Authority(authorities = {USER, ADMIN})
 	@PostMapping(consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ImageCreateResponse> createImage(@ModelAttribute ImageCreateRequest imageCreateRequest) {
+	public ResponseEntity<ImageCreateResponse> createImage(@Valid @ModelAttribute ImageCreateRequest imageCreateRequest) {
 		ImageCreateResponse imageCreateResponse = imageService.createImage(imageCreateRequest);
 		return ResponseEntity.ok(imageCreateResponse);
 	}
