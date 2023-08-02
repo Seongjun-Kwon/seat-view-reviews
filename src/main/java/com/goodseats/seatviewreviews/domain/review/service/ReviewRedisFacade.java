@@ -12,7 +12,6 @@ import org.redisson.api.RMap;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
 
@@ -25,7 +24,6 @@ public class ReviewRedisFacade {
 	private final RedissonClient redissonClient;
 	private final ReviewService reviewService;
 
-	@Transactional(readOnly = true)
 	public ReviewDetailResponse getReview(String userKey, Long reviewId) {
 		if (hasNotViewedReview(userKey, reviewId)) {
 			controlViewCountConcurrency(userKey, reviewId);
@@ -70,7 +68,9 @@ public class ReviewRedisFacade {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {
-			viewCountLock.unlock();
+			if (viewCountLock.isHeldByCurrentThread()) {
+				viewCountLock.unlock();
+			}
 		}
 	}
 
