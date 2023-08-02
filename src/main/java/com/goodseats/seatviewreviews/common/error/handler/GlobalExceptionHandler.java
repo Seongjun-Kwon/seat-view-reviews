@@ -273,10 +273,10 @@ public class GlobalExceptionHandler {
 	}
 
 	private void logWarn(Exception e, String url) {
-		log.info("URL = {}, Exception = {}, Message = {}", url, e.getClass().getSimpleName(), e.getMessage());
+		log.warn("URL = {}, Exception = {}, Message = {}", url, e.getClass().getSimpleName(), e.getMessage());
 	}
 
 	private void logError(Exception e, String url) {
-		log.info("URL = {}, Exception = {}, Message = {}", url, e.getClass().getSimpleName(), e.getMessage());
+		log.error("URL = {}, Exception = {}, Message = {}", url, e.getClass().getSimpleName(), e.getMessage());
 	}
 }
