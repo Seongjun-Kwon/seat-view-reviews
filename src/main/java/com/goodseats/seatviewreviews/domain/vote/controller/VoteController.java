@@ -2,6 +2,9 @@ package com.goodseats.seatviewreviews.domain.vote.controller;
 
 import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority.*;
 
+import javax.validation.Valid;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,9 +25,9 @@ public class VoteController {
 	private final VoteService voteService;
 
 	@Authority(authorities = {USER, ADMIN})
-	@PostMapping
-	ResponseEntity<Void> createUpVote(@RequestBody VoteCreateRequest voteCreateRequest) {
-		voteService.createUpVote(voteCreateRequest);
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	ResponseEntity<Void> createVote(@Valid @RequestBody VoteCreateRequest voteCreateRequest) {
+		voteService.createVote(voteCreateRequest);
 		return ResponseEntity.noContent().build();
 	}
 }
