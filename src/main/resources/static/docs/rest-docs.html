@@ -546,6 +546,19 @@
           </li>
         </ul>
       </li>
+      <li><a href="#_6_투표">6. 투표</a>
+        <ul class="sectlevel2">
+          <li><a href="#_6_1_투표_생성">6-1. 투표 생성</a>
+            <ul class="sectlevel3">
+              <li><a href="#_성공_15">성공</a></li>
+              <li><a href="#_실패_비로그인_사용자가_시도한_경우">실패 - 비로그인 사용자가 시도한 경우</a></li>
+              <li><a href="#_실패_투표자_id_없는_경우">실패 - 투표자 id 없는 경우</a></li>
+              <li><a href="#_실패_투표하는_엔티티의_id_없는_경우">실패 - 투표하는 엔티티의 id 없는 경우</a></li>
+              <li><a href="#_실패_이미_투표한_경우">실패 - 이미 투표한 경우</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
     </ul>
   </div>
 </div>
@@ -654,11 +667,11 @@ Content-Length: 1578
     "name" : "잠실 야구장",
     "homeTeam" : "DOOSAN_LG"
   }, {
-    "stadiumId" : 1958,
+    "stadiumId" : 2566,
     "name" : "잠실 야구장",
     "homeTeam" : "DOOSAN_LG"
   }, {
-    "stadiumId" : 1959,
+    "stadiumId" : 2567,
     "name" : "한화생명 이글스 파크",
     "homeTeam" : "HANWHA"
   } ]
@@ -715,7 +728,7 @@ Content-Length: 1578
             <h5 id="_request_2"><a class="link" href="#_request_2">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/stadiums/1957 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/stadiums/2565 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -877,7 +890,7 @@ Content-Length: 221
   "url" : "/api/v1/stadiums/-1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-07-22 03:54:36",
+  "createdAt" : "2023-08-05 06:22:36",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -947,7 +960,7 @@ Content-Length: 221
             <h5 id="_request_4"><a class="link" href="#_request_4">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/sections?stadiumId=1956 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/sections?stadiumId=2580 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -1005,10 +1018,10 @@ Content-Length: 147
 
 {
   "seatSections" : [ {
-    "sectionId" : 1821,
+    "sectionId" : 2372,
     "sectionName" : "110"
   }, {
-    "sectionId" : 1822,
+    "sectionId" : 2373,
     "sectionName" : "111"
   } ]
 }</code></pre>
@@ -1059,7 +1072,7 @@ Content-Length: 147
             <h5 id="_request_5"><a class="link" href="#_request_5">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/seats?sectionId=1820 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/seats?sectionId=2379 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -1239,7 +1252,7 @@ loginEmail=goodseat%40google.com&amp;password=password&amp;nickname=Jerome</code
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/members/4386</code></pre>
+Location: /api/v1/members/5833</code></pre>
               </div>
             </div>
           </div>
@@ -1321,7 +1334,7 @@ Content-Length: 209
   "url" : "/api/v1/members",
   "exceptionName" : "DuplicatedException",
   "message" : "중복된 아이디입니다.",
-  "createdAt" : "2023-07-22 03:54:02",
+  "createdAt" : "2023-08-05 06:23:03",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1454,7 +1467,7 @@ Content-Length: 209
   "url" : "/api/v1/members",
   "exceptionName" : "DuplicatedException",
   "message" : "중복된 아이디입니다.",
-  "createdAt" : "2023-07-22 03:54:02",
+  "createdAt" : "2023-08-05 06:23:04",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1655,7 +1668,7 @@ Content-Length: 236
   "url" : "/api/v1/members/login",
   "exceptionName" : "AuthenticationException",
   "message" : "아이디 혹은 비밀번호가 틀립니다.",
-  "createdAt" : "2023-07-22 03:54:02",
+  "createdAt" : "2023-08-05 06:23:03",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1784,7 +1797,7 @@ Content-Length: 236
   "url" : "/api/v1/members/login",
   "exceptionName" : "AuthenticationException",
   "message" : "아이디 혹은 비밀번호가 틀립니다.",
-  "createdAt" : "2023-07-22 03:54:02",
+  "createdAt" : "2023-08-05 06:23:03",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1887,7 +1900,7 @@ Content-Length: 230
   "url" : "/api/v1/members/logout",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-07-22 03:54:01",
+  "createdAt" : "2023-08-05 06:23:03",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2059,8 +2072,8 @@ Content-Type: application/json
 Content-Length: 149
 
 {
-  "imageId" : 584,
-  "imageUrl" : "https://seat-view-reviews.s3.ap-northeast-2.amazonaws.com/reviews/161aa277-d420-4534-b112-65694885d7a9.png"
+  "imageId" : 760,
+  "imageUrl" : "https://seat-view-reviews.s3.ap-northeast-2.amazonaws.com/reviews/fba62537-3702-4e38-9ab5-364a29eef1f5.png"
 }</code></pre>
               </div>
             </div>
@@ -2207,7 +2220,7 @@ Content-Length: 222
   "url" : "/api/v1/images",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-07-22 03:54:00",
+  "createdAt" : "2023-08-05 06:23:09",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2375,7 +2388,7 @@ Content-Length: 230
   "url" : "/api/v1/images",
   "exceptionName" : "IllegalArgumentException",
   "message" : "잘못된 이미지 업로드 요청입니다.",
-  "createdAt" : "2023-07-22 03:54:00",
+  "createdAt" : "2023-08-05 06:23:09",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2520,7 +2533,7 @@ Host: localhost:8080
             <h5 id="_request_18"><a class="link" href="#_request_18">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/585 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/761 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2602,7 +2615,7 @@ Content-Length: 218
   "url" : "/api/v1/images/1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-07-22 03:54:00",
+  "createdAt" : "2023-08-05 06:23:08",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2664,7 +2677,7 @@ Content-Length: 218
             <h5 id="_request_20"><a class="link" href="#_request_20">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/586 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/762 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2701,10 +2714,10 @@ Content-Length: 219
 
 {
   "status" : 409,
-  "url" : "/api/v1/images/586",
+  "url" : "/api/v1/images/762",
   "exceptionName" : "DuplicatedException",
   "message" : "이미 삭제된 데이터입니다.",
-  "createdAt" : "2023-07-22 03:54:00",
+  "createdAt" : "2023-08-05 06:23:08",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2781,7 +2794,7 @@ Content-Length: 24
 Host: localhost:8080
 
 {
-  "seatId" : 25981
+  "seatId" : 26498
 }</code></pre>
               </div>
             </div>
@@ -2840,7 +2853,7 @@ Host: localhost:8080
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/reviews/2724</code></pre>
+Location: /api/v1/reviews/3725</code></pre>
               </div>
             </div>
           </div>
@@ -2925,7 +2938,7 @@ Content-Length: 217
   "url" : "/api/v1/reviews",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-07-22 03:54:31",
+  "createdAt" : "2023-08-05 06:22:57",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2990,7 +3003,7 @@ Content-Length: 217
             <h5 id="_request_23"><a class="link" href="#_request_23">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/reviews/2733 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/reviews/3734 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
 Host: localhost:8080</code></pre>
               </div>
@@ -3171,7 +3184,7 @@ Content-Length: 219
   "url" : "/api/v1/reviews/1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-07-22 03:54:35",
+  "createdAt" : "2023-08-05 06:23:02",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3318,10 +3331,10 @@ Content-Length: 228
 
 {
   "status" : 401,
-  "url" : "/api/v1/reviews/2745",
+  "url" : "/api/v1/reviews/3746",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-07-22 03:54:35",
+  "createdAt" : "2023-08-05 06:23:01",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3386,7 +3399,7 @@ Content-Length: 228
             <h5 id="_request_24"><a class="link" href="#_request_24">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews?seatId=25984&amp;page=0&amp;size=1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews?seatId=26501&amp;page=0&amp;size=1 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -3452,7 +3465,7 @@ Content-Length: 154
 
 {
   "reviews" : [ {
-    "reviewId" : 2730,
+    "reviewId" : 3731,
     "title" : "테스트 제목",
     "score" : 5,
     "viewCount" : 0,
@@ -3584,7 +3597,7 @@ Content-Length: 217
   "url" : "/api/v1/reviews",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-07-22 03:54:31",
+  "createdAt" : "2023-08-05 06:22:57",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3649,7 +3662,7 @@ Content-Length: 217
             <h5 id="_request_25"><a class="link" href="#_request_25">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews/2744 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews/3745 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -3703,7 +3716,7 @@ Host: localhost:8080</code></pre>
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: USER_KEY=c197b8c9-b7a5-4484-8931-19b258257364; Path=/; Max-Age=86400; Expires=Sat, 22 Jul 2023 18:54:34 GMT; Secure; HttpOnly
+Set-Cookie: USER_KEY=2df19244-4a95-4be9-87c6-e18555241069; Path=/; Max-Age=86400; Expires=Sat, 05 Aug 2023 21:23:00 GMT; Secure; HttpOnly
 Content-Type: application/json
 Content-Length: 131
 
@@ -3822,7 +3835,7 @@ Host: localhost:8080</code></pre>
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
-Set-Cookie: USER_KEY=a8b78de1-d1fa-4b44-847e-8746f763078f; Path=/; Max-Age=86400; Expires=Sat, 22 Jul 2023 18:54:29 GMT; Secure; HttpOnly
+Set-Cookie: USER_KEY=5be0114a-9c68-4596-ae90-e4b11e0ff7c1; Path=/; Max-Age=86400; Expires=Sat, 05 Aug 2023 21:22:55 GMT; Secure; HttpOnly
 Content-Type: application/json
 Content-Length: 220
 
@@ -3831,7 +3844,7 @@ Content-Length: 220
   "url" : "/api/v1/reviews/-1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-07-22 03:54:29",
+  "createdAt" : "2023-08-05 06:22:55",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3890,10 +3903,703 @@ Content-Length: 220
       </div>
     </div>
   </div>
+  <div class="sect1">
+    <h2 id="_6_투표"><a class="link" href="#_6_투표">6. 투표</a></h2>
+    <div class="sectionbody">
+      <div class="sect2">
+        <h3 id="_6_1_투표_생성"><a class="link" href="#_6_1_투표_생성">6-1. 투표 생성</a></h3>
+        <div class="sect3">
+          <h4 id="_성공_15"><a class="link" href="#_성공_15">성공</a></h4>
+          <div class="sect4">
+            <h5 id="_request_27"><a class="link" href="#_request_27">Request</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 102
+Host: localhost:8080
+
+{
+  "memberId" : 5841,
+  "voteType" : "REVIEW",
+  "referenceId" : 3751,
+  "voteChoice" : "LIKE"
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_headers_22"><a class="link" href="#_request_headers_22">Request Headers</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 50%;">
+                <col style="width: 50%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Name</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-type</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청 타입 정보</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_fields_4"><a class="link" href="#_request_fields_4">Request Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">선택한 투표(좋아요, 싫어요)</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_30"><a class="link" href="#_response_30">Response</a></h5>
+            <div class="listingblock">
+              <div class="content">
+                <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sect3">
+          <h4 id="_실패_비로그인_사용자가_시도한_경우"><a class="link" href="#_실패_비로그인_사용자가_시도한_경우">실패 - 비로그인 사용자가 시도한 경우</a></h4>
+          <div class="sect4">
+            <h5 id="_request_28"><a class="link" href="#_request_28">Request</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 102
+Host: localhost:8080
+
+{
+  "memberId" : 5849,
+  "voteType" : "REVIEW",
+  "referenceId" : 3759,
+  "voteChoice" : "LIKE"
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_headers_23"><a class="link" href="#_request_headers_23">Request Headers</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 50%;">
+                <col style="width: 50%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Name</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-type</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청 타입 정보</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_fields_5"><a class="link" href="#_request_fields_5">Request Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">선택한 투표(좋아요, 싫어요)</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_31"><a class="link" href="#_response_31">Response</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Content-Length: 221
+
+{
+  "status" : 401,
+  "url" : "/api/v1/votes",
+  "exceptionName" : "AuthenticationException",
+  "message" : "인증되지 않은 사용자입니다.",
+  "createdAt" : "2023-08-05 06:23:07",
+  "fieldErrors" : null
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_fields_23"><a class="link" href="#_response_fields_23">Response Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태 코드</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>url</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청한 url</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionName</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">발생한 예외 이름</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">예외 메세지</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">예외 발생 시간</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldErrors</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">필드 에러 목록</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sect3">
+          <h4 id="_실패_투표자_id_없는_경우"><a class="link" href="#_실패_투표자_id_없는_경우">실패 - 투표자 id 없는 경우</a></h4>
+          <div class="sect4">
+            <h5 id="_request_29"><a class="link" href="#_request_29">Request</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 99
+Host: localhost:8080
+
+{
+  "memberId" : 0,
+  "voteType" : "REVIEW",
+  "referenceId" : 3753,
+  "voteChoice" : "LIKE"
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_headers_24"><a class="link" href="#_request_headers_24">Request Headers</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 50%;">
+                <col style="width: 50%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Name</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-type</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청 타입 정보</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_fields_6"><a class="link" href="#_request_fields_6">Request Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">선택한 투표(좋아요, 싫어요)</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_32"><a class="link" href="#_response_32">Response</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Content-Type: application/json
+Content-Length: 215
+
+{
+  "status" : 404,
+  "url" : "/api/v1/votes",
+  "exceptionName" : "NotFoundException",
+  "message" : "존재하지 않는 데이터입니다.",
+  "createdAt" : "2023-08-05 06:23:05",
+  "fieldErrors" : null
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_fields_24"><a class="link" href="#_response_fields_24">Response Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태 코드</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>url</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청한 url</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionName</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">발생한 예외 이름</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">예외 메세지</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">예외 발생 시간</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldErrors</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">필드 에러 목록</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sect3">
+          <h4 id="_실패_투표하는_엔티티의_id_없는_경우"><a class="link" href="#_실패_투표하는_엔티티의_id_없는_경우">실패 - 투표하는 엔티티의 id 없는 경우</a></h4>
+          <div class="sect4">
+            <h5 id="_request_30"><a class="link" href="#_request_30">Request</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 99
+Host: localhost:8080
+
+{
+  "memberId" : 5847,
+  "voteType" : "REVIEW",
+  "referenceId" : 0,
+  "voteChoice" : "LIKE"
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_headers_25"><a class="link" href="#_request_headers_25">Request Headers</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 50%;">
+                <col style="width: 50%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Name</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-type</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청 타입 정보</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_fields_7"><a class="link" href="#_request_fields_7">Request Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">선택한 투표(좋아요, 싫어요)</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_33"><a class="link" href="#_response_33">Response</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Content-Type: application/json
+Content-Length: 215
+
+{
+  "status" : 404,
+  "url" : "/api/v1/votes",
+  "exceptionName" : "NotFoundException",
+  "message" : "존재하지 않는 데이터입니다.",
+  "createdAt" : "2023-08-05 06:23:06",
+  "fieldErrors" : null
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_fields_25"><a class="link" href="#_response_fields_25">Response Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태 코드</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>url</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청한 url</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionName</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">발생한 예외 이름</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">예외 메세지</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">예외 발생 시간</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldErrors</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">필드 에러 목록</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sect3">
+          <h4 id="_실패_이미_투표한_경우"><a class="link" href="#_실패_이미_투표한_경우">실패 - 이미 투표한 경우</a></h4>
+          <div class="sect4">
+            <h5 id="_request_31"><a class="link" href="#_request_31">Request</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 102
+Host: localhost:8080
+
+{
+  "memberId" : 5846,
+  "voteType" : "REVIEW",
+  "referenceId" : 3755,
+  "voteChoice" : "LIKE"
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_headers_26"><a class="link" href="#_request_headers_26">Request Headers</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 50%;">
+                <col style="width: 50%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Name</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-type</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청 타입 정보</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_request_fields_8"><a class="link" href="#_request_fields_8">Request Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">선택한 투표(좋아요, 싫어요)</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_34"><a class="link" href="#_response_34">Response</a></h5>
+            <div class="listingblock">
+              <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 409 Conflict
+Content-Type: application/json
+Content-Length: 211
+
+{
+  "status" : 409,
+  "url" : "/api/v1/votes",
+  "exceptionName" : "DuplicatedException",
+  "message" : "이미 평가한 후기입니다.",
+  "createdAt" : "2023-08-05 06:23:06",
+  "fieldErrors" : null
+}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="sect4">
+            <h5 id="_response_fields_26"><a class="link" href="#_response_fields_26">Response Fields</a></h5>
+            <table class="tableblock frame-all grid-all stretch">
+              <colgroup>
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3333%;">
+                <col style="width: 33.3334%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th class="tableblock halign-left valign-top">Path</th>
+                <th class="tableblock halign-left valign-top">Type</th>
+                <th class="tableblock halign-left valign-top">Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태 코드</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>url</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">요청한 url</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionName</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">발생한 예외 이름</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">예외 메세지</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">예외 발생 시간</p></td>
+              </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldErrors</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">필드 에러 목록</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div id="footer">
   <div id="footer-text">
-    Last updated 2023-07-22 02:23:50 +0900
+    Last updated 2023-08-05 06:26:59 +0900
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
