@@ -1,7 +1,6 @@
 package com.goodseats.seatviewreviews.domain.vote.controller;
 
 import static com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice.*;
-import static com.goodseats.seatviewreviews.domain.vote.model.vo.VoteType.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -40,15 +39,15 @@ import com.goodseats.seatviewreviews.domain.seat.repository.SeatSectionRepositor
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;
-import com.goodseats.seatviewreviews.domain.vote.model.dto.request.VoteCreateRequest;
-import com.goodseats.seatviewreviews.domain.vote.model.entity.Vote;
-import com.goodseats.seatviewreviews.domain.vote.repository.VoteRepository;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.vote.model.entity.ReviewVote;
+import com.goodseats.seatviewreviews.domain.vote.repository.ReviewVoteRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class VoteControllerTest {
+class ReviewVoteControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -75,7 +74,7 @@ class VoteControllerTest {
 	private ReviewRepository reviewRepository;
 
 	@Autowired
-	private VoteRepository voteRepository;
+	private ReviewVoteRepository reviewVoteRepository;
 
 	private Member voter;
 	private Member alreadyVoter;
@@ -85,7 +84,7 @@ class VoteControllerTest {
 	private Seat seat;
 	private Review tempReview;
 	private Review publishedReview;
-	private Vote vote;
+	private ReviewVote reviewVote;
 
 	@BeforeEach
 	void setUp() {
@@ -108,8 +107,8 @@ class VoteControllerTest {
 		reviewRepository.save(tempReview);
 		reviewRepository.save(publishedReview);
 
-		vote = new Vote(REVIEW, publishedReview.getId(), LIKE, alreadyVoter);
-		voteRepository.save(vote);
+		reviewVote = new ReviewVote(LIKE, alreadyVoter, publishedReview);
+		reviewVoteRepository.save(reviewVote);
 	}
 
 	@AfterEach
@@ -121,32 +120,30 @@ class VoteControllerTest {
 		seatSectionRepository.delete(seatSection);
 		seatRepository.delete(seat);
 		reviewRepository.deleteAll();
-		voteRepository.delete(vote);
+		reviewVoteRepository.delete(reviewVote);
 	}
 
 	@Test
-	@DisplayName("Success - 투표 생성에 성공하고 204 응답한다")
+	@DisplayName("Success - 후기 투표 생성에 성공하고 204 응답한다")
 	void createVoteSuccess() throws Exception {
 		// given
 		MockHttpSession session = TestUtils.getLoginSession(voter, MemberAuthority.USER);
-		Long memberId = voter.getId();
-		Long referenceId = publishedReview.getId();
-		VoteCreateRequest voteCreateRequest = new VoteCreateRequest(memberId, REVIEW, referenceId, LIKE);
+		ReviewVoteCreateRequest reviewVoteCreateRequest
+				= new ReviewVoteCreateRequest(voter.getId(), publishedReview.getId(), LIKE);
 
 		// when & then
 		mockMvc.perform(post("/api/v1/votes")
 						.session(session)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(voteCreateRequest)))
+						.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
 				.andExpect(status().isNoContent())
-				.andDo(document("투표 생성 성공",
+				.andDo(document("후기 투표 생성 성공",
 						preprocessRequest(prettyPrint()),
 						preprocessResponse(prettyPrint()),
 						requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 						requestFields(
 								fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
-								fieldWithPath("voteType").type(JsonFieldType.STRING).description("투표 대상 엔티티의 타입"),
-								fieldWithPath("referenceId").type(JsonFieldType.NUMBER).description("투표 대상 엔티티의 id"),
+								fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 								fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 						)
 				));
@@ -154,30 +151,27 @@ class VoteControllerTest {
 
 	@Nested
 	@DisplayName("createVoteFail")
-	class CreateVoteFail {
+	class CreateReviewVoteFail {
 
 		@Test
-		@DisplayName("Fail - 비로그인 사용자가 투표하면 투표 생성에 실패하고 401 응답한다")
+		@DisplayName("Fail - 비로그인 사용자가 투표하면 후기 투표 생성에 실패하고 401 응답한다")
 		void createVoteFailByNotMember() throws Exception {
 			// given
-			Long memberId = voter.getId();
-			Long referenceId = publishedReview.getId();
-
-			VoteCreateRequest voteCreateRequest = new VoteCreateRequest(memberId, REVIEW, referenceId, LIKE);
+			ReviewVoteCreateRequest reviewVoteCreateRequest
+					= new ReviewVoteCreateRequest(voter.getId(), publishedReview.getId(), LIKE);
 
 			// when & then
 			mockMvc.perform(post("/api/v1/votes")
 							.contentType(MediaType.APPLICATION_JSON)
-							.content(objectMapper.writeValueAsString(voteCreateRequest)))
+							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
 					.andExpect(status().isUnauthorized())
-					.andDo(document("투표 생성 실패 - 비로그인 사용자가 시도한 경우",
+					.andDo(document("후기 투표 생성 실패 - 비로그인 사용자가 시도한 경우",
 							preprocessRequest(prettyPrint()),
 							preprocessResponse(prettyPrint()),
 							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 							requestFields(
 									fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
-									fieldWithPath("voteType").type(JsonFieldType.STRING).description("투표 대상 엔티티의 타입"),
-									fieldWithPath("referenceId").type(JsonFieldType.NUMBER).description("투표 대상 엔티티의 id"),
+									fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 									fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 							),
 							responseFields(
@@ -191,29 +185,26 @@ class VoteControllerTest {
 		}
 
 		@Test
-		@DisplayName("Fail - 투표하는 회원이 없는 회원이면 투표 생성에 실패하고 404 응답한다")
+		@DisplayName("Fail - 투표하는 회원이 없는 회원이면 후기 투표 생성에 실패하고 404 응답한다")
 		void createVoteFailByNotFoundMember() throws Exception {
 			// given
 			MockHttpSession session = TestUtils.getLoginSession(voter, MemberAuthority.USER);
-			Long memberId = 0L;
-			Long referenceId = publishedReview.getId();
-
-			VoteCreateRequest voteCreateRequest = new VoteCreateRequest(memberId, REVIEW, referenceId, LIKE);
+			ReviewVoteCreateRequest reviewVoteCreateRequest
+					= new ReviewVoteCreateRequest(0L, publishedReview.getId(), LIKE);
 
 			// when & then
 			mockMvc.perform(post("/api/v1/votes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
-							.content(objectMapper.writeValueAsString(voteCreateRequest)))
+							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
 					.andExpect(status().isNotFound())
-					.andDo(document("투표 생성 실패 - 투표자 id 없는 경우",
+					.andDo(document("후기 투표 생성 실패 - 투표자 id 없는 경우",
 							preprocessRequest(prettyPrint()),
 							preprocessResponse(prettyPrint()),
 							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 							requestFields(
 									fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
-									fieldWithPath("voteType").type(JsonFieldType.STRING).description("투표 대상 엔티티의 타입"),
-									fieldWithPath("referenceId").type(JsonFieldType.NUMBER).description("투표 대상 엔티티의 id"),
+									fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 									fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 							),
 							responseFields(
@@ -227,29 +218,26 @@ class VoteControllerTest {
 		}
 
 		@Test
-		@DisplayName("Fail - 투표하는 엔티티(후기, 댓글)가 없으면 투표 생성에 실패하고 404 응답한다")
+		@DisplayName("Fail - 투표하는 엔티티(후기, 댓글)가 없으면 후기 투표 생성에 실패하고 404 응답한다")
 		void createVoteFailByNotFoundVoteType() throws Exception {
 			// given
 			MockHttpSession session = TestUtils.getLoginSession(voter, MemberAuthority.USER);
-			Long memberId = voter.getId();
-			Long referenceId = 0L;
-
-			VoteCreateRequest voteCreateRequest = new VoteCreateRequest(memberId, REVIEW, referenceId, LIKE);
+			ReviewVoteCreateRequest reviewVoteCreateRequest
+					= new ReviewVoteCreateRequest(voter.getId(), 0L, LIKE);
 
 			// when & then
 			mockMvc.perform(post("/api/v1/votes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
-							.content(objectMapper.writeValueAsString(voteCreateRequest)))
+							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
 					.andExpect(status().isNotFound())
-					.andDo(document("투표 생성 실패 - 투표하는 엔티티의 id 없는 경우",
+					.andDo(document("후기 투표 생성 실패 - 투표하는 엔티티의 id 없는 경우",
 							preprocessRequest(prettyPrint()),
 							preprocessResponse(prettyPrint()),
 							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 							requestFields(
 									fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
-									fieldWithPath("voteType").type(JsonFieldType.STRING).description("투표 대상 엔티티의 타입"),
-									fieldWithPath("referenceId").type(JsonFieldType.NUMBER).description("투표 대상 엔티티의 id"),
+									fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 									fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 							),
 							responseFields(
@@ -263,29 +251,26 @@ class VoteControllerTest {
 		}
 
 		@Test
-		@DisplayName("Fail - 이미 투표했으면 투표 생성에 실패하고 409 응답한다")
+		@DisplayName("Fail - 이미 투표했으면 후기 투표 생성에 실패하고 409 응답한다")
 		void createVoteFailByAlreadyVote() throws Exception {
 			// given
 			MockHttpSession session = TestUtils.getLoginSession(alreadyVoter, MemberAuthority.USER);
-			Long memberId = alreadyVoter.getId();
-			Long referenceId = publishedReview.getId();
-
-			VoteCreateRequest voteCreateRequest = new VoteCreateRequest(memberId, REVIEW, referenceId, LIKE);
+			ReviewVoteCreateRequest reviewVoteCreateRequest
+					= new ReviewVoteCreateRequest(alreadyVoter.getId(), publishedReview.getId(), LIKE);
 
 			// when & then
 			mockMvc.perform(post("/api/v1/votes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
-							.content(objectMapper.writeValueAsString(voteCreateRequest)))
+							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
 					.andExpect(status().isConflict())
-					.andDo(document("투표 생성 실패 - 이미 투표한 경우",
+					.andDo(document("후기 투표 생성 실패 - 이미 투표한 경우",
 							preprocessRequest(prettyPrint()),
 							preprocessResponse(prettyPrint()),
 							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 							requestFields(
 									fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
-									fieldWithPath("voteType").type(JsonFieldType.STRING).description("투표 대상 엔티티의 타입"),
-									fieldWithPath("referenceId").type(JsonFieldType.NUMBER).description("투표 대상 엔티티의 id"),
+									fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 									fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 							),
 							responseFields(
