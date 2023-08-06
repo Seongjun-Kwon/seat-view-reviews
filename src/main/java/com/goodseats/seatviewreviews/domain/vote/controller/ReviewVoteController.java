@@ -12,22 +12,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.goodseats.seatviewreviews.common.security.Authority;
-import com.goodseats.seatviewreviews.domain.vote.model.dto.request.VoteCreateRequest;
-import com.goodseats.seatviewreviews.domain.vote.service.VoteService;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.vote.service.ReviewVoteService;
 
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/votes")
-public class VoteController {
+public class ReviewVoteController {
 
-	private final VoteService voteService;
+	private final ReviewVoteService reviewVoteService;
 
 	@Authority(authorities = {USER, ADMIN})
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<Void> createVote(@Valid @RequestBody VoteCreateRequest voteCreateRequest) {
-		voteService.createVote(voteCreateRequest);
+	ResponseEntity<Void> createVote(@Valid @RequestBody ReviewVoteCreateRequest reviewVoteCreateRequest) {
+		reviewVoteService.createVote(reviewVoteCreateRequest);
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -1,0 +1,17 @@
+package com.goodseats.seatviewreviews.domain.vote.mapper;
+
+import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
+import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
+import com.goodseats.seatviewreviews.domain.vote.model.entity.ReviewVote;
+import com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ReviewVoteMapper {
+
+	public static ReviewVote toEntity(Member member, Review review, VoteChoice voteChoice) {
+		return new ReviewVote(voteChoice, member, review);
+	}
+}

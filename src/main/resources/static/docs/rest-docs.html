@@ -548,7 +548,7 @@
       </li>
       <li><a href="#_6_투표">6. 투표</a>
         <ul class="sectlevel2">
-          <li><a href="#_6_1_투표_생성">6-1. 투표 생성</a>
+          <li><a href="#_6_1_후기_투표_생성">6-1. 후기 투표 생성</a>
             <ul class="sectlevel3">
               <li><a href="#_성공_15">성공</a></li>
               <li><a href="#_실패_비로그인_사용자가_시도한_경우">실패 - 비로그인 사용자가 시도한 경우</a></li>
@@ -667,11 +667,11 @@ Content-Length: 1578
     "name" : "잠실 야구장",
     "homeTeam" : "DOOSAN_LG"
   }, {
-    "stadiumId" : 2566,
+    "stadiumId" : 2637,
     "name" : "잠실 야구장",
     "homeTeam" : "DOOSAN_LG"
   }, {
-    "stadiumId" : 2567,
+    "stadiumId" : 2638,
     "name" : "한화생명 이글스 파크",
     "homeTeam" : "HANWHA"
   } ]
@@ -728,7 +728,7 @@ Content-Length: 1578
             <h5 id="_request_2"><a class="link" href="#_request_2">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/stadiums/2565 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/stadiums/2636 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -890,7 +890,7 @@ Content-Length: 221
   "url" : "/api/v1/stadiums/-1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-08-05 06:22:36",
+  "createdAt" : "2023-08-06 21:26:41",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -960,7 +960,7 @@ Content-Length: 221
             <h5 id="_request_4"><a class="link" href="#_request_4">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/sections?stadiumId=2580 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/sections?stadiumId=2651 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -1018,10 +1018,10 @@ Content-Length: 147
 
 {
   "seatSections" : [ {
-    "sectionId" : 2372,
+    "sectionId" : 2437,
     "sectionName" : "110"
   }, {
-    "sectionId" : 2373,
+    "sectionId" : 2438,
     "sectionName" : "111"
   } ]
 }</code></pre>
@@ -1072,7 +1072,7 @@ Content-Length: 147
             <h5 id="_request_5"><a class="link" href="#_request_5">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/seats?sectionId=2379 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/seats?sectionId=2439 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -1252,7 +1252,7 @@ loginEmail=goodseat%40google.com&amp;password=password&amp;nickname=Jerome</code
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/members/5833</code></pre>
+Location: /api/v1/members/5990</code></pre>
               </div>
             </div>
           </div>
@@ -1334,7 +1334,7 @@ Content-Length: 209
   "url" : "/api/v1/members",
   "exceptionName" : "DuplicatedException",
   "message" : "중복된 아이디입니다.",
-  "createdAt" : "2023-08-05 06:23:03",
+  "createdAt" : "2023-08-06 21:26:57",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1467,7 +1467,7 @@ Content-Length: 209
   "url" : "/api/v1/members",
   "exceptionName" : "DuplicatedException",
   "message" : "중복된 아이디입니다.",
-  "createdAt" : "2023-08-05 06:23:04",
+  "createdAt" : "2023-08-06 21:26:57",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1668,7 +1668,7 @@ Content-Length: 236
   "url" : "/api/v1/members/login",
   "exceptionName" : "AuthenticationException",
   "message" : "아이디 혹은 비밀번호가 틀립니다.",
-  "createdAt" : "2023-08-05 06:23:03",
+  "createdAt" : "2023-08-06 21:26:57",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1797,7 +1797,7 @@ Content-Length: 236
   "url" : "/api/v1/members/login",
   "exceptionName" : "AuthenticationException",
   "message" : "아이디 혹은 비밀번호가 틀립니다.",
-  "createdAt" : "2023-08-05 06:23:03",
+  "createdAt" : "2023-08-06 21:26:57",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1900,7 +1900,7 @@ Content-Length: 230
   "url" : "/api/v1/members/logout",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-08-05 06:23:03",
+  "createdAt" : "2023-08-06 21:26:57",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2072,8 +2072,8 @@ Content-Type: application/json
 Content-Length: 149
 
 {
-  "imageId" : 760,
-  "imageUrl" : "https://seat-view-reviews.s3.ap-northeast-2.amazonaws.com/reviews/fba62537-3702-4e38-9ab5-364a29eef1f5.png"
+  "imageId" : 775,
+  "imageUrl" : "https://seat-view-reviews.s3.ap-northeast-2.amazonaws.com/reviews/ceaa2fa9-2a85-4378-9a8c-5a8744559cef.png"
 }</code></pre>
               </div>
             </div>
@@ -2220,7 +2220,7 @@ Content-Length: 222
   "url" : "/api/v1/images",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-08-05 06:23:09",
+  "createdAt" : "2023-08-06 21:26:59",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2388,7 +2388,7 @@ Content-Length: 230
   "url" : "/api/v1/images",
   "exceptionName" : "IllegalArgumentException",
   "message" : "잘못된 이미지 업로드 요청입니다.",
-  "createdAt" : "2023-08-05 06:23:09",
+  "createdAt" : "2023-08-06 21:26:59",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2533,7 +2533,7 @@ Host: localhost:8080
             <h5 id="_request_18"><a class="link" href="#_request_18">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/761 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/776 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2615,7 +2615,7 @@ Content-Length: 218
   "url" : "/api/v1/images/1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-08-05 06:23:08",
+  "createdAt" : "2023-08-06 21:26:58",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2677,7 +2677,7 @@ Content-Length: 218
             <h5 id="_request_20"><a class="link" href="#_request_20">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/762 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/777 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2714,10 +2714,10 @@ Content-Length: 219
 
 {
   "status" : 409,
-  "url" : "/api/v1/images/762",
+  "url" : "/api/v1/images/777",
   "exceptionName" : "DuplicatedException",
   "message" : "이미 삭제된 데이터입니다.",
-  "createdAt" : "2023-08-05 06:23:08",
+  "createdAt" : "2023-08-06 21:26:58",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2794,7 +2794,7 @@ Content-Length: 24
 Host: localhost:8080
 
 {
-  "seatId" : 26498
+  "seatId" : 26560
 }</code></pre>
               </div>
             </div>
@@ -2853,7 +2853,7 @@ Host: localhost:8080
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/reviews/3725</code></pre>
+Location: /api/v1/reviews/3846</code></pre>
               </div>
             </div>
           </div>
@@ -2938,7 +2938,7 @@ Content-Length: 217
   "url" : "/api/v1/reviews",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-08-05 06:22:57",
+  "createdAt" : "2023-08-06 21:26:52",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3003,7 +3003,7 @@ Content-Length: 217
             <h5 id="_request_23"><a class="link" href="#_request_23">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/reviews/3734 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/reviews/3855 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
 Host: localhost:8080</code></pre>
               </div>
@@ -3184,7 +3184,7 @@ Content-Length: 219
   "url" : "/api/v1/reviews/1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-08-05 06:23:02",
+  "createdAt" : "2023-08-06 21:26:56",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3331,10 +3331,10 @@ Content-Length: 228
 
 {
   "status" : 401,
-  "url" : "/api/v1/reviews/3746",
+  "url" : "/api/v1/reviews/3867",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-08-05 06:23:01",
+  "createdAt" : "2023-08-06 21:26:55",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3399,7 +3399,7 @@ Content-Length: 228
             <h5 id="_request_24"><a class="link" href="#_request_24">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews?seatId=26501&amp;page=0&amp;size=1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews?seatId=26563&amp;page=0&amp;size=1 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -3465,7 +3465,7 @@ Content-Length: 154
 
 {
   "reviews" : [ {
-    "reviewId" : 3731,
+    "reviewId" : 3852,
     "title" : "테스트 제목",
     "score" : 5,
     "viewCount" : 0,
@@ -3597,7 +3597,7 @@ Content-Length: 217
   "url" : "/api/v1/reviews",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-08-05 06:22:57",
+  "createdAt" : "2023-08-06 21:26:52",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3662,7 +3662,7 @@ Content-Length: 217
             <h5 id="_request_25"><a class="link" href="#_request_25">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews/3745 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews/3866 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -3716,7 +3716,7 @@ Host: localhost:8080</code></pre>
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: USER_KEY=2df19244-4a95-4be9-87c6-e18555241069; Path=/; Max-Age=86400; Expires=Sat, 05 Aug 2023 21:23:00 GMT; Secure; HttpOnly
+Set-Cookie: USER_KEY=691db271-6a40-4abf-bd08-5d4dffefb201; Path=/; Max-Age=86400; Expires=Mon, 07 Aug 2023 12:26:55 GMT; Secure; HttpOnly
 Content-Type: application/json
 Content-Length: 131
 
@@ -3835,7 +3835,7 @@ Host: localhost:8080</code></pre>
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
-Set-Cookie: USER_KEY=5be0114a-9c68-4596-ae90-e4b11e0ff7c1; Path=/; Max-Age=86400; Expires=Sat, 05 Aug 2023 21:22:55 GMT; Secure; HttpOnly
+Set-Cookie: USER_KEY=3d1046a1-4886-43b2-86de-41f681b907f3; Path=/; Max-Age=86400; Expires=Mon, 07 Aug 2023 12:26:50 GMT; Secure; HttpOnly
 Content-Type: application/json
 Content-Length: 220
 
@@ -3844,7 +3844,7 @@ Content-Length: 220
   "url" : "/api/v1/reviews/-1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-08-05 06:22:55",
+  "createdAt" : "2023-08-06 21:26:50",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3907,7 +3907,7 @@ Content-Length: 220
     <h2 id="_6_투표"><a class="link" href="#_6_투표">6. 투표</a></h2>
     <div class="sectionbody">
       <div class="sect2">
-        <h3 id="_6_1_투표_생성"><a class="link" href="#_6_1_투표_생성">6-1. 투표 생성</a></h3>
+        <h3 id="_6_1_후기_투표_생성"><a class="link" href="#_6_1_후기_투표_생성">6-1. 후기 투표 생성</a></h3>
         <div class="sect3">
           <h4 id="_성공_15"><a class="link" href="#_성공_15">성공</a></h4>
           <div class="sect4">
@@ -3916,13 +3916,12 @@ Content-Length: 220
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 102
+Content-Length: 73
 Host: localhost:8080
 
 {
-  "memberId" : 5841,
-  "voteType" : "REVIEW",
-  "referenceId" : 3751,
+  "memberId" : 5955,
+  "reviewId" : 3835,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -3971,14 +3970,9 @@ Host: localhost:8080
                 <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
               </tr>
               <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
-              </tr>
-              <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">연관된 후기의 id</p></td>
               </tr>
               <tr>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
@@ -4005,13 +3999,12 @@ Host: localhost:8080
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 102
+Content-Length: 73
 Host: localhost:8080
 
 {
-  "memberId" : 5849,
-  "voteType" : "REVIEW",
-  "referenceId" : 3759,
+  "memberId" : 5963,
+  "reviewId" : 3843,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -4060,14 +4053,9 @@ Host: localhost:8080
                 <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
               </tr>
               <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
-              </tr>
-              <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">연관된 후기의 id</p></td>
               </tr>
               <tr>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
@@ -4090,7 +4078,7 @@ Content-Length: 221
   "url" : "/api/v1/votes",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-08-05 06:23:07",
+  "createdAt" : "2023-08-06 21:26:35",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4154,13 +4142,12 @@ Content-Length: 221
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 99
+Content-Length: 70
 Host: localhost:8080
 
 {
   "memberId" : 0,
-  "voteType" : "REVIEW",
-  "referenceId" : 3753,
+  "reviewId" : 3837,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -4209,14 +4196,9 @@ Host: localhost:8080
                 <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
               </tr>
               <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
-              </tr>
-              <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">연관된 후기의 id</p></td>
               </tr>
               <tr>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
@@ -4239,7 +4221,7 @@ Content-Length: 215
   "url" : "/api/v1/votes",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-08-05 06:23:05",
+  "createdAt" : "2023-08-06 21:26:33",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4303,13 +4285,12 @@ Content-Length: 215
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 99
+Content-Length: 70
 Host: localhost:8080
 
 {
-  "memberId" : 5847,
-  "voteType" : "REVIEW",
-  "referenceId" : 0,
+  "memberId" : 5961,
+  "reviewId" : 0,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -4358,14 +4339,9 @@ Host: localhost:8080
                 <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
               </tr>
               <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
-              </tr>
-              <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">연관된 후기의 id</p></td>
               </tr>
               <tr>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
@@ -4388,7 +4364,7 @@ Content-Length: 215
   "url" : "/api/v1/votes",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-08-05 06:23:06",
+  "createdAt" : "2023-08-06 21:26:35",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4452,13 +4428,12 @@ Content-Length: 215
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 102
+Content-Length: 73
 Host: localhost:8080
 
 {
-  "memberId" : 5846,
-  "voteType" : "REVIEW",
-  "referenceId" : 3755,
+  "memberId" : 5960,
+  "reviewId" : 3839,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -4507,14 +4482,9 @@ Host: localhost:8080
                 <td class="tableblock halign-left valign-top"><p class="tableblock">투표하는 회원의 id</p></td>
               </tr>
               <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteType</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 타입</p></td>
-              </tr>
-              <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referenceId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-                <td class="tableblock halign-left valign-top"><p class="tableblock">투표 대상 엔티티의 id</p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">연관된 후기의 id</p></td>
               </tr>
               <tr>
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteChoice</code></p></td>
@@ -4537,7 +4507,7 @@ Content-Length: 211
   "url" : "/api/v1/votes",
   "exceptionName" : "DuplicatedException",
   "message" : "이미 평가한 후기입니다.",
-  "createdAt" : "2023-08-05 06:23:06",
+  "createdAt" : "2023-08-06 21:26:34",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4599,7 +4569,7 @@ Content-Length: 211
 </div>
 <div id="footer">
   <div id="footer-text">
-    Last updated 2023-08-05 06:26:59 +0900
+    Last updated 2023-08-06 21:26:06 +0900
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

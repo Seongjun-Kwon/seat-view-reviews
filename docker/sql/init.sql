@@ -94,12 +94,11 @@ CREATE TABLE IF NOT EXISTS `comment`
     `deleted_at`      TIMESTAMP     NULL
 );
 
-CREATE TABLE IF NOT EXISTS `vote`
+CREATE TABLE IF NOT EXISTS `review_vote`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY,
     `member_id`       BIGINT      NOT NULL,
-    `vote_type`       VARCHAR(10) NOT NULL,
-    `reference_id`    BIGINT      NOT NULL,
+    `review_id`       BIGINT      NOT NULL,
     `vote_choice`     VARCHAR(10) NOT NULL,
     `created_at`      TIMESTAMP   NOT NULL,
     `last_updated_at` TIMESTAMP   NOT NULL,
