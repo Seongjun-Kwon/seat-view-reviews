@@ -27,8 +27,8 @@ public class ReviewVoteService {
 	private final ReviewRepository reviewRepository;
 
 	@Transactional
-	public void createVote(ReviewVoteCreateRequest reviewVoteCreateRequest) {
-		Member member = memberRepository.findById(reviewVoteCreateRequest.memberId())
+	public Long createVote(ReviewVoteCreateRequest reviewVoteCreateRequest, Long memberId) {
+		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 		Review review = reviewRepository.findById(reviewVoteCreateRequest.reviewId())
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
@@ -39,5 +39,7 @@ public class ReviewVoteService {
 
 		ReviewVote reviewVote = ReviewVoteMapper.toEntity(member, review, reviewVoteCreateRequest.voteChoice());
 		reviewVoteRepository.save(reviewVote);
+
+		return review.getId();
 	}
 }

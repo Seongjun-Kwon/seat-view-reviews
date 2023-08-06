@@ -79,19 +79,19 @@ class ReviewVoteServiceTest {
 	@DisplayName("Success - 후기 투표 생성에 성공한다")
 	void createVoteSuccess() {
 		// given
-		ReviewVoteCreateRequest reviewVoteCreateRequest
-				= new ReviewVoteCreateRequest(member.getId(), publishedReview.getId(), LIKE);
+		Long memberId = member.getId();
+		ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
-		when(memberRepository.findById(reviewVoteCreateRequest.memberId())).thenReturn(Optional.of(member));
+		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 		when(reviewRepository.findById(reviewVoteCreateRequest.reviewId())).thenReturn(Optional.of(publishedReview));
 		when(reviewVoteRepository.existsByMemberAndReview(member, publishedReview)).thenReturn(false);
 		when(reviewVoteRepository.save(any(ReviewVote.class))).thenReturn(any(ReviewVote.class));
 
 		// when
-		reviewVoteService.createVote(reviewVoteCreateRequest);
+		reviewVoteService.createVote(reviewVoteCreateRequest, memberId);
 
 		// then
-		verify(memberRepository).findById(reviewVoteCreateRequest.memberId());
+		verify(memberRepository).findById(memberId);
 		verify(reviewRepository).findById(reviewVoteCreateRequest.reviewId());
 		verify(reviewVoteRepository).existsByMemberAndReview(member, publishedReview);
 		verify(reviewVoteRepository).save(any(ReviewVote.class));
@@ -107,53 +107,52 @@ class ReviewVoteServiceTest {
 			// given
 			Member wrongMember = new Member("test@test.com", "password", "wrongMember");
 			ReflectionTestUtils.setField(wrongMember, "id", -1L);
-			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(wrongMember.getId(), publishedReview.getId(), LIKE);
+			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
-			when(memberRepository.findById(reviewVoteCreateRequest.memberId())).thenReturn(Optional.empty());
+			when(memberRepository.findById(wrongMember.getId())).thenReturn(Optional.empty());
 
 			// when & then
-			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest))
+			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest, wrongMember.getId()))
 					.isExactlyInstanceOf(NotFoundException.class)
 					.hasMessage(NOT_FOUND.getMessage());
-			verify(memberRepository).findById(reviewVoteCreateRequest.memberId());
+			verify(memberRepository).findById(wrongMember.getId());
 		}
 
 		@Test
 		@DisplayName("Fail - 투표하는 엔티티(후기, 댓글)가 없으면 후기 투표 생성에 실패한다")
 		void createVoteFailByNotFoundVoteType() {
+			Long memberId = member.getId();
 			Review wrongReview = new Review(member, seat);
 			ReflectionTestUtils.setField(wrongReview, "id", -1L);
-			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(member.getId(), wrongReview.getId(), LIKE);
+			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(wrongReview.getId(), LIKE);
 
-			when(memberRepository.findById(reviewVoteCreateRequest.memberId())).thenReturn(Optional.of(member));
+			when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 			when(reviewRepository.findById(reviewVoteCreateRequest.reviewId())).thenReturn(Optional.empty());
 
 			// when & then
-			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest))
+			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest,memberId))
 					.isExactlyInstanceOf(NotFoundException.class)
 					.hasMessage(NOT_FOUND.getMessage());
-			verify(memberRepository).findById(reviewVoteCreateRequest.memberId());
+			verify(memberRepository).findById(memberId);
 			verify(reviewRepository).findById(reviewVoteCreateRequest.reviewId());
 		}
 
 		@Test
 		@DisplayName("Fail - 이미 투표했으면 후기 투표 생성에 실패한다")
 		void createVoteFailByAlreadyVote() {
-			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(member.getId(), publishedReview.getId(), LIKE);
+			Long memberId = member.getId();
+			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
-			when(memberRepository.findById(reviewVoteCreateRequest.memberId())).thenReturn(Optional.of(member));
+			when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 			when(reviewRepository.findById(reviewVoteCreateRequest.reviewId())).thenReturn(Optional.of(publishedReview));
 			when(reviewVoteRepository.existsByMemberAndReview(member, publishedReview)).thenReturn(true);
 
 			// when & then
-			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest))
+			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest,memberId))
 					.isExactlyInstanceOf(DuplicatedException.class)
 					.hasMessage(ALREADY_VOTED.getMessage());
 
-			verify(memberRepository).findById(reviewVoteCreateRequest.memberId());
+			verify(memberRepository).findById(memberId);
 			verify(reviewRepository).findById(reviewVoteCreateRequest.reviewId());
 			verify(reviewVoteRepository).existsByMemberAndReview(member, publishedReview);
 		}

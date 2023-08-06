@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -124,29 +125,27 @@ class ReviewVoteControllerTest {
 	}
 
 	@Test
-	@DisplayName("Success - 후기 투표 생성에 성공하고 204 응답한다")
+	@DisplayName("Success - 후기 투표 생성에 성공하고 201 응답한다")
 	void createVoteSuccess() throws Exception {
 		// given
 		MockHttpSession session = TestUtils.getLoginSession(voter, MemberAuthority.USER);
-		ReviewVoteCreateRequest reviewVoteCreateRequest
-				= new ReviewVoteCreateRequest(voter.getId(), publishedReview.getId(), LIKE);
+		ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
 		// when & then
 		mockMvc.perform(post("/api/v1/votes")
 						.session(session)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
-				.andExpect(status().isNoContent())
+				.andExpect(status().isCreated())
 				.andDo(document("후기 투표 생성 성공",
 						preprocessRequest(prettyPrint()),
 						preprocessResponse(prettyPrint()),
 						requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 						requestFields(
-								fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
 								fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 								fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
-						)
-				));
+						),
+						responseHeaders(headerWithName("Location").description("생성된 후기 투표에 접근 가능한 url"))));
 	}
 
 	@Nested
@@ -157,8 +156,7 @@ class ReviewVoteControllerTest {
 		@DisplayName("Fail - 비로그인 사용자가 투표하면 후기 투표 생성에 실패하고 401 응답한다")
 		void createVoteFailByNotMember() throws Exception {
 			// given
-			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(voter.getId(), publishedReview.getId(), LIKE);
+			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
 			mockMvc.perform(post("/api/v1/votes")
@@ -170,7 +168,6 @@ class ReviewVoteControllerTest {
 							preprocessResponse(prettyPrint()),
 							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 							requestFields(
-									fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
 									fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 									fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 							),
@@ -188,9 +185,10 @@ class ReviewVoteControllerTest {
 		@DisplayName("Fail - 투표하는 회원이 없는 회원이면 후기 투표 생성에 실패하고 404 응답한다")
 		void createVoteFailByNotFoundMember() throws Exception {
 			// given
-			MockHttpSession session = TestUtils.getLoginSession(voter, MemberAuthority.USER);
-			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(0L, publishedReview.getId(), LIKE);
+			Member deletedMember = new Member("deleted@test.com", "test", "deleted");
+			ReflectionTestUtils.setField(deletedMember, "id", 0L);
+			MockHttpSession session = TestUtils.getLoginSession(deletedMember, MemberAuthority.USER);
+			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
 			mockMvc.perform(post("/api/v1/votes")
@@ -203,7 +201,6 @@ class ReviewVoteControllerTest {
 							preprocessResponse(prettyPrint()),
 							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 							requestFields(
-									fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
 									fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 									fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 							),
@@ -223,7 +220,7 @@ class ReviewVoteControllerTest {
 			// given
 			MockHttpSession session = TestUtils.getLoginSession(voter, MemberAuthority.USER);
 			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(voter.getId(), 0L, LIKE);
+					= new ReviewVoteCreateRequest(0L, LIKE);
 
 			// when & then
 			mockMvc.perform(post("/api/v1/votes")
@@ -236,7 +233,6 @@ class ReviewVoteControllerTest {
 							preprocessResponse(prettyPrint()),
 							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 							requestFields(
-									fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
 									fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 									fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 							),
@@ -256,7 +252,7 @@ class ReviewVoteControllerTest {
 			// given
 			MockHttpSession session = TestUtils.getLoginSession(alreadyVoter, MemberAuthority.USER);
 			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(alreadyVoter.getId(), publishedReview.getId(), LIKE);
+					= new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
 			mockMvc.perform(post("/api/v1/votes")
@@ -269,7 +265,6 @@ class ReviewVoteControllerTest {
 							preprocessResponse(prettyPrint()),
 							requestHeaders(headerWithName("Content-type").description("요청 타입 정보")),
 							requestFields(
-									fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("투표하는 회원의 id"),
 									fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("연관된 후기의 id"),
 									fieldWithPath("voteChoice").type(JsonFieldType.STRING).description("선택한 투표(좋아요, 싫어요)")
 							),
