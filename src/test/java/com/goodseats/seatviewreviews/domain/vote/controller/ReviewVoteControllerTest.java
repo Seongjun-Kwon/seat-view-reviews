@@ -121,7 +121,7 @@ class ReviewVoteControllerTest {
 		seatSectionRepository.delete(seatSection);
 		seatRepository.delete(seat);
 		reviewRepository.deleteAll();
-		reviewVoteRepository.delete(reviewVote);
+		reviewVoteRepository.deleteAll();
 	}
 
 	@Test
