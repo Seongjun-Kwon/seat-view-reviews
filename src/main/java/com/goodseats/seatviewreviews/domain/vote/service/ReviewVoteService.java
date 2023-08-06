@@ -44,8 +44,8 @@ public class ReviewVoteService {
 	}
 
 	@Transactional
-	public void deleteVote(Long voteId, Long memberId) {
-		ReviewVote reviewVote = reviewVoteRepository.findById(voteId)
+	public void deleteVote(Long reviewVoteId, Long memberId) {
+		ReviewVote reviewVote = reviewVoteRepository.findById(reviewVoteId)
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 		reviewVote.verifyVoter(memberId);
 

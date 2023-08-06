@@ -44,12 +44,12 @@ public class ReviewVoteController {
 	}
 
 	@Authority(authorities = {USER, ADMIN})
-	@DeleteMapping("/{voteId}")
+	@DeleteMapping("/{reviewVoteId}")
 	ResponseEntity<Void> deleteVote(
-			@PathVariable Long voteId,
+			@PathVariable Long reviewVoteId,
 			@SessionAttribute(value = LOGIN_MEMBER_INFO) AuthenticationDTO authenticationDTO
 	) {
-		reviewVoteService.deleteVote(voteId, authenticationDTO.memberId());
+		reviewVoteService.deleteVote(reviewVoteId, authenticationDTO.memberId());
 		return ResponseEntity.noContent().build();
 	}
 }
