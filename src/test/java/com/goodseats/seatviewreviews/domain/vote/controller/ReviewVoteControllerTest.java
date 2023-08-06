@@ -1,11 +1,14 @@
 package com.goodseats.seatviewreviews.domain.vote.controller;
 
+import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority.*;
 import static com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.AfterEach;
@@ -19,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -27,7 +31,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodseats.seatviewreviews.common.TestUtils;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
-import com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
@@ -128,11 +131,11 @@ class ReviewVoteControllerTest {
 	@DisplayName("Success - 후기 투표 생성에 성공하고 201 응답한다")
 	void createVoteSuccess() throws Exception {
 		// given
-		MockHttpSession session = TestUtils.getLoginSession(voter, MemberAuthority.USER);
+		MockHttpSession session = TestUtils.getLoginSession(voter, USER);
 		ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
 		// when & then
-		mockMvc.perform(post("/api/v1/votes")
+		mockMvc.perform(post("/api/v1/reviewvotes")
 						.session(session)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
@@ -159,7 +162,7 @@ class ReviewVoteControllerTest {
 			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
-			mockMvc.perform(post("/api/v1/votes")
+			mockMvc.perform(post("/api/v1/reviewvotes")
 							.contentType(MediaType.APPLICATION_JSON)
 							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
 					.andExpect(status().isUnauthorized())
@@ -187,11 +190,11 @@ class ReviewVoteControllerTest {
 			// given
 			Member deletedMember = new Member("deleted@test.com", "test", "deleted");
 			ReflectionTestUtils.setField(deletedMember, "id", 0L);
-			MockHttpSession session = TestUtils.getLoginSession(deletedMember, MemberAuthority.USER);
+			MockHttpSession session = TestUtils.getLoginSession(deletedMember, USER);
 			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
-			mockMvc.perform(post("/api/v1/votes")
+			mockMvc.perform(post("/api/v1/reviewvotes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
 							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
@@ -218,12 +221,12 @@ class ReviewVoteControllerTest {
 		@DisplayName("Fail - 투표하는 엔티티(후기, 댓글)가 없으면 후기 투표 생성에 실패하고 404 응답한다")
 		void createVoteFailByNotFoundVoteType() throws Exception {
 			// given
-			MockHttpSession session = TestUtils.getLoginSession(voter, MemberAuthority.USER);
+			MockHttpSession session = TestUtils.getLoginSession(voter, USER);
 			ReviewVoteCreateRequest reviewVoteCreateRequest
 					= new ReviewVoteCreateRequest(0L, LIKE);
 
 			// when & then
-			mockMvc.perform(post("/api/v1/votes")
+			mockMvc.perform(post("/api/v1/reviewvotes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
 							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
@@ -250,12 +253,12 @@ class ReviewVoteControllerTest {
 		@DisplayName("Fail - 이미 투표했으면 후기 투표 생성에 실패하고 409 응답한다")
 		void createVoteFailByAlreadyVote() throws Exception {
 			// given
-			MockHttpSession session = TestUtils.getLoginSession(alreadyVoter, MemberAuthority.USER);
+			MockHttpSession session = TestUtils.getLoginSession(alreadyVoter, USER);
 			ReviewVoteCreateRequest reviewVoteCreateRequest
 					= new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
-			mockMvc.perform(post("/api/v1/votes")
+			mockMvc.perform(post("/api/v1/reviewvotes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
 							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
@@ -276,6 +279,87 @@ class ReviewVoteControllerTest {
 									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
 									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
 							)));
+		}
+	}
+
+	@Test
+	@DisplayName("Success - 후기 투표 삭제에 성공하고 204 응답한다")
+	void deleteVoteSuccess() throws Exception {
+		// given
+		MockHttpSession session = TestUtils.getLoginSession(alreadyVoter, USER);
+
+		// when & then
+		mockMvc.perform(RestDocumentationRequestBuilders.delete(
+								"/api/v1/reviewvotes/{reviewVoteId}", reviewVote.getId()
+						)
+						.session(session))
+				.andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(document("후기 투표 삭제 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						pathParameters(parameterWithName("reviewVoteId").description("삭제하려는 후기 투표 id"))
+				));
+	}
+
+	@Nested
+	@DisplayName("deleteVoteFail")
+	class DeleteVoteFail {
+
+		@Test
+		@DisplayName("Fail - 삭제하려는 후기 투표가 존재하지 않으면 후기 투표 삭제에 실패하고 404 응답한다")
+		void deleteVoteFailByNotFoundReviewVote() throws Exception {
+			// given
+			MockHttpSession session = TestUtils.getLoginSession(alreadyVoter, USER);
+			Long wrongReviewVoteId = 0L;
+
+			// when & then
+			mockMvc.perform(RestDocumentationRequestBuilders.delete(
+									"/api/v1/reviewvotes/{reviewVoteId}", wrongReviewVoteId
+							)
+							.session(session))
+					.andExpect(status().isNotFound())
+					.andDo(print())
+					.andDo(document("후기 투표 삭제 실패 - 후기 투표 id 없는 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							pathParameters(parameterWithName("reviewVoteId").description("삭제하려는 후기 투표 id")),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
+		}
+
+		@Test
+		@DisplayName("Fail - 삭제하려는 후기 투표의 투표자가 아니면 후기 투표 삭제에 실패하고 401 응답한다")
+		void deleteVoteFailByUnAuthorized() throws Exception {
+			// given
+			MockHttpSession session = TestUtils.getLoginSession(voter, USER);
+
+			// when & then
+			mockMvc.perform(RestDocumentationRequestBuilders.delete(
+									"/api/v1/reviewvotes/{reviewVoteId}", reviewVote.getId()
+							)
+							.session(session))
+					.andExpect(status().isUnauthorized())
+					.andDo(print())
+					.andDo(document("후기 투표 삭제 실패 - 후기 투표자가 아닌 경우",
+							preprocessRequest(prettyPrint()),
+							preprocessResponse(prettyPrint()),
+							pathParameters(parameterWithName("reviewVoteId").description("삭제하려는 후기 투표 id")),
+							responseFields(
+									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+									fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+									fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+							)));
+
 		}
 	}
 }

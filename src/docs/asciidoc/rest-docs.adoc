@@ -411,3 +411,30 @@ include::{snippets}/후기 투표 생성 실패 - 이미 투표한 경우/reques
 include::{snippets}/후기 투표 생성 실패 - 이미 투표한 경우/http-response.adoc[]
 ===== Response Fields
 include::{snippets}/후기 투표 생성 실패 - 이미 투표한 경우/response-fields.adoc[]
+
+=== 6-2. 후기 투표 삭제
+==== 성공
+===== Request
+include::{snippets}/후기 투표 삭제 성공/http-request.adoc[]
+===== Path Parameters
+include::{snippets}/후기 투표 삭제 성공/path-parameters.adoc[]
+===== Response
+include::{snippets}/후기 투표 삭제 성공/http-response.adoc[]
+
+==== 실패 - 후기 투표 id 없는 경우
+include::{snippets}/후기 투표 삭제 실패 - 후기 투표 id 없는 경우/http-request.adoc[]
+===== Path Parameters
+include::{snippets}/후기 투표 삭제 실패 - 후기 투표 id 없는 경우/path-parameters.adoc[]
+===== Response
+include::{snippets}/후기 투표 삭제 실패 - 후기 투표 id 없는 경우/http-response.adoc[]
+===== Response Fields
+include::{snippets}/후기 투표 삭제 실패 - 후기 투표 id 없는 경우/response-fields.adoc[]
+
+==== 실패 - 후기 투표자가 아닌 경우
+include::{snippets}/후기 투표 삭제 실패 - 후기 투표자가 아닌 경우/http-request.adoc[]
+===== Path Parameters
+include::{snippets}/후기 투표 삭제 실패 - 후기 투표자가 아닌 경우/path-parameters.adoc[]
+===== Response
+include::{snippets}/후기 투표 삭제 실패 - 후기 투표자가 아닌 경우/http-response.adoc[]
+===== Response Fields
+include::{snippets}/후기 투표 삭제 실패 - 후기 투표자가 아닌 경우/response-fields.adoc[]

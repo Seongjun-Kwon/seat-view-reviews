@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.goodseats.seatviewreviews.common.error.exception.AuthenticationException;
 import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
 import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
@@ -54,6 +55,7 @@ class ReviewVoteServiceTest {
 	private Seat seat;
 	private Review tempReview;
 	private Review publishedReview;
+	private ReviewVote reviewVote;
 
 	@BeforeEach
 	void setUp() {
@@ -65,6 +67,7 @@ class ReviewVoteServiceTest {
 		tempReview = new Review(member, seat);
 		publishedReview = new Review(member, seat);
 		publishedReview.publish("테스트 제목", "테스트 내용", 5);
+		reviewVote = new ReviewVote(LIKE, member, publishedReview);
 
 		ReflectionTestUtils.setField(member, "id", 1L);
 		ReflectionTestUtils.setField(stadium, "id", 1L);
@@ -73,6 +76,7 @@ class ReviewVoteServiceTest {
 		ReflectionTestUtils.setField(seat, "id", 1L);
 		ReflectionTestUtils.setField(tempReview, "id", 1L);
 		ReflectionTestUtils.setField(publishedReview, "id", 1L);
+		ReflectionTestUtils.setField(reviewVote, "id", 1L);
 	}
 
 	@Test
@@ -121,6 +125,7 @@ class ReviewVoteServiceTest {
 		@Test
 		@DisplayName("Fail - 투표하는 엔티티(후기, 댓글)가 없으면 후기 투표 생성에 실패한다")
 		void createVoteFailByNotFoundVoteType() {
+			// given
 			Long memberId = member.getId();
 			Review wrongReview = new Review(member, seat);
 			ReflectionTestUtils.setField(wrongReview, "id", -1L);
@@ -130,7 +135,7 @@ class ReviewVoteServiceTest {
 			when(reviewRepository.findById(reviewVoteCreateRequest.reviewId())).thenReturn(Optional.empty());
 
 			// when & then
-			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest,memberId))
+			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest, memberId))
 					.isExactlyInstanceOf(NotFoundException.class)
 					.hasMessage(NOT_FOUND.getMessage());
 			verify(memberRepository).findById(memberId);
@@ -140,6 +145,7 @@ class ReviewVoteServiceTest {
 		@Test
 		@DisplayName("Fail - 이미 투표했으면 후기 투표 생성에 실패한다")
 		void createVoteFailByAlreadyVote() {
+			// given
 			Long memberId = member.getId();
 			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
 
@@ -148,13 +154,61 @@ class ReviewVoteServiceTest {
 			when(reviewVoteRepository.existsByMemberAndReview(member, publishedReview)).thenReturn(true);
 
 			// when & then
-			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest,memberId))
+			assertThatThrownBy(() -> reviewVoteService.createVote(reviewVoteCreateRequest, memberId))
 					.isExactlyInstanceOf(DuplicatedException.class)
 					.hasMessage(ALREADY_VOTED.getMessage());
 
 			verify(memberRepository).findById(memberId);
 			verify(reviewRepository).findById(reviewVoteCreateRequest.reviewId());
 			verify(reviewVoteRepository).existsByMemberAndReview(member, publishedReview);
+		}
+	}
+
+	@Test
+	@DisplayName("Success - 후기 투표 삭제에 성공한다")
+	void deleteVoteSuccess() {
+		// given
+		when(reviewVoteRepository.findById(reviewVote.getId())).thenReturn(Optional.of(reviewVote));
+		doNothing().when(reviewVoteRepository).delete(reviewVote);
+
+		// when
+		reviewVoteService.deleteVote(reviewVote.getId(), member.getId());
+
+		// then
+		verify(reviewVoteRepository).findById(reviewVote.getId());
+		verify(reviewVoteRepository).delete(reviewVote);
+	}
+
+	@Nested
+	@DisplayName("deleteVoteFail")
+	class DeleteVoteFail {
+
+		@Test
+		@DisplayName("Fail - 삭제하려는 후기 투표가 존재하지 않으면 후기 투표 삭제에 실패한다")
+		void deleteVoteFailByNotFoundReviewVote() {
+			// given
+			Long wrongReviewVoteId = 0L;
+			when(reviewVoteRepository.findById(wrongReviewVoteId)).thenReturn(Optional.empty());
+
+			// when & then
+			assertThatThrownBy(() -> reviewVoteService.deleteVote(wrongReviewVoteId, member.getId()))
+					.isExactlyInstanceOf(NotFoundException.class)
+					.hasMessage(NOT_FOUND.getMessage());
+			verify(reviewVoteRepository).findById(wrongReviewVoteId);
+		}
+
+		@Test
+		@DisplayName("Fail - 삭제하려는 후기 투표의 투표자가 아니면 후기 투표 삭제에 실패한다")
+		void deleteVoteFailByUnAuthorized() {
+			// given
+			Long wrongMemberId = 0L;
+			when(reviewVoteRepository.findById(reviewVote.getId())).thenReturn(Optional.of(reviewVote));
+
+			// when & then
+			assertThatThrownBy(() -> reviewVoteService.deleteVote(reviewVote.getId(), wrongMemberId))
+					.isExactlyInstanceOf(AuthenticationException.class)
+					.hasMessage(UNAUTHORIZED.getMessage());
+			verify(reviewVoteRepository).findById(reviewVote.getId());
 		}
 	}
 }
