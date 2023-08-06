@@ -42,4 +42,13 @@ public class ReviewVoteService {
 
 		return review.getId();
 	}
+
+	@Transactional
+	public void deleteVote(Long reviewVoteId, Long memberId) {
+		ReviewVote reviewVote = reviewVoteRepository.findById(reviewVoteId)
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+		reviewVote.verifyVoter(memberId);
+
+		reviewVoteRepository.delete(reviewVote);
+	}
 }
