@@ -12,15 +12,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.response.ReviewVotesResponse;
 import com.goodseats.seatviewreviews.domain.vote.service.ReviewVoteService;
 
 import lombok.RequiredArgsConstructor;
@@ -51,5 +54,11 @@ public class ReviewVoteController {
 	) {
 		reviewVoteService.deleteVote(reviewVoteId, authenticationDTO.memberId());
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping
+	ResponseEntity<ReviewVotesResponse> getVotes(@RequestParam Long reviewId) {
+		ReviewVotesResponse reviewVotesResponse = reviewVoteService.getVotes(reviewId);
+		return ResponseEntity.ok(reviewVotesResponse);
 	}
 }

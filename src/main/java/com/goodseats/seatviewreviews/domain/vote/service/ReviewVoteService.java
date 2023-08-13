@@ -1,6 +1,7 @@
 package com.goodseats.seatviewreviews.domain.vote.service;
 
 import static com.goodseats.seatviewreviews.common.error.exception.ErrorCode.*;
+import static com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.vote.mapper.ReviewVoteMapper;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.response.ReviewVotesResponse;
 import com.goodseats.seatviewreviews.domain.vote.model.entity.ReviewVote;
 import com.goodseats.seatviewreviews.domain.vote.repository.ReviewVoteRepository;
 
@@ -40,7 +42,7 @@ public class ReviewVoteService {
 		ReviewVote reviewVote = ReviewVoteMapper.toEntity(member, review, reviewVoteCreateRequest.voteChoice());
 		reviewVoteRepository.save(reviewVote);
 
-		return review.getId();
+		return reviewVote.getId();
 	}
 
 	@Transactional
@@ -50,5 +52,16 @@ public class ReviewVoteService {
 		reviewVote.verifyVoter(memberId);
 
 		reviewVoteRepository.delete(reviewVote);
+	}
+
+	@Transactional(readOnly = true)
+	public ReviewVotesResponse getVotes(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+
+		int likeCount = reviewVoteRepository.countReviewVoteByReviewAndVoteChoice(review, LIKE);
+		int dislikeCount = reviewVoteRepository.countReviewVoteByReviewAndVoteChoice(review, DISLIKE);
+
+		return new ReviewVotesResponse(likeCount, dislikeCount);
 	}
 }
