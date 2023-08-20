@@ -16,6 +16,7 @@ import com.goodseats.seatviewreviews.common.error.exception.ErrorCode;
 import com.goodseats.seatviewreviews.domain.BaseEntity;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
+import com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,6 +47,12 @@ public class Review extends BaseEntity {
 	@Column(name = "published", nullable = false)
 	private boolean published;
 
+	@Column(name = "like_count", nullable = false)
+	private int likeCount;
+
+	@Column(name = "dislike_count", nullable = false)
+	private int dislikeCount;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
@@ -59,6 +66,8 @@ public class Review extends BaseEntity {
 		this.published = false;
 		this.member = member;
 		this.seat = seat;
+		this.likeCount = 0;
+		this.dislikeCount = 0;
 	}
 
 	public void publish(String title, String content, int score) {
@@ -80,5 +89,12 @@ public class Review extends BaseEntity {
 
 	public void updateViewCount(int viewCount) {
 		this.viewCount = viewCount;
+	}
+
+	public void updateVoteCount(int voteCount, VoteChoice voteChoice) {
+		switch (voteChoice) {
+			case LIKE -> this.likeCount=voteCount;
+			case DISLIKE -> this.dislikeCount=voteCount;
+		}
 	}
 }

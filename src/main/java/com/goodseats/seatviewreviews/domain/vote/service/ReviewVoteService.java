@@ -1,7 +1,6 @@
 package com.goodseats.seatviewreviews.domain.vote.service;
 
 import static com.goodseats.seatviewreviews.common.error.exception.ErrorCode.*;
-import static com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +29,8 @@ public class ReviewVoteService {
 
 	@Transactional
 	public Long createVote(ReviewVoteCreateRequest reviewVoteCreateRequest, Long memberId) {
-		Member member = memberRepository.findById(memberId)
-				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
-		Review review = reviewRepository.findById(reviewVoteCreateRequest.reviewId())
-				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+		Member member = getMemberById(memberId);
+		Review review = getReviewById(reviewVoteCreateRequest.reviewId());
 
 		if (reviewVoteRepository.existsByMemberAndReview(member, review)) {
 			throw new DuplicatedException(ALREADY_VOTED);
@@ -47,8 +44,7 @@ public class ReviewVoteService {
 
 	@Transactional
 	public void deleteVote(Long reviewVoteId, Long memberId) {
-		ReviewVote reviewVote = reviewVoteRepository.findById(reviewVoteId)
-				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+		ReviewVote reviewVote = getReviewVoteById(reviewVoteId);
 		reviewVote.verifyVoter(memberId);
 
 		reviewVoteRepository.delete(reviewVote);
@@ -56,12 +52,22 @@ public class ReviewVoteService {
 
 	@Transactional(readOnly = true)
 	public ReviewVotesResponse getVotes(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId)
+		Review review = getReviewById(reviewId);
+		return new ReviewVotesResponse(review.getLikeCount(), review.getDislikeCount());
+	}
+
+	private Member getMemberById(Long memberId) {
+		return memberRepository.findById(memberId)
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+	}
 
-		int likeCount = reviewVoteRepository.countReviewVoteByReviewAndVoteChoice(review, LIKE);
-		int dislikeCount = reviewVoteRepository.countReviewVoteByReviewAndVoteChoice(review, DISLIKE);
+	private Review getReviewById(Long reviewId) {
+		return reviewRepository.findById(reviewId)
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+	}
 
-		return new ReviewVotesResponse(likeCount, dislikeCount);
+	private ReviewVote getReviewVoteById(Long reviewVoteId) {
+		return reviewVoteRepository.findById(reviewVoteId)
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 	}
 }
