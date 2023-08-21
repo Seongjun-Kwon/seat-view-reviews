@@ -78,6 +78,8 @@ CREATE TABLE IF NOT EXISTS `review`
     `score`           INT            NULL,
     `view_count`      INT            NOT NULL,
     `published`       BOOLEAN        NOT NULL,
+    `like_count`      INT            NOT NULL,
+    `dislike_count`   INT            NOT NULL,
     `created_at`      TIMESTAMP      NOT NULL,
     `last_updated_at` TIMESTAMP      NOT NULL,
     `deleted_at`      TIMESTAMP      NULL

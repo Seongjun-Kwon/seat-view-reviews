@@ -359,7 +359,57 @@ class ReviewVoteControllerTest {
 									fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
 									fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
 							)));
-
 		}
+	}
+
+	@Test
+	@DisplayName("Success - 후기 투표 정보 조회에 성공하고 200 응답한다")
+	void getVotesSuccessWhenLogin() throws Exception {
+		// given
+		MockHttpSession session = TestUtils.getLoginSession(voter, USER);
+
+		// when & then
+		mockMvc.perform(get("/api/v1/reviewvotes")
+						.param("reviewId", publishedReview.getId().toString())
+						.session(session))
+				.andExpect(status().isOk())
+				.andDo(print())
+				.andDo(document("후기 투표 조회 성공",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestParameters(parameterWithName("reviewId").description("연관된 후기 id")),
+						responseFields(
+								fieldWithPath("likeCount").type(JsonFieldType.NUMBER).description("좋아요 수"),
+								fieldWithPath("dislikeCount").type(JsonFieldType.NUMBER).description("싫어요 수"),
+								fieldWithPath("clickLike").type(JsonFieldType.BOOLEAN).description("좋아요 등록 여부"),
+								fieldWithPath("clickDislike").type(JsonFieldType.BOOLEAN).description("싫어요 등록 여부")
+						)));
+	}
+
+	@Test
+	@DisplayName("Fail - 연관된 후기가 없으면 후기 투표 조회에 실패하고 404 응답한다")
+	void getVotesFailByNotFoundReview() throws Exception {
+		// given
+		MockHttpSession session = TestUtils.getLoginSession(voter, USER);
+		Long wrongReviewId = 0L;
+
+		// when & then
+		mockMvc.perform(get("/api/v1/reviewvotes")
+						.param("reviewId", wrongReviewId.toString())
+						.session(session))
+				.andExpect(status().isNotFound())
+				.andDo(print())
+				.andDo(document("후기 투표 조회 실패 - 연관된 후기가 없는 경우",
+						preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint()),
+						requestParameters(parameterWithName("reviewId").description("연관된 후기 id")),
+						responseFields(
+								fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+								fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
+								fieldWithPath("exceptionName").type(JsonFieldType.STRING).description("발생한 예외 이름"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지"),
+								fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
+								fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
+						)));
 	}
 }

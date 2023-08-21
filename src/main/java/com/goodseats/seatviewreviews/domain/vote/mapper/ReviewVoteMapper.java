@@ -2,6 +2,7 @@ package com.goodseats.seatviewreviews.domain.vote.mapper;
 
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.response.ReviewVotesResponse;
 import com.goodseats.seatviewreviews.domain.vote.model.entity.ReviewVote;
 import com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice;
 
@@ -13,5 +14,17 @@ public class ReviewVoteMapper {
 
 	public static ReviewVote toEntity(Member member, Review review, VoteChoice voteChoice) {
 		return new ReviewVote(voteChoice, member, review);
+	}
+
+	public static ReviewVotesResponse toClickedReviewVotesResponse(Review review, ReviewVote reviewVote) {
+		return new ReviewVotesResponse(
+				review.getLikeCount(), review.getDislikeCount(), reviewVote.isLike(), reviewVote.isDislike()
+		);
+	}
+
+	public static ReviewVotesResponse toNotClickedReviewVotesResponse(Review review) {
+		return new ReviewVotesResponse(
+				review.getLikeCount(), review.getDislikeCount(), false, false
+		);
 	}
 }

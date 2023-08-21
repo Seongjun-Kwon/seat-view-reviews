@@ -20,7 +20,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.goodseats.seatviewreviews.common.error.exception.AuthenticationException;
 import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
 import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
+import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
+import com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
@@ -30,6 +32,8 @@ import com.goodseats.seatviewreviews.domain.seat.model.entity.SeatSection;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVotesGetRequest;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.response.ReviewVotesResponse;
 import com.goodseats.seatviewreviews.domain.vote.model.entity.ReviewVote;
 import com.goodseats.seatviewreviews.domain.vote.repository.ReviewVoteRepository;
 
@@ -209,6 +213,71 @@ class ReviewVoteServiceTest {
 					.isExactlyInstanceOf(AuthenticationException.class)
 					.hasMessage(UNAUTHORIZED.getMessage());
 			verify(reviewVoteRepository).findById(reviewVote.getId());
+		}
+	}
+
+	@Test
+	@DisplayName("Success - 로그인한 경우 후기 투표 정보 조회 시 투표 수와 투표 여부 반환에 성공한다")
+	void getVotesSuccessWhenLogin() {
+		// given
+		AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
+		ReviewVotesGetRequest reviewVotesGetRequest
+				= new ReviewVotesGetRequest(publishedReview.getId(), Optional.of(authenticationDTO));
+		when(reviewRepository.findById(reviewVotesGetRequest.reviewId())).thenReturn(Optional.of(publishedReview));
+		when(memberRepository.findById(reviewVotesGetRequest.authenticationDTO().get().memberId()))
+				.thenReturn(Optional.of(member));
+		when(reviewVoteRepository.findReviewVoteByMemberAndReview(any(Member.class), any(Review.class)))
+				.thenReturn(Optional.of(reviewVote));
+
+		// when
+		ReviewVotesResponse reviewVotesResponse = reviewVoteService.getVotes(reviewVotesGetRequest);
+
+		// then
+		verify(reviewRepository).findById(reviewVotesGetRequest.reviewId());
+		verify(memberRepository).findById(reviewVotesGetRequest.authenticationDTO().get().memberId());
+		verify(reviewVoteRepository).findReviewVoteByMemberAndReview(any(Member.class), any(Review.class));
+		assertThat(reviewVotesResponse.likeCount()).isEqualTo(publishedReview.getLikeCount());
+		assertThat(reviewVotesResponse.dislikeCount()).isEqualTo(publishedReview.getLikeCount());
+		assertThat(reviewVotesResponse.clickLike()).isEqualTo(reviewVote.isLike());
+		assertThat(reviewVotesResponse.clickDislike()).isEqualTo(reviewVote.isDislike());
+	}
+
+	@Test
+	@DisplayName("Success - 비로그인인 경우 후기 투표 정보 조회에 성공한다")
+	void getVotesSuccessWhenNotLogin() {
+		// given
+		ReviewVotesGetRequest reviewVotesGetRequest
+				= new ReviewVotesGetRequest(publishedReview.getId(), Optional.empty());
+		when(reviewRepository.findById(reviewVotesGetRequest.reviewId())).thenReturn(Optional.of(publishedReview));
+
+		// when
+		ReviewVotesResponse reviewVotesResponse = reviewVoteService.getVotes(reviewVotesGetRequest);
+
+		// then
+		verify(reviewRepository).findById(reviewVotesGetRequest.reviewId());
+		assertThat(reviewVotesResponse.likeCount()).isEqualTo(publishedReview.getLikeCount());
+		assertThat(reviewVotesResponse.dislikeCount()).isEqualTo(publishedReview.getLikeCount());
+		assertThat(reviewVotesResponse.clickLike()).isFalse();
+		assertThat(reviewVotesResponse.clickDislike()).isFalse();
+	}
+
+	@Nested
+	@DisplayName("getVotesFail")
+	class GetVotesFail {
+		@Test
+		@DisplayName("Fail - 연관된 후기가 없으면 후기 투표 조회에 실패한다")
+		void getVotesFailByNotFoundReview() {
+			// given
+			AuthenticationDTO authenticationDTO = new AuthenticationDTO(member.getId(), MemberAuthority.USER);
+			ReviewVotesGetRequest reviewVotesGetRequest
+					= new ReviewVotesGetRequest(publishedReview.getId(), Optional.of(authenticationDTO));
+			when(reviewRepository.findById(reviewVotesGetRequest.reviewId())).thenReturn(Optional.empty());
+
+			// when & then
+			assertThatThrownBy(() -> reviewVoteService.getVotes(reviewVotesGetRequest))
+					.isExactlyInstanceOf(NotFoundException.class)
+					.hasMessage(NOT_FOUND.getMessage());
+			verify(reviewRepository).findById(reviewVotesGetRequest.reviewId());
 		}
 	}
 }
