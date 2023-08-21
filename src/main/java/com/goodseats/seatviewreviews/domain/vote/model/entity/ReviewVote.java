@@ -1,5 +1,7 @@
 package com.goodseats.seatviewreviews.domain.vote.model.entity;
 
+import static com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice.*;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -55,5 +57,13 @@ public class ReviewVote extends BaseEntity {
 		if (!this.member.getId().equals(memberId)) {
 			throw new AuthenticationException(ErrorCode.UNAUTHORIZED);
 		}
+	}
+
+	public boolean isLike() {
+		return this.voteChoice == LIKE;
+	}
+
+	public boolean isDislike() {
+		return this.voteChoice == DISLIKE;
 	}
 }

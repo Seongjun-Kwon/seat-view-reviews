@@ -4,6 +4,7 @@ import static com.goodseats.seatviewreviews.common.security.SessionConstant.*;
 import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVotesGetRequest;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.response.ReviewVotesResponse;
 import com.goodseats.seatviewreviews.domain.vote.service.ReviewVoteService;
 
@@ -57,8 +59,14 @@ public class ReviewVoteController {
 	}
 
 	@GetMapping
-	ResponseEntity<ReviewVotesResponse> getVotes(@RequestParam Long reviewId) {
-		ReviewVotesResponse reviewVotesResponse = reviewVoteService.getVotes(reviewId);
+	ResponseEntity<ReviewVotesResponse> getVotes(
+			@RequestParam Long reviewId,
+			@SessionAttribute(value = LOGIN_MEMBER_INFO, required = false) AuthenticationDTO authenticationDTO
+	) {
+		ReviewVotesGetRequest reviewVotesGetRequest = new ReviewVotesGetRequest(
+				reviewId, Optional.ofNullable(authenticationDTO)
+		);
+		ReviewVotesResponse reviewVotesResponse = reviewVoteService.getVotes(reviewVotesGetRequest);
 		return ResponseEntity.ok(reviewVotesResponse);
 	}
 }

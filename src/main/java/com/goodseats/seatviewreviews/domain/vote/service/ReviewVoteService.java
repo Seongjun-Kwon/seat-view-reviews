@@ -2,6 +2,8 @@ package com.goodseats.seatviewreviews.domain.vote.service;
 
 import static com.goodseats.seatviewreviews.common.error.exception.ErrorCode.*;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.vote.mapper.ReviewVoteMapper;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVotesGetRequest;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.response.ReviewVotesResponse;
 import com.goodseats.seatviewreviews.domain.vote.model.entity.ReviewVote;
 import com.goodseats.seatviewreviews.domain.vote.repository.ReviewVoteRepository;
@@ -51,9 +54,20 @@ public class ReviewVoteService {
 	}
 
 	@Transactional(readOnly = true)
-	public ReviewVotesResponse getVotes(Long reviewId) {
-		Review review = getReviewById(reviewId);
-		return new ReviewVotesResponse(review.getLikeCount(), review.getDislikeCount());
+	public ReviewVotesResponse getVotes(ReviewVotesGetRequest reviewVotesGetRequest) {
+		Review review = getReviewById(reviewVotesGetRequest.reviewId());
+
+		return reviewVotesGetRequest.authenticationDTO()
+				.map(authenticationDTO -> getMemberById(authenticationDTO.memberId()))
+				.map(member -> {
+					Optional<ReviewVote> optionalReviewVote
+							= reviewVoteRepository.findReviewVoteByMemberAndReview(member, review);
+
+					return optionalReviewVote
+							.map(reviewVote -> ReviewVoteMapper.toClickedReviewVotesResponse(review, reviewVote))
+							.orElseGet(() -> ReviewVoteMapper.toNotClickedReviewVotesResponse(review));
+				})
+				.orElseGet(() -> ReviewVoteMapper.toNotClickedReviewVotesResponse(review));
 	}
 
 	private Member getMemberById(Long memberId) {
