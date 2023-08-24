@@ -93,7 +93,9 @@ class ReviewVoteServiceTest {
 		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 		when(reviewRepository.findById(reviewVoteCreateRequest.reviewId())).thenReturn(Optional.of(publishedReview));
 		when(reviewVoteRepository.existsByMemberAndReview(member, publishedReview)).thenReturn(false);
-		when(reviewVoteRepository.save(any(ReviewVote.class))).thenReturn(any(ReviewVote.class));
+		when(reviewVoteRepository.save(any(ReviewVote.class))).thenReturn(reviewVote);
+		when(reviewVoteRepository.getVoteCount(reviewVoteCreateRequest.reviewId(), reviewVoteCreateRequest.voteChoice()))
+				.thenReturn(anyInt());
 
 		// when
 		reviewVoteService.createVote(reviewVoteCreateRequest, memberId);
@@ -103,6 +105,7 @@ class ReviewVoteServiceTest {
 		verify(reviewRepository).findById(reviewVoteCreateRequest.reviewId());
 		verify(reviewVoteRepository).existsByMemberAndReview(member, publishedReview);
 		verify(reviewVoteRepository).save(any(ReviewVote.class));
+		verify(reviewVoteRepository).getVoteCount(reviewVoteCreateRequest.reviewId(), reviewVoteCreateRequest.voteChoice());
 	}
 
 	@Nested
@@ -174,6 +177,8 @@ class ReviewVoteServiceTest {
 		// given
 		when(reviewVoteRepository.findById(reviewVote.getId())).thenReturn(Optional.of(reviewVote));
 		doNothing().when(reviewVoteRepository).delete(reviewVote);
+		when(reviewVoteRepository.getVoteCount(reviewVote.getReview().getId(), reviewVote.getVoteChoice()))
+				.thenReturn(anyInt());
 
 		// when
 		reviewVoteService.deleteVote(reviewVote.getId(), member.getId());
@@ -181,6 +186,7 @@ class ReviewVoteServiceTest {
 		// then
 		verify(reviewVoteRepository).findById(reviewVote.getId());
 		verify(reviewVoteRepository).delete(reviewVote);
+		verify(reviewVoteRepository).getVoteCount(reviewVote.getReview().getId(), reviewVote.getVoteChoice());
 	}
 
 	@Nested
