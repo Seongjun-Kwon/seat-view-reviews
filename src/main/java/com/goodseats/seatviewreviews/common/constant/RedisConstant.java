@@ -11,7 +11,8 @@ public class RedisConstant {
 	public static final String REVIEW_AND_VIEW_COUNT_LOGS_NAME = "reviewViewCountLogs";
 	public static final String DELIMITER = "_";
 	public static final String SEPARATOR = ", ";
-	public static final String LOCK_NAME = "viewCountLock";
+	public static final String VIEW_COUNT_LOCK = "viewCountLock";
+	public static final String REVIEW_VOTE_LOCK = "reviewVoteLock";
 	public static final int LOCK_WAIT_TIME = 10;
 	public static final int LEASE_TIME = 5;
 	public static final String VIEWED_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
