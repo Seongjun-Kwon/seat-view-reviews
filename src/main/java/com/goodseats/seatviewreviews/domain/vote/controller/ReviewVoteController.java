@@ -26,6 +26,7 @@ import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCreateRequest;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVotesGetRequest;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.response.ReviewVotesResponse;
+import com.goodseats.seatviewreviews.domain.vote.service.ReviewVoteRedisFacade;
 import com.goodseats.seatviewreviews.domain.vote.service.ReviewVoteService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class ReviewVoteController {
 
 	private final ReviewVoteService reviewVoteService;
+	private final ReviewVoteRedisFacade reviewVoteRedisFacade;
 
 	@Authority(authorities = {USER, ADMIN})
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +46,7 @@ public class ReviewVoteController {
 			@SessionAttribute(value = LOGIN_MEMBER_INFO) AuthenticationDTO authenticationDTO,
 			HttpServletRequest request
 	) {
-		Long voteId = reviewVoteService.createVote(reviewVoteCreateRequest, authenticationDTO.memberId());
+		Long voteId = reviewVoteRedisFacade.createVote(reviewVoteCreateRequest, authenticationDTO.memberId());
 		return ResponseEntity.created(URI.create(request.getRequestURI() + "/" + voteId)).build();
 	}
 
@@ -54,7 +56,7 @@ public class ReviewVoteController {
 			@PathVariable Long reviewVoteId,
 			@SessionAttribute(value = LOGIN_MEMBER_INFO) AuthenticationDTO authenticationDTO
 	) {
-		reviewVoteService.deleteVote(reviewVoteId, authenticationDTO.memberId());
+		reviewVoteRedisFacade.deleteVote(reviewVoteId, authenticationDTO.memberId());
 		return ResponseEntity.noContent().build();
 	}
 
