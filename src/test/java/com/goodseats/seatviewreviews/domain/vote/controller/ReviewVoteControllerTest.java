@@ -2,6 +2,7 @@ package com.goodseats.seatviewreviews.domain.vote.controller;
 
 import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority.*;
 import static com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice.*;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -10,6 +11,12 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,6 +89,7 @@ class ReviewVoteControllerTest {
 
 	private Member voter;
 	private Member alreadyVoter;
+	private List<Member> members = new ArrayList<>();
 	private Stadium stadium;
 	private SeatGrade seatGrade;
 	private SeatSection seatSection;
@@ -102,8 +110,13 @@ class ReviewVoteControllerTest {
 		publishedReview = new Review(voter, seat);
 		publishedReview.publish("테스트 제목", "테스트 내용", 5);
 
+		for (int i = 0; i < 100; i++) {
+			members.add(new Member(i + "@test.com", "test", String.valueOf(i)));
+		}
+
 		memberRepository.save(voter);
 		memberRepository.save(alreadyVoter);
+		memberRepository.saveAll(members);
 		stadiumRepository.save(stadium);
 		seatGradeRepository.save(seatGrade);
 		seatSectionRepository.save(seatSection);
@@ -112,6 +125,7 @@ class ReviewVoteControllerTest {
 		reviewRepository.save(publishedReview);
 
 		reviewVote = new ReviewVote(LIKE, alreadyVoter, publishedReview);
+		publishedReview.updateVoteCount(1, LIKE);
 		reviewVoteRepository.save(reviewVote);
 	}
 
@@ -119,6 +133,7 @@ class ReviewVoteControllerTest {
 	void clear() {
 		memberRepository.delete(voter);
 		memberRepository.delete(alreadyVoter);
+		memberRepository.deleteAllInBatch(members);
 		stadiumRepository.delete(stadium);
 		seatGradeRepository.delete(seatGrade);
 		seatSectionRepository.delete(seatSection);
@@ -411,5 +426,43 @@ class ReviewVoteControllerTest {
 								fieldWithPath("createdAt").type(JsonFieldType.STRING).description("예외 발생 시간"),
 								fieldWithPath("fieldErrors").type(JsonFieldType.NULL).description("필드 에러 목록")
 						)));
+	}
+
+	@Test
+	@DisplayName("Success - 동시에 100명이 좋아요를 누를 때 후기 좋아요 수가 100 증가한다")
+	void increaseLikeCountInMultiThreads() throws InterruptedException {
+		// given
+		ExecutorService executorService = Executors.newFixedThreadPool(100);
+		CountDownLatch latch = new CountDownLatch(100);
+		ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
+
+		Thread.sleep(500);
+
+		// when
+		for (int i = 0; i < 100; i++) {
+			Member member = memberRepository.findById(members.get(i).getId()).get();
+			MockHttpSession session = TestUtils.getLoginSession(member, member.getMemberAuthority());
+
+			executorService.submit(() -> {
+				try {
+					mockMvc.perform(post("/api/v1/reviewvotes")
+									.accept(MediaType.APPLICATION_JSON)
+									.contentType(MediaType.APPLICATION_JSON)
+									.session(session)
+									.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
+							.andExpect(status().isCreated());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+
+		latch.await();
+
+		// then
+		Review review = reviewRepository.findById(publishedReview.getId()).get();
+		assertThat(review.getLikeCount()).isEqualTo(publishedReview.getLikeCount() + 100);
 	}
 }

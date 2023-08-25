@@ -18,6 +18,7 @@ import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVoteCre
 import com.goodseats.seatviewreviews.domain.vote.model.dto.request.ReviewVotesGetRequest;
 import com.goodseats.seatviewreviews.domain.vote.model.dto.response.ReviewVotesResponse;
 import com.goodseats.seatviewreviews.domain.vote.model.entity.ReviewVote;
+import com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice;
 import com.goodseats.seatviewreviews.domain.vote.repository.ReviewVoteRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class ReviewVoteService {
 		ReviewVote reviewVote = ReviewVoteMapper.toEntity(member, review, reviewVoteCreateRequest.voteChoice());
 		reviewVoteRepository.save(reviewVote);
 
+		syncVoteCount(review, reviewVoteCreateRequest.voteChoice());
 		return reviewVote.getId();
 	}
 
@@ -51,6 +53,8 @@ public class ReviewVoteService {
 		reviewVote.verifyVoter(memberId);
 
 		reviewVoteRepository.delete(reviewVote);
+
+		syncVoteCount(reviewVote.getReview(), reviewVote.getVoteChoice());
 	}
 
 	@Transactional(readOnly = true)
@@ -83,5 +87,10 @@ public class ReviewVoteService {
 	private ReviewVote getReviewVoteById(Long reviewVoteId) {
 		return reviewVoteRepository.findById(reviewVoteId)
 				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+	}
+
+	private void syncVoteCount(Review review, VoteChoice voteChoice) {
+		int voteCount = reviewVoteRepository.getVoteCount(review.getId(), voteChoice);
+		review.updateVoteCount(voteCount, voteChoice);
 	}
 }
