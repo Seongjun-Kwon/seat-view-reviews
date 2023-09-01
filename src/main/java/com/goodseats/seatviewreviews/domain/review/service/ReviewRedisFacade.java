@@ -30,7 +30,7 @@ public class ReviewRedisFacade {
 		if (Objects.isNull(authenticationDTO)) {
 			return reviewService.getReview(reviewId);
 		}
-		if (hasNotViewedReview(authenticationDTO.memberId(), reviewId)) {
+		if (doNotViewReview(authenticationDTO.memberId(), reviewId)) {
 			controlViewCountConcurrency(authenticationDTO.memberId(), reviewId);
 		}
 
@@ -91,7 +91,7 @@ public class ReviewRedisFacade {
 		return "memberId" + "_" + memberId + ", " + "reviewId" + "_" + reviewId;
 	}
 
-	private boolean hasNotViewedReview(Long memberId, Long reviewId) {
+	private boolean doNotViewReview(Long memberId, Long reviewId) {
 		String userViewedReviewLog = generateUserViewedReviewLog(memberId, reviewId);
 		return !redissonClient.getSet(USER_VIEWED_REVIEW_LOGS_NAME).contains(userViewedReviewLog);
 	}
