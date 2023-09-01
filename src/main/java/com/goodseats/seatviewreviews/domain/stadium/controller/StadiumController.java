@@ -2,10 +2,10 @@ package com.goodseats.seatviewreviews.domain.stadium.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumDetailResponse;
 import com.goodseats.seatviewreviews.domain.stadium.model.dto.response.StadiumsResponse;
@@ -13,7 +13,7 @@ import com.goodseats.seatviewreviews.domain.stadium.service.StadiumService;
 
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/stadiums")
 public class StadiumController {

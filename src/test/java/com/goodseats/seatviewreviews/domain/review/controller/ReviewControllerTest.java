@@ -1,6 +1,5 @@
 package com.goodseats.seatviewreviews.domain.review.controller;
 
-import static com.goodseats.seatviewreviews.common.constant.CookieConstant.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
@@ -11,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +26,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockCookie;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -123,8 +120,7 @@ class ReviewControllerTest {
 
 	@AfterEach
 	void clear() {
-		memberRepository.delete(writer);
-		memberRepository.delete(notWriter);
+		memberRepository.deleteAllInBatch();
 		stadiumRepository.delete(stadium);
 		seatGradeRepository.delete(seatGrade);
 		seatSectionRepository.delete(seatSection);
@@ -314,7 +310,6 @@ class ReviewControllerTest {
 					.andExpect(jsonPath("score").value(publishedReview.getScore()))
 					.andExpect(jsonPath("viewCount").value(publishedReview.getViewCount()))
 					.andExpect(jsonPath("writer").value(publishedReview.getMember().getNickname()))
-					.andExpect(cookie().exists(USER_KEY))
 					.andDo(print())
 					.andDo(document("후기 상세 조회 성공",
 							preprocessRequest(prettyPrint()),
@@ -331,36 +326,39 @@ class ReviewControllerTest {
 		}
 
 		@Test
-		@DisplayName("Success - 이미 조회한 후기의 상세 조회에 성공하고 200 응답한다")
+		@DisplayName("Success - 사용자가 처음 조회한 후기의 조회 수가 1 오른다")
 		void getReviewSuccessWhenAlreadyRead() throws Exception {
 			// given
-			String userCookieValue = String.valueOf(UUID.randomUUID());
-			MockCookie cookie = new MockCookie(USER_KEY, userCookieValue);
+			MockHttpSession session = TestUtils.getLoginSession(writer, MemberAuthority.USER);
+			int viewCountBeforeRead
+					= reviewRedisFacade.getLatestViewCount(publishedReview.getId(), publishedReview.getViewCount());
 
 			// when & then
 			mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
 							.accept(MediaType.APPLICATION_JSON)
-							.cookie(cookie))
+							.session(session))
 					.andExpect(status().isOk())
 					.andExpect(jsonPath("title").value(publishedReview.getTitle()))
 					.andExpect(jsonPath("content").value(publishedReview.getContent()))
 					.andExpect(jsonPath("score").value(publishedReview.getScore()))
 					.andExpect(jsonPath("viewCount").value(publishedReview.getViewCount()))
 					.andExpect(jsonPath("writer").value(publishedReview.getMember().getNickname()))
-					.andExpect(cookie().value(USER_KEY, userCookieValue))
 					.andDo(print());
+
+			int viewCountAfterRead
+					= reviewRedisFacade.getLatestViewCount(publishedReview.getId(), publishedReview.getViewCount());
+			assertThat(viewCountAfterRead).isEqualTo(viewCountBeforeRead + 1);
 		}
 
 		@Test
 		@DisplayName("Success - 사용자가 이미 조회 한 후기를 조회 시 조회 수가 늘어나지 않는다")
 		void notIncreaseViewCountWhenAlreadyRead() throws Exception {
 			// given
-			String userCookieValue = String.valueOf(UUID.randomUUID());
-			MockCookie cookie = new MockCookie(USER_KEY, userCookieValue);
+			MockHttpSession session = TestUtils.getLoginSession(writer, MemberAuthority.USER);
 
 			mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
 							.accept(MediaType.APPLICATION_JSON)
-							.cookie(cookie))
+							.session(session))
 					.andDo(print());
 
 			int viewCountBeforeRead
@@ -369,7 +367,7 @@ class ReviewControllerTest {
 			// when
 			mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
 							.accept(MediaType.APPLICATION_JSON)
-							.cookie(cookie))
+							.session(session))
 					.andExpect(status().isOk())
 					.andDo(print());
 
@@ -417,10 +415,15 @@ class ReviewControllerTest {
 
 		// when
 		for (int i = 0; i < 100; i++) {
+			Member member = new Member("test" + i + "@test.com", "test", "test" + i);
+			memberRepository.saveAndFlush(member);
+			MockHttpSession session= TestUtils.getLoginSession(member, member.getMemberAuthority());
+
 			executorService.submit(() -> {
 				try {
 					mockMvc.perform(get("/api/v1/reviews/{reviewId}", publishedReview.getId())
-							.accept(MediaType.APPLICATION_JSON));
+							.accept(MediaType.APPLICATION_JSON)
+							.session(session));
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				} finally {

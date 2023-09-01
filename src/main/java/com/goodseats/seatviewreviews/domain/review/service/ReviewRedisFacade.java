@@ -5,6 +5,7 @@ import static com.goodseats.seatviewreviews.common.constant.RedisConstant.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RLock;
@@ -13,6 +14,7 @@ import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDetailResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -24,9 +26,12 @@ public class ReviewRedisFacade {
 	private final RedissonClient redissonClient;
 	private final ReviewService reviewService;
 
-	public ReviewDetailResponse getReview(String userKey, Long reviewId) {
-		if (hasNotViewedReview(userKey, reviewId)) {
-			controlViewCountConcurrency(userKey, reviewId);
+	public ReviewDetailResponse getReview(AuthenticationDTO authenticationDTO, Long reviewId) {
+		if (Objects.isNull(authenticationDTO)) {
+			return reviewService.getReview(reviewId);
+		}
+		if (doNotViewReview(authenticationDTO.memberId(), reviewId)) {
+			controlViewCountConcurrency(authenticationDTO.memberId(), reviewId);
 		}
 
 		return reviewService.getReview(reviewId);
@@ -55,13 +60,13 @@ public class ReviewRedisFacade {
 		}
 	}
 
-	private void controlViewCountConcurrency(String userKey, Long reviewId) {
+	private void controlViewCountConcurrency(Long memberId, Long reviewId) {
 		RLock viewCountLock = redissonClient.getLock(VIEW_COUNT_LOCK);
 
 		try {
 			tryLock(viewCountLock);
 
-			String userViewedReviewLog = generateUserViewedReviewLog(userKey, reviewId);
+			String userViewedReviewLog = generateUserViewedReviewLog(memberId, reviewId);
 			ReviewDetailResponse reviewDetailResponse = reviewService.getReview(reviewId);
 			saveUserViewedReviewLog(userViewedReviewLog);
 			increaseViewCount(reviewId, reviewDetailResponse.viewCount());
@@ -82,12 +87,12 @@ public class ReviewRedisFacade {
 		}
 	}
 
-	private String generateUserViewedReviewLog(String userKey, Long reviewId) {
-		return "user" + "_" + userKey + ", " + "reviewId" + "_" + reviewId;
+	private String generateUserViewedReviewLog(Long memberId, Long reviewId) {
+		return "memberId" + "_" + memberId + ", " + "reviewId" + "_" + reviewId;
 	}
 
-	private boolean hasNotViewedReview(String userKey, Long reviewId) {
-		String userViewedReviewLog = generateUserViewedReviewLog(userKey, reviewId);
+	private boolean doNotViewReview(Long memberId, Long reviewId) {
+		String userViewedReviewLog = generateUserViewedReviewLog(memberId, reviewId);
 		return !redissonClient.getSet(USER_VIEWED_REVIEW_LOGS_NAME).contains(userViewedReviewLog);
 	}
 
