@@ -1,19 +1,15 @@
 package com.goodseats.seatviewreviews.domain.review.controller;
 
-import static com.goodseats.seatviewreviews.common.constant.CookieConstant.*;
 import static com.goodseats.seatviewreviews.domain.member.model.vo.MemberAuthority.*;
 
 import java.net.URI;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,7 +23,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.common.security.SessionConstant;
-import com.goodseats.seatviewreviews.common.util.CookieUtils;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewPublishRequest;
 import com.goodseats.seatviewreviews.domain.review.model.dto.request.TempReviewCreateRequest;
@@ -71,11 +66,9 @@ public class ReviewController {
 	@GetMapping(value = "/{reviewId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ReviewDetailResponse> getReview(
 			@PathVariable Long reviewId,
-			@CookieValue(value = USER_KEY, required = false) Cookie userKey,
-			HttpServletResponse response
+			@SessionAttribute(value = SessionConstant.LOGIN_MEMBER_INFO, required = false) AuthenticationDTO authenticationDTO
 	) {
-		userKey = CookieUtils.setUserKey(userKey, response);
-		ReviewDetailResponse reviewDetailResponse = reviewRedisFacade.getReview(userKey.getValue(), reviewId);
+		ReviewDetailResponse reviewDetailResponse = reviewRedisFacade.getReview(authenticationDTO, reviewId);
 		return ResponseEntity.ok(reviewDetailResponse);
 	}
 
