@@ -2,16 +2,13 @@ package com.goodseats.seatviewreviews.domain.review.service;
 
 import static com.goodseats.seatviewreviews.common.constant.RedisConstant.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RLock;
-import org.redisson.api.RMap;
-import org.redisson.api.RSet;
+import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.IntegerCodec;
 import org.springframework.stereotype.Component;
 
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
@@ -38,26 +35,13 @@ public class ReviewRedisFacade {
 	}
 
 	public int getLatestViewCount(Long reviewId, int defaultViewCount) {
-		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
+		RScoredSortedSet<Integer> reviewAndViewCountLogs
+				= redissonClient.getScoredSortedSet(generateReviewAndViewCountLogsKey(reviewId), new IntegerCodec());
 
-		return reviewAndViewCountLogs.keySet()
-				.stream()
-				.filter(key -> extractReviewId(key).equals(String.valueOf(reviewId)))
-				.max(Comparator.comparing(this::extractViewedTime))
-				.map(latestKey -> Integer.parseInt(reviewAndViewCountLogs.get(latestKey)))
-				.orElse(defaultViewCount);
-	}
-
-	public void clearAllLogs() {
-		RSet<String> userViewedReviewLogs = redissonClient.getSet(USER_VIEWED_REVIEW_LOGS_NAME);
-		RMap<String, Integer> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
-
-		if (userViewedReviewLogs.isExists()) {
-			userViewedReviewLogs.clear();
-		}
 		if (reviewAndViewCountLogs.isExists()) {
-			reviewAndViewCountLogs.clear();
+			return reviewAndViewCountLogs.last();
 		}
+		return defaultViewCount;
 	}
 
 	private void controlViewCountConcurrency(Long memberId, Long reviewId) {
@@ -101,26 +85,15 @@ public class ReviewRedisFacade {
 	}
 
 	private void increaseViewCount(Long reviewId, int defaultViewCount) {
-		RMap<String, String> reviewAndViewCountLogs = redissonClient.getMap(REVIEW_AND_VIEW_COUNT_LOGS_NAME);
+		RScoredSortedSet<Integer> reviewAndViewCountLogs
+				= redissonClient.getScoredSortedSet(generateReviewAndViewCountLogsKey(reviewId), new IntegerCodec());
+
 		int latestViewCount = getLatestViewCount(reviewId, defaultViewCount);
-		String reviewAndViewCountLogsKey = generateReviewAndViewCountLogsKey(reviewId);
-		reviewAndViewCountLogs.put(reviewAndViewCountLogsKey, String.valueOf(latestViewCount + 1));
+		long nowUnixTimeMillis = System.currentTimeMillis();
+		reviewAndViewCountLogs.add((double)nowUnixTimeMillis, latestViewCount + 1);
 	}
 
 	private String generateReviewAndViewCountLogsKey(Long reviewId) {
-		String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern(VIEWED_TIME_FORMAT));
-		return "reviewId" + "_" + reviewId + ", " + "viewedTime" + "_" + nowTime;
-	}
-
-	private String extractReviewId(String key) {
-		int beforeReviewIdIndex = key.indexOf(DELIMITER);
-		int afterReviewIdIndex = key.indexOf(SEPARATOR);
-		return key.substring(beforeReviewIdIndex + 1, afterReviewIdIndex);
-	}
-
-	private LocalDateTime extractViewedTime(String key) {
-		int beforeTimeIndex = key.lastIndexOf(DELIMITER);
-		String timeString = key.substring(beforeTimeIndex + 1);
-		return LocalDateTime.parse(timeString, DateTimeFormatter.ofPattern(VIEWED_TIME_FORMAT));
+		return REVIEW_AND_VIEW_COUNT_LOGS_NAME + reviewId;
 	}
 }
