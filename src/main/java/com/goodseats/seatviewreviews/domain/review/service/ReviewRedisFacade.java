@@ -45,7 +45,7 @@ public class ReviewRedisFacade {
 	}
 
 	private void controlViewCountConcurrency(Long memberId, Long reviewId) {
-		RLock viewCountLock = redissonClient.getLock(VIEW_COUNT_LOCK);
+		RLock viewCountLock = redissonClient.getLock(VIEW_COUNT_LOCK + reviewId);
 
 		try {
 			tryLock(viewCountLock);

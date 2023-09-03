@@ -20,7 +20,7 @@ public class ReviewVoteRedisFacade {
 	private final ReviewVoteService reviewVoteService;
 
 	public Long createVote(ReviewVoteCreateRequest reviewVoteCreateRequest, Long memberId) {
-		RLock reviewVoteLock = redissonClient.getLock(REVIEW_VOTE_LOCK);
+		RLock reviewVoteLock = redissonClient.getLock(REVIEW_VOTE_LOCK + reviewVoteCreateRequest.reviewId());
 		Long reviewVoteId;
 
 		try {
@@ -38,7 +38,7 @@ public class ReviewVoteRedisFacade {
 	}
 
 	public void deleteVote(Long reviewVoteId, Long memberId) {
-		RLock reviewVoteLock = redissonClient.getLock(REVIEW_VOTE_LOCK);
+		RLock reviewVoteLock = redissonClient.getLock(REVIEW_VOTE_LOCK + reviewVoteId);
 
 		try {
 			tryLock(reviewVoteLock);
