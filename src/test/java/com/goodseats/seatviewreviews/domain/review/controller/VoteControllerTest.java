@@ -39,11 +39,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodseats.seatviewreviews.common.TestUtils;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
 import com.goodseats.seatviewreviews.domain.member.repository.MemberRepository;
-import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewVoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.request.VoteCreateRequest;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
-import com.goodseats.seatviewreviews.domain.review.model.entity.ReviewVote;
+import com.goodseats.seatviewreviews.domain.review.model.entity.Vote;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
-import com.goodseats.seatviewreviews.domain.review.repository.ReviewVoteRepository;
+import com.goodseats.seatviewreviews.domain.review.repository.VoteRepository;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Seat;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.SeatGrade;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.SeatSection;
@@ -58,7 +58,7 @@ import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class ReviewVoteControllerTest {
+class VoteControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -85,7 +85,7 @@ class ReviewVoteControllerTest {
 	private ReviewRepository reviewRepository;
 
 	@Autowired
-	private ReviewVoteRepository reviewVoteRepository;
+	private VoteRepository voteRepository;
 
 	private Member voter;
 	private Member alreadyVoter;
@@ -96,7 +96,7 @@ class ReviewVoteControllerTest {
 	private Seat seat;
 	private Review tempReview;
 	private Review publishedReview;
-	private ReviewVote reviewVote;
+	private Vote vote;
 
 	@BeforeEach
 	void setUp() {
@@ -124,9 +124,9 @@ class ReviewVoteControllerTest {
 		reviewRepository.save(tempReview);
 		reviewRepository.save(publishedReview);
 
-		reviewVote = new ReviewVote(LIKE, alreadyVoter, publishedReview);
+		vote = new Vote(LIKE, alreadyVoter, publishedReview);
 		publishedReview.updateVoteCount(1, LIKE);
-		reviewVoteRepository.save(reviewVote);
+		voteRepository.save(vote);
 	}
 
 	@AfterEach
@@ -139,7 +139,7 @@ class ReviewVoteControllerTest {
 		seatSectionRepository.delete(seatSection);
 		seatRepository.delete(seat);
 		reviewRepository.deleteAll();
-		reviewVoteRepository.deleteAll();
+		voteRepository.deleteAll();
 	}
 
 	@Test
@@ -147,13 +147,13 @@ class ReviewVoteControllerTest {
 	void createVoteSuccess() throws Exception {
 		// given
 		MockHttpSession session = TestUtils.getLoginSession(voter, USER);
-		ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
+		VoteCreateRequest voteCreateRequest = new VoteCreateRequest(publishedReview.getId(), LIKE);
 
 		// when & then
-		mockMvc.perform(post("/api/v1/reviewvotes")
+		mockMvc.perform(post("/api/v1/votes")
 						.session(session)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
+						.content(objectMapper.writeValueAsString(voteCreateRequest)))
 				.andExpect(status().isCreated())
 				.andDo(document("후기 투표 생성 성공",
 						preprocessRequest(prettyPrint()),
@@ -168,18 +168,18 @@ class ReviewVoteControllerTest {
 
 	@Nested
 	@DisplayName("createVoteFail")
-	class CreateReviewVoteFail {
+	class CreateVoteFail {
 
 		@Test
 		@DisplayName("Fail - 비로그인 사용자가 투표하면 후기 투표 생성에 실패하고 401 응답한다")
 		void createVoteFailByNotMember() throws Exception {
 			// given
-			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
+			VoteCreateRequest voteCreateRequest = new VoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
-			mockMvc.perform(post("/api/v1/reviewvotes")
+			mockMvc.perform(post("/api/v1/votes")
 							.contentType(MediaType.APPLICATION_JSON)
-							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
+							.content(objectMapper.writeValueAsString(voteCreateRequest)))
 					.andExpect(status().isUnauthorized())
 					.andDo(document("후기 투표 생성 실패 - 비로그인 사용자가 시도한 경우",
 							preprocessRequest(prettyPrint()),
@@ -206,13 +206,13 @@ class ReviewVoteControllerTest {
 			Member deletedMember = new Member("deleted@test.com", "test", "deleted");
 			ReflectionTestUtils.setField(deletedMember, "id", 0L);
 			MockHttpSession session = TestUtils.getLoginSession(deletedMember, USER);
-			ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
+			VoteCreateRequest voteCreateRequest = new VoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
-			mockMvc.perform(post("/api/v1/reviewvotes")
+			mockMvc.perform(post("/api/v1/votes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
-							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
+							.content(objectMapper.writeValueAsString(voteCreateRequest)))
 					.andExpect(status().isNotFound())
 					.andDo(document("후기 투표 생성 실패 - 투표자 id 없는 경우",
 							preprocessRequest(prettyPrint()),
@@ -237,14 +237,14 @@ class ReviewVoteControllerTest {
 		void createVoteFailByNotFoundVoteType() throws Exception {
 			// given
 			MockHttpSession session = TestUtils.getLoginSession(voter, USER);
-			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(0L, LIKE);
+			VoteCreateRequest voteCreateRequest
+					= new VoteCreateRequest(0L, LIKE);
 
 			// when & then
-			mockMvc.perform(post("/api/v1/reviewvotes")
+			mockMvc.perform(post("/api/v1/votes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
-							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
+							.content(objectMapper.writeValueAsString(voteCreateRequest)))
 					.andExpect(status().isNotFound())
 					.andDo(document("후기 투표 생성 실패 - 투표하는 엔티티의 id 없는 경우",
 							preprocessRequest(prettyPrint()),
@@ -269,14 +269,14 @@ class ReviewVoteControllerTest {
 		void createVoteFailByAlreadyVote() throws Exception {
 			// given
 			MockHttpSession session = TestUtils.getLoginSession(alreadyVoter, USER);
-			ReviewVoteCreateRequest reviewVoteCreateRequest
-					= new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
+			VoteCreateRequest voteCreateRequest
+					= new VoteCreateRequest(publishedReview.getId(), LIKE);
 
 			// when & then
-			mockMvc.perform(post("/api/v1/reviewvotes")
+			mockMvc.perform(post("/api/v1/votes")
 							.session(session)
 							.contentType(MediaType.APPLICATION_JSON)
-							.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
+							.content(objectMapper.writeValueAsString(voteCreateRequest)))
 					.andExpect(status().isConflict())
 					.andDo(document("후기 투표 생성 실패 - 이미 투표한 경우",
 							preprocessRequest(prettyPrint()),
@@ -305,7 +305,7 @@ class ReviewVoteControllerTest {
 
 		// when & then
 		mockMvc.perform(RestDocumentationRequestBuilders.delete(
-								"/api/v1/reviewvotes/{reviewVoteId}", reviewVote.getId()
+								"/api/v1/votes/{voteId}", vote.getId()
 						)
 						.session(session))
 				.andExpect(status().isNoContent())
@@ -313,7 +313,7 @@ class ReviewVoteControllerTest {
 				.andDo(document("후기 투표 삭제 성공",
 						preprocessRequest(prettyPrint()),
 						preprocessResponse(prettyPrint()),
-						pathParameters(parameterWithName("reviewVoteId").description("삭제하려는 후기 투표 id"))
+						pathParameters(parameterWithName("voteId").description("삭제하려는 후기 투표 id"))
 				));
 	}
 
@@ -323,22 +323,20 @@ class ReviewVoteControllerTest {
 
 		@Test
 		@DisplayName("Fail - 삭제하려는 후기 투표가 존재하지 않으면 후기 투표 삭제에 실패하고 404 응답한다")
-		void deleteVoteFailByNotFoundReviewVote() throws Exception {
+		void deleteVoteFailByNotFoundVote() throws Exception {
 			// given
 			MockHttpSession session = TestUtils.getLoginSession(alreadyVoter, USER);
-			Long wrongReviewVoteId = 0L;
+			Long wrongVoteId = 0L;
 
 			// when & then
-			mockMvc.perform(RestDocumentationRequestBuilders.delete(
-									"/api/v1/reviewvotes/{reviewVoteId}", wrongReviewVoteId
-							)
+			mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/votes/{voteId}", wrongVoteId)
 							.session(session))
 					.andExpect(status().isNotFound())
 					.andDo(print())
 					.andDo(document("후기 투표 삭제 실패 - 후기 투표 id 없는 경우",
 							preprocessRequest(prettyPrint()),
 							preprocessResponse(prettyPrint()),
-							pathParameters(parameterWithName("reviewVoteId").description("삭제하려는 후기 투표 id")),
+							pathParameters(parameterWithName("voteId").description("삭제하려는 후기 투표 id")),
 							responseFields(
 									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
 									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
@@ -356,16 +354,14 @@ class ReviewVoteControllerTest {
 			MockHttpSession session = TestUtils.getLoginSession(voter, USER);
 
 			// when & then
-			mockMvc.perform(RestDocumentationRequestBuilders.delete(
-									"/api/v1/reviewvotes/{reviewVoteId}", reviewVote.getId()
-							)
+			mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/votes/{voteId}", vote.getId())
 							.session(session))
 					.andExpect(status().isUnauthorized())
 					.andDo(print())
 					.andDo(document("후기 투표 삭제 실패 - 후기 투표자가 아닌 경우",
 							preprocessRequest(prettyPrint()),
 							preprocessResponse(prettyPrint()),
-							pathParameters(parameterWithName("reviewVoteId").description("삭제하려는 후기 투표 id")),
+							pathParameters(parameterWithName("voteId").description("삭제하려는 후기 투표 id")),
 							responseFields(
 									fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
 									fieldWithPath("url").type(JsonFieldType.STRING).description("요청한 url"),
@@ -384,7 +380,7 @@ class ReviewVoteControllerTest {
 		MockHttpSession session = TestUtils.getLoginSession(voter, USER);
 
 		// when & then
-		mockMvc.perform(get("/api/v1/reviewvotes")
+		mockMvc.perform(get("/api/v1/votes")
 						.param("reviewId", publishedReview.getId().toString())
 						.session(session))
 				.andExpect(status().isOk())
@@ -409,7 +405,7 @@ class ReviewVoteControllerTest {
 		Long wrongReviewId = 0L;
 
 		// when & then
-		mockMvc.perform(get("/api/v1/reviewvotes")
+		mockMvc.perform(get("/api/v1/votes")
 						.param("reviewId", wrongReviewId.toString())
 						.session(session))
 				.andExpect(status().isNotFound())
@@ -434,7 +430,7 @@ class ReviewVoteControllerTest {
 		// given
 		ExecutorService executorService = Executors.newFixedThreadPool(100);
 		CountDownLatch latch = new CountDownLatch(100);
-		ReviewVoteCreateRequest reviewVoteCreateRequest = new ReviewVoteCreateRequest(publishedReview.getId(), LIKE);
+		VoteCreateRequest voteCreateRequest = new VoteCreateRequest(publishedReview.getId(), LIKE);
 
 		Thread.sleep(500);
 
@@ -445,11 +441,11 @@ class ReviewVoteControllerTest {
 
 			executorService.submit(() -> {
 				try {
-					mockMvc.perform(post("/api/v1/reviewvotes")
+					mockMvc.perform(post("/api/v1/votes")
 									.accept(MediaType.APPLICATION_JSON)
 									.contentType(MediaType.APPLICATION_JSON)
 									.session(session)
-									.content(objectMapper.writeValueAsString(reviewVoteCreateRequest)))
+									.content(objectMapper.writeValueAsString(voteCreateRequest)))
 							.andExpect(status().isCreated());
 				} catch (Exception e) {
 					throw new RuntimeException(e);

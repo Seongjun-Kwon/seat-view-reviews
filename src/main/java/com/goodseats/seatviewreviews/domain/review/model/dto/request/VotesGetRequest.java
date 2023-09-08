@@ -4,5 +4,5 @@ import java.util.Optional;
 
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
 
-public record ReviewVotesGetRequest(Long reviewId, Optional<AuthenticationDTO> authenticationDTO) {
+public record VotesGetRequest(Long reviewId, Optional<AuthenticationDTO> authenticationDTO) {
 }
