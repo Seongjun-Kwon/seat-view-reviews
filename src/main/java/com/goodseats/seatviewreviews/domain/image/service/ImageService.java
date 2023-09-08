@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
-import com.goodseats.seatviewreviews.common.file.FileStorageService;
 import com.goodseats.seatviewreviews.domain.image.event.ImageDeleteEvent;
 import com.goodseats.seatviewreviews.domain.image.event.RollbackUploadEvent;
 import com.goodseats.seatviewreviews.domain.image.mapper.ImageMapper;

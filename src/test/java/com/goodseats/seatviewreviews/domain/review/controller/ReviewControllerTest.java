@@ -44,14 +44,14 @@ import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewsRes
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
 import com.goodseats.seatviewreviews.domain.review.repository.ReviewRepository;
 import com.goodseats.seatviewreviews.domain.review.service.ReviewRedisFacade;
-import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
-import com.goodseats.seatviewreviews.domain.seat.model.entity.SeatGrade;
-import com.goodseats.seatviewreviews.domain.seat.model.entity.SeatSection;
-import com.goodseats.seatviewreviews.domain.seat.repository.SeatGradeRepository;
-import com.goodseats.seatviewreviews.domain.seat.repository.SeatRepository;
-import com.goodseats.seatviewreviews.domain.seat.repository.SeatSectionRepository;
+import com.goodseats.seatviewreviews.domain.stadium.model.entity.Seat;
+import com.goodseats.seatviewreviews.domain.stadium.model.entity.SeatGrade;
+import com.goodseats.seatviewreviews.domain.stadium.model.entity.SeatSection;
 import com.goodseats.seatviewreviews.domain.stadium.model.entity.Stadium;
 import com.goodseats.seatviewreviews.domain.stadium.model.vo.HomeTeam;
+import com.goodseats.seatviewreviews.domain.stadium.repository.SeatGradeRepository;
+import com.goodseats.seatviewreviews.domain.stadium.repository.SeatRepository;
+import com.goodseats.seatviewreviews.domain.stadium.repository.SeatSectionRepository;
 import com.goodseats.seatviewreviews.domain.stadium.repository.StadiumRepository;
 
 @ActiveProfiles("test")

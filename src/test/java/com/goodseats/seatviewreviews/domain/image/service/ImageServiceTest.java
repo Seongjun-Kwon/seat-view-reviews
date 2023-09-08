@@ -21,7 +21,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
 import com.goodseats.seatviewreviews.common.error.exception.NotFoundException;
-import com.goodseats.seatviewreviews.common.file.FileStorageService;
 import com.goodseats.seatviewreviews.domain.image.event.ImageDeleteEvent;
 import com.goodseats.seatviewreviews.domain.image.event.RollbackUploadEvent;
 import com.goodseats.seatviewreviews.domain.image.model.dto.request.ImageCreateRequest;

@@ -15,8 +15,8 @@ import com.goodseats.seatviewreviews.common.error.exception.DuplicatedException;
 import com.goodseats.seatviewreviews.common.error.exception.ErrorCode;
 import com.goodseats.seatviewreviews.domain.BaseEntity;
 import com.goodseats.seatviewreviews.domain.member.model.entity.Member;
-import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
-import com.goodseats.seatviewreviews.domain.vote.model.vo.VoteChoice;
+import com.goodseats.seatviewreviews.domain.review.model.vo.VoteChoice;
+import com.goodseats.seatviewreviews.domain.stadium.model.entity.Seat;
 
 import lombok.AccessLevel;
 import lombok.Getter;
