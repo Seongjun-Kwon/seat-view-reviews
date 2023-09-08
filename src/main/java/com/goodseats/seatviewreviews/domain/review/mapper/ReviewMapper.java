@@ -9,7 +9,7 @@ import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewDeta
 import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewsElementResponse;
 import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewsResponse;
 import com.goodseats.seatviewreviews.domain.review.model.entity.Review;
-import com.goodseats.seatviewreviews.domain.seat.model.entity.Seat;
+import com.goodseats.seatviewreviews.domain.stadium.model.entity.Seat;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

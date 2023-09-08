@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.goodseats.seatviewreviews.common.file.FileStorageService;
+import com.goodseats.seatviewreviews.domain.image.service.FileStorageService;
 
 import lombok.RequiredArgsConstructor;
 
