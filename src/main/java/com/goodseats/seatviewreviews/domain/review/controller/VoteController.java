@@ -23,52 +23,50 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.goodseats.seatviewreviews.common.security.Authority;
 import com.goodseats.seatviewreviews.domain.member.model.dto.AuthenticationDTO;
-import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewVoteCreateRequest;
-import com.goodseats.seatviewreviews.domain.review.model.dto.request.ReviewVotesGetRequest;
-import com.goodseats.seatviewreviews.domain.review.model.dto.response.ReviewVotesResponse;
-import com.goodseats.seatviewreviews.domain.review.service.ReviewVoteRedisFacade;
-import com.goodseats.seatviewreviews.domain.review.service.ReviewVoteService;
+import com.goodseats.seatviewreviews.domain.review.model.dto.request.VoteCreateRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.request.VotesGetRequest;
+import com.goodseats.seatviewreviews.domain.review.model.dto.response.VotesResponse;
+import com.goodseats.seatviewreviews.domain.review.service.VoteRedisFacade;
+import com.goodseats.seatviewreviews.domain.review.service.VoteService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/reviewvotes")
-public class ReviewVoteController {
+@RequestMapping("/api/v1/votes")
+public class VoteController {
 
-	private final ReviewVoteService reviewVoteService;
-	private final ReviewVoteRedisFacade reviewVoteRedisFacade;
+	private final VoteService voteService;
+	private final VoteRedisFacade voteRedisFacade;
 
 	@Authority(authorities = {USER, ADMIN})
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<Void> createVote(
-			@Valid @RequestBody ReviewVoteCreateRequest reviewVoteCreateRequest,
+			@Valid @RequestBody VoteCreateRequest voteCreateRequest,
 			@SessionAttribute(value = LOGIN_MEMBER_INFO) AuthenticationDTO authenticationDTO,
 			HttpServletRequest request
 	) {
-		Long voteId = reviewVoteRedisFacade.createVote(reviewVoteCreateRequest, authenticationDTO.memberId());
+		Long voteId = voteRedisFacade.createVote(voteCreateRequest, authenticationDTO.memberId());
 		return ResponseEntity.created(URI.create(request.getRequestURI() + "/" + voteId)).build();
 	}
 
 	@Authority(authorities = {USER, ADMIN})
-	@DeleteMapping("/{reviewVoteId}")
+	@DeleteMapping("/{voteId}")
 	ResponseEntity<Void> deleteVote(
-			@PathVariable Long reviewVoteId,
+			@PathVariable Long voteId,
 			@SessionAttribute(value = LOGIN_MEMBER_INFO) AuthenticationDTO authenticationDTO
 	) {
-		reviewVoteRedisFacade.deleteVote(reviewVoteId, authenticationDTO.memberId());
+		voteRedisFacade.deleteVote(voteId, authenticationDTO.memberId());
 		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping
-	ResponseEntity<ReviewVotesResponse> getVotes(
+	ResponseEntity<VotesResponse> getVotes(
 			@RequestParam Long reviewId,
 			@SessionAttribute(value = LOGIN_MEMBER_INFO, required = false) AuthenticationDTO authenticationDTO
 	) {
-		ReviewVotesGetRequest reviewVotesGetRequest = new ReviewVotesGetRequest(
-				reviewId, Optional.ofNullable(authenticationDTO)
-		);
-		ReviewVotesResponse reviewVotesResponse = reviewVoteService.getVotes(reviewVotesGetRequest);
-		return ResponseEntity.ok(reviewVotesResponse);
+		VotesGetRequest votesGetRequest = new VotesGetRequest(reviewId, Optional.ofNullable(authenticationDTO));
+		VotesResponse votesResponse = voteService.getVotes(votesGetRequest);
+		return ResponseEntity.ok(votesResponse);
 	}
 }

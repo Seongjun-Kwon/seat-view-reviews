@@ -620,19 +620,51 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 318
+Content-Length: 1094
 
 {
   "stadiums" : [ {
-    "stadiumId" : 59,
+    "stadiumId" : 1,
     "name" : "잠실 야구장",
     "homeTeam" : "DOOSAN_LG"
   }, {
-    "stadiumId" : 89,
+    "stadiumId" : 2,
+    "name" : "한화생명 이글스 파크",
+    "homeTeam" : "HANWHA"
+  }, {
+    "stadiumId" : 3,
+    "name" : "광주 기아 챔피언스 필드",
+    "homeTeam" : "KIA"
+  }, {
+    "stadiumId" : 4,
+    "name" : "고척 스카이돔",
+    "homeTeam" : "KIWOOM"
+  }, {
+    "stadiumId" : 5,
+    "name" : "수원KT위즈파크",
+    "homeTeam" : "KT"
+  }, {
+    "stadiumId" : 6,
+    "name" : "사직 야구장",
+    "homeTeam" : "LOTTE"
+  }, {
+    "stadiumId" : 7,
+    "name" : "창원NC파크",
+    "homeTeam" : "NC"
+  }, {
+    "stadiumId" : 8,
+    "name" : "대구 삼성 라이온즈 파크",
+    "homeTeam" : "SAMSUNG"
+  }, {
+    "stadiumId" : 9,
+    "name" : "인천SSG 랜더스필드",
+    "homeTeam" : "SSG"
+  }, {
+    "stadiumId" : 247,
     "name" : "잠실 야구장",
     "homeTeam" : "DOOSAN_LG"
   }, {
-    "stadiumId" : 90,
+    "stadiumId" : 248,
     "name" : "한화생명 이글스 파크",
     "homeTeam" : "HANWHA"
   } ]
@@ -689,7 +721,7 @@ Content-Length: 318
             <h5 id="_request_2"><a class="link" href="#_request_2">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/stadiums/88 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/stadiums/246 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -851,7 +883,7 @@ Content-Length: 221
   "url" : "/api/v1/stadiums/-1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:16",
+  "createdAt" : "2023-09-08 21:41:44",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -921,7 +953,7 @@ Content-Length: 221
             <h5 id="_request_4"><a class="link" href="#_request_4">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/sections?stadiumId=103 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/sections?stadiumId=261 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -975,14 +1007,14 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 143
+Content-Length: 145
 
 {
   "seatSections" : [ {
-    "sectionId" : 94,
+    "sectionId" : 346,
     "sectionName" : "110"
   }, {
-    "sectionId" : 95,
+    "sectionId" : 347,
     "sectionName" : "111"
   } ]
 }</code></pre>
@@ -1033,7 +1065,7 @@ Content-Length: 143
             <h5 id="_request_5"><a class="link" href="#_request_5">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/seats?sectionId=96 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/seats?sectionId=333 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -1213,7 +1245,7 @@ loginEmail=goodseat%40google.com&amp;password=password&amp;nickname=Jerome</code
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/members/3927</code></pre>
+Location: /api/v1/members/15279</code></pre>
               </div>
             </div>
           </div>
@@ -1295,7 +1327,7 @@ Content-Length: 209
   "url" : "/api/v1/members",
   "exceptionName" : "DuplicatedException",
   "message" : "중복된 아이디입니다.",
-  "createdAt" : "2023-09-01 19:04:29",
+  "createdAt" : "2023-09-08 21:41:59",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1428,7 +1460,7 @@ Content-Length: 209
   "url" : "/api/v1/members",
   "exceptionName" : "DuplicatedException",
   "message" : "중복된 아이디입니다.",
-  "createdAt" : "2023-09-01 19:04:29",
+  "createdAt" : "2023-09-08 21:41:59",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1629,7 +1661,7 @@ Content-Length: 236
   "url" : "/api/v1/members/login",
   "exceptionName" : "AuthenticationException",
   "message" : "아이디 혹은 비밀번호가 틀립니다.",
-  "createdAt" : "2023-09-01 19:04:29",
+  "createdAt" : "2023-09-08 21:41:59",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1758,7 +1790,7 @@ Content-Length: 236
   "url" : "/api/v1/members/login",
   "exceptionName" : "AuthenticationException",
   "message" : "아이디 혹은 비밀번호가 틀립니다.",
-  "createdAt" : "2023-09-01 19:04:29",
+  "createdAt" : "2023-09-08 21:41:59",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -1861,7 +1893,7 @@ Content-Length: 230
   "url" : "/api/v1/members/logout",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-09-01 19:04:28",
+  "createdAt" : "2023-09-08 21:41:58",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2033,8 +2065,8 @@ Content-Type: application/json
 Content-Length: 148
 
 {
-  "imageId" : 18,
-  "imageUrl" : "https://seat-view-reviews.s3.ap-northeast-2.amazonaws.com/reviews/299751d0-90a2-44d7-9ec8-72c3a00370bc.png"
+  "imageId" : 63,
+  "imageUrl" : "https://seat-view-reviews.s3.ap-northeast-2.amazonaws.com/reviews/3aa0b5a3-96cc-4349-a6a1-a4a589f38fa8.png"
 }</code></pre>
               </div>
             </div>
@@ -2181,7 +2213,7 @@ Content-Length: 222
   "url" : "/api/v1/images",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-09-01 19:04:30",
+  "createdAt" : "2023-09-08 21:42:00",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2349,7 +2381,7 @@ Content-Length: 230
   "url" : "/api/v1/images",
   "exceptionName" : "IllegalArgumentException",
   "message" : "잘못된 이미지 업로드 요청입니다.",
-  "createdAt" : "2023-09-01 19:04:30",
+  "createdAt" : "2023-09-08 21:42:00",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2494,7 +2526,7 @@ Host: localhost:8080
             <h5 id="_request_18"><a class="link" href="#_request_18">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/19 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/64 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2576,7 +2608,7 @@ Content-Length: 218
   "url" : "/api/v1/images/1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:30",
+  "createdAt" : "2023-09-08 21:42:00",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2638,7 +2670,7 @@ Content-Length: 218
             <h5 id="_request_20"><a class="link" href="#_request_20">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/20 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/images/65 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2675,10 +2707,10 @@ Content-Length: 218
 
 {
   "status" : 409,
-  "url" : "/api/v1/images/20",
+  "url" : "/api/v1/images/65",
   "exceptionName" : "DuplicatedException",
   "message" : "이미 삭제된 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:30",
+  "createdAt" : "2023-09-08 21:42:00",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2751,11 +2783,11 @@ Content-Length: 218
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/reviews HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 21
+Content-Length: 24
 Host: localhost:8080
 
 {
-  "seatId" : 79
+  "seatId" : 24618
 }</code></pre>
               </div>
             </div>
@@ -2814,7 +2846,7 @@ Host: localhost:8080
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/reviews/156</code></pre>
+Location: /api/v1/reviews/601</code></pre>
               </div>
             </div>
           </div>
@@ -2899,7 +2931,7 @@ Content-Length: 217
   "url" : "/api/v1/reviews",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:26",
+  "createdAt" : "2023-09-08 21:41:55",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -2964,7 +2996,7 @@ Content-Length: 217
             <h5 id="_request_23"><a class="link" href="#_request_23">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/reviews/165 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/reviews/610 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
 Host: localhost:8080</code></pre>
               </div>
@@ -3145,7 +3177,7 @@ Content-Length: 219
   "url" : "/api/v1/reviews/1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:28",
+  "createdAt" : "2023-09-08 21:41:58",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3292,10 +3324,10 @@ Content-Length: 227
 
 {
   "status" : 401,
-  "url" : "/api/v1/reviews/177",
+  "url" : "/api/v1/reviews/622",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-09-01 19:04:27",
+  "createdAt" : "2023-09-08 21:41:57",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3360,7 +3392,7 @@ Content-Length: 227
             <h5 id="_request_24"><a class="link" href="#_request_24">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews?seatId=82&amp;page=0&amp;size=1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews?seatId=24621&amp;page=0&amp;size=1 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -3426,7 +3458,7 @@ Content-Length: 153
 
 {
   "reviews" : [ {
-    "reviewId" : 162,
+    "reviewId" : 607,
     "title" : "테스트 제목",
     "score" : 5,
     "viewCount" : 0,
@@ -3558,7 +3590,7 @@ Content-Length: 217
   "url" : "/api/v1/reviews",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:25",
+  "createdAt" : "2023-09-08 21:41:54",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3623,7 +3655,7 @@ Content-Length: 217
             <h5 id="_request_25"><a class="link" href="#_request_25">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews/176 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews/621 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
               </div>
@@ -3803,7 +3835,7 @@ Content-Length: 220
   "url" : "/api/v1/reviews/-1",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:24",
+  "createdAt" : "2023-09-08 21:41:52",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -3873,13 +3905,13 @@ Content-Length: 220
             <h5 id="_request_27"><a class="link" href="#_request_27">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/reviewvotes HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 50
 Host: localhost:8080
 
 {
-  "reviewId" : 137,
+  "reviewId" : 582,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -3940,7 +3972,7 @@ Host: localhost:8080
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: /api/v1/reviewvotes/375</code></pre>
+Location: /api/v1/votes/1383</code></pre>
               </div>
             </div>
           </div>
@@ -3951,13 +3983,13 @@ Location: /api/v1/reviewvotes/375</code></pre>
             <h5 id="_request_28"><a class="link" href="#_request_28">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/reviewvotes HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 50
 Host: localhost:8080
 
 {
-  "reviewId" : 153,
+  "reviewId" : 598,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -4019,14 +4051,14 @@ Host: localhost:8080
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
 Content-Type: application/json
-Content-Length: 227
+Content-Length: 221
 
 {
   "status" : 401,
-  "url" : "/api/v1/reviewvotes",
+  "url" : "/api/v1/votes",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-09-01 19:04:10",
+  "createdAt" : "2023-09-08 21:41:38",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4088,13 +4120,13 @@ Content-Length: 227
             <h5 id="_request_29"><a class="link" href="#_request_29">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/reviewvotes HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 50
 Host: localhost:8080
 
 {
-  "reviewId" : 147,
+  "reviewId" : 592,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -4156,14 +4188,14 @@ Host: localhost:8080
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
 Content-Type: application/json
-Content-Length: 221
+Content-Length: 215
 
 {
   "status" : 404,
-  "url" : "/api/v1/reviewvotes",
+  "url" : "/api/v1/votes",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:08",
+  "createdAt" : "2023-09-08 21:41:33",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4225,7 +4257,7 @@ Content-Length: 221
             <h5 id="_request_30"><a class="link" href="#_request_30">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/reviewvotes HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 48
 Host: localhost:8080
@@ -4293,14 +4325,14 @@ Host: localhost:8080
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
 Content-Type: application/json
-Content-Length: 221
+Content-Length: 215
 
 {
   "status" : 404,
-  "url" : "/api/v1/reviewvotes",
+  "url" : "/api/v1/votes",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:09",
+  "createdAt" : "2023-09-08 21:41:37",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4362,13 +4394,13 @@ Content-Length: 221
             <h5 id="_request_31"><a class="link" href="#_request_31">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/reviewvotes HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/votes HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 50
 Host: localhost:8080
 
 {
-  "reviewId" : 149,
+  "reviewId" : 594,
   "voteChoice" : "LIKE"
 }</code></pre>
               </div>
@@ -4430,14 +4462,14 @@ Host: localhost:8080
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 409 Conflict
 Content-Type: application/json
-Content-Length: 217
+Content-Length: 211
 
 {
   "status" : 409,
-  "url" : "/api/v1/reviewvotes",
+  "url" : "/api/v1/votes",
   "exceptionName" : "DuplicatedException",
   "message" : "이미 평가한 후기입니다.",
-  "createdAt" : "2023-09-01 19:04:08",
+  "createdAt" : "2023-09-08 21:41:35",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4502,7 +4534,7 @@ Content-Length: 217
             <h5 id="_request_32"><a class="link" href="#_request_32">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/reviewvotes/272 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/votes/1280 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -4510,7 +4542,7 @@ Host: localhost:8080</code></pre>
           <div class="sect4">
             <h5 id="_path_parameters_11"><a class="link" href="#_path_parameters_11">Path Parameters</a></h5>
             <table class="tableblock frame-all grid-all stretch">
-              <caption class="title">Table 11. /api/v1/reviewvotes/{reviewVoteId}</caption>
+              <caption class="title">Table 11. /api/v1/votes/{voteId}</caption>
               <colgroup>
                 <col style="width: 50%;">
                 <col style="width: 50%;">
@@ -4523,7 +4555,7 @@ Host: localhost:8080</code></pre>
               </thead>
               <tbody>
               <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewVoteId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteId</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock">삭제하려는 후기 투표 id</p></td>
               </tr>
               </tbody>
@@ -4544,7 +4576,7 @@ Host: localhost:8080</code></pre>
             <h5 id="_request_33"><a class="link" href="#_request_33">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/reviewvotes/0 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/votes/0 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -4552,7 +4584,7 @@ Host: localhost:8080</code></pre>
           <div class="sect4">
             <h5 id="_path_parameters_12"><a class="link" href="#_path_parameters_12">Path Parameters</a></h5>
             <table class="tableblock frame-all grid-all stretch">
-              <caption class="title">Table 12. /api/v1/reviewvotes/{reviewVoteId}</caption>
+              <caption class="title">Table 12. /api/v1/votes/{voteId}</caption>
               <colgroup>
                 <col style="width: 50%;">
                 <col style="width: 50%;">
@@ -4565,7 +4597,7 @@ Host: localhost:8080</code></pre>
               </thead>
               <tbody>
               <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewVoteId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteId</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock">삭제하려는 후기 투표 id</p></td>
               </tr>
               </tbody>
@@ -4577,14 +4609,14 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
 Content-Type: application/json
-Content-Length: 223
+Content-Length: 217
 
 {
   "status" : 404,
-  "url" : "/api/v1/reviewvotes/0",
+  "url" : "/api/v1/votes/0",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:05",
+  "createdAt" : "2023-09-08 21:41:31",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4646,7 +4678,7 @@ Content-Length: 223
             <h5 id="_request_34"><a class="link" href="#_request_34">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/reviewvotes/379 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/votes/1387 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -4654,7 +4686,7 @@ Host: localhost:8080</code></pre>
           <div class="sect4">
             <h5 id="_path_parameters_13"><a class="link" href="#_path_parameters_13">Path Parameters</a></h5>
             <table class="tableblock frame-all grid-all stretch">
-              <caption class="title">Table 13. /api/v1/reviewvotes/{reviewVoteId}</caption>
+              <caption class="title">Table 13. /api/v1/votes/{voteId}</caption>
               <colgroup>
                 <col style="width: 50%;">
                 <col style="width: 50%;">
@@ -4667,7 +4699,7 @@ Host: localhost:8080</code></pre>
               </thead>
               <tbody>
               <tr>
-                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewVoteId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>voteId</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock">삭제하려는 후기 투표 id</p></td>
               </tr>
               </tbody>
@@ -4679,14 +4711,14 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
 Content-Type: application/json
-Content-Length: 231
+Content-Length: 226
 
 {
   "status" : 401,
-  "url" : "/api/v1/reviewvotes/379",
+  "url" : "/api/v1/votes/1387",
   "exceptionName" : "AuthenticationException",
   "message" : "인증되지 않은 사용자입니다.",
-  "createdAt" : "2023-09-01 19:04:06",
+  "createdAt" : "2023-09-08 21:41:32",
   "fieldErrors" : null
 }</code></pre>
               </div>
@@ -4751,7 +4783,7 @@ Content-Length: 231
             <h5 id="_request_35"><a class="link" href="#_request_35">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviewvotes?reviewId=141 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/votes?reviewId=586 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -4840,7 +4872,7 @@ Content-Length: 97
             <h5 id="_request_36"><a class="link" href="#_request_36">Request</a></h5>
             <div class="listingblock">
               <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviewvotes?reviewId=0 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/votes?reviewId=0 HTTP/1.1
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -4872,14 +4904,14 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
 Content-Type: application/json
-Content-Length: 221
+Content-Length: 215
 
 {
   "status" : 404,
-  "url" : "/api/v1/reviewvotes",
+  "url" : "/api/v1/votes",
   "exceptionName" : "NotFoundException",
   "message" : "존재하지 않는 데이터입니다.",
-  "createdAt" : "2023-09-01 19:04:03",
+  "createdAt" : "2023-09-08 21:41:29",
   "fieldErrors" : null
 }</code></pre>
               </div>

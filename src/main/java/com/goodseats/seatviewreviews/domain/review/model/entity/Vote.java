@@ -25,10 +25,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "review_vote")
+@Table(name = "vote")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ReviewVote extends BaseEntity {
+public class Vote extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +46,7 @@ public class ReviewVote extends BaseEntity {
 	@JoinColumn(name = "review_id")
 	private Review review;
 
-	public ReviewVote(VoteChoice voteChoice, Member member, Review review) {
+	public Vote(VoteChoice voteChoice, Member member, Review review) {
 		this.voteChoice = voteChoice;
 		this.member = member;
 		this.review = review;
